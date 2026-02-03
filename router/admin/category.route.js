@@ -12,6 +12,7 @@ router.post("/create",
     categoryController.createPost
 );
 
+
 router.get("/edit/:id",categoryController.edit);
 
 router.patch(
