@@ -239,6 +239,9 @@ html(lang="vi")
                 input(type="text" input-chat placeholder="Nhập vào đây...")
                 button(send-chat)
                     i.fa-solid.fa-paper-plane
+        script(src="https://code.jquery.com/jquery-3.7.1.min.js")
+        link(href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet")
+        script(src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js")
         script(src="https://unpkg.com/aos@2.3.1/dist/aos.js")
         script(src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js")
         script(src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.11.7/viewer.min.js")
@@ -246,3 +249,18 @@ html(lang="vi")
         src="https://cdn.jsdelivr.net/npm/just-validate@4.3.0/dist/just-validate.production.min.js"
         )
         script(src="/assets/js/script.js")
+        script.
+            $(document).ready(function() {
+                $('#city').select2({
+                    placeholder: "Chọn Tỉnh/Thành phố",
+                    width: '100%'
+                });
+                $('#district').select2({
+                    placeholder: "Chọn Quận/Huyện",
+                    width: '100%'
+                });
+                $('#ward').select2({
+                    placeholder: "Chọn Phường/Xã",
+                    width: '100%'
+                });
+            });
