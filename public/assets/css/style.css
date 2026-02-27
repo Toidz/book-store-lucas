@@ -154,8 +154,15 @@ input, button, textarea {
 }
 .header .inner-menu > ul > li > ul.multi-column {
   column-count: 2;
-  min-width: 600px;
+  width: 600px;
 }
+@media (max-width:992px){
+  .header .inner-menu > ul > li > ul.multi-column{
+    column-count: 1;
+    width: 100%;
+  }
+}
+
 .header .inner-menu > ul > li:hover > ul {
   display: block;
 }
