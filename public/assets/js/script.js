@@ -765,26 +765,31 @@ if(bookDetail){
       })
       .then(res=>res.json())
       .then(data=>{
-        fetch("/cart/add",{
-          method:"POST",
-          headers:{
-            "Content-type":"application/json"
-          },
-          body:JSON.stringify(dataFinal)
-          })
-          .then(res=>res.json())
-          .then(data=>{
-            if(data.code=="error"){
-              Swal.fire({
-                icon: 'error',
-                title: 'Thất bại!',
-                text: data.message,
-                timer: 3000,
-                showConfirmButton: false
-              });
-            }
-            else window.location.reload()
-          })
+        if(data.code=="error"){
+          window.location.href="/account/login"
+        }
+        else {
+          fetch("/cart/add",{
+            method:"POST",
+            headers:{
+              "Content-type":"application/json"
+            },
+            body:JSON.stringify(dataFinal)
+            })
+            .then(res=>res.json())
+            .then(data=>{
+              if(data.code=="error"){
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Thất bại!',
+                  text: data.message,
+                  timer: 3000,
+                  showConfirmButton: false
+                });
+              }
+              else window.location.reload()
+            })
+        }
     })
   })
 }
