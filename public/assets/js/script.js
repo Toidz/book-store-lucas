@@ -40,6 +40,58 @@ if(buttonUser){
   })
 }
 //end user-client
+//menu-hover
+const hoverOpenMenu = document.querySelector("[hover-open-menu]")
+if(hoverOpenMenu){
+  hoverOpenMenu.addEventListener("mouseenter",()=>{
+    const menuDefault = document.querySelector("[menu-default]")
+      menuDefault.classList.add("active-menu")
+      menuDefault.addEventListener("mouseleave",()=>{
+      menuDefault.classList.remove("active-menu")
+    })
+  })
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const hoverCate = document.querySelectorAll("[hover-cate]");
+  const isMobile = window.innerWidth <= 768;
+  if (!hoverCate.length) return;
+  const handleActive = (element) => {
+    hoverCate.forEach(item => item.classList.remove("hover-active"));
+    element.classList.add("hover-active");
+    const id = element.getAttribute("data-menu");
+    const dataSameMenu = document.querySelectorAll("[data-same-menu]");
+    dataSameMenu.forEach(item => {
+      item.classList.remove("active");
+      if (item.getAttribute("data-same-menu") === id) {
+        item.classList.add("active");
+      }
+    });
+  };
+  hoverCate.forEach(item => {
+    const eventType = isMobile ? "click" : "mouseenter";
+    item.addEventListener(eventType, (e) => {
+      if (isMobile) e.preventDefault();
+      handleActive(item);
+    });
+  });
+  handleActive(hoverCate[0]);
+});
+const clickOpenMenu = document.querySelector("[click-open-menu]")
+if(clickOpenMenu){
+  clickOpenMenu.addEventListener("click",()=>{
+    const menuDefault = document.querySelector("[menu-default]")
+    menuDefault.classList.add("active-menu")
+  })
+}
+const backHome = document.querySelector("[back-home]")
+if(backHome){
+  backHome.addEventListener("click",()=>{
+    const menuDefault = document.querySelector("[menu-default]")
+    menuDefault.classList.remove("active-menu")
+  })
+}
+//end menu-hover
+
 // Login Form
 const loginForm = document.querySelector("#login-form");
 if(loginForm) {
@@ -1187,13 +1239,15 @@ if (boxChat) {
   const info = boxChat.querySelector("[input-chat]");
   const sendChat = boxChat.querySelector("[send-chat]");
   const handleSendMessage = () => {
+   
     const value = info.value.trim();
+     console.log(value)
     if (value) {
       const chatUser = document.createElement("div");
       chatUser.className = "inner-chat-user";
       chatUser.textContent = value;
 
-      fetch('/api/chatbot/ask', {
+      fetch('/api/ai-book-advisor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: value })
@@ -1202,7 +1256,7 @@ if (boxChat) {
       .then(data=>{
         const chatBot = document.createElement("div");
         chatBot.className = "inner-chat-bot";
-        chatBot.textContent = data.reply;
+        chatBot.textContent = data.message;
         const innerReply = document.querySelector(".inner-reply");
         innerReply.appendChild(chatUser);
         innerReply.appendChild(chatBot);

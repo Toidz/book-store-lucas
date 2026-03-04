@@ -56,60 +56,59 @@ html(lang="vi")
                     .inner-item
                         i.fa-solid.fa-building
                         | #{info.address}
+        .logo-mobile 
+            a(href="/")
+                img(alt=info.websiteName src=info.logo)
         // End Top Header
         // Header
         header.header
             .container
-                .inner-wrap
-                    // Menu Mobile
-                    button.inner-menu-mobile
-                        i.fa-solid.fa-bars
+                .inner-wrap           
                     // Logo
                     .inner-logo
                         a(href="/")
-                            img(
-                                style="width:90px;height:60px"
-                                alt=info.websiteName 
-                                src=info.logo
-                                )
+                            img(alt=info.websiteName src=info.logo)
                     // Menu
                     nav.inner-menu
-                        ul
-                            li
-                                a.active(href="/") Trang chủ    
-                            each item in categoryList
-                                li
-                                    a(href=`/book/${item.slug}`) #{item.name}
-                                    i.fa-solid.fa-caret-down
-                                    ul
-                                        each i in item.children
-                                            li
-                                                a(href=`/book/${i.slug}`) - #{i.name}
-                                                    each it in i.children
-                                                        li
-                                                            a(href=`/book/${it.slug}` style="margin-left:20px") #{it.name}
-
-
-                            li
-                                a(href="/new/ky-nang-doc-sach-hieu-qua") Tin tức
-                            li
-                                a(href="/contact-client") Liên hệ
-                        .inner-overlay
+                        .inner-icon-mobile-menu(click-open-menu)
+                            img(src="/assets/images/ico_menu_red.svg", alt="", style="height:40px; margin-right:5px;")
+                        .inner-icon-menu(hover-open-menu)
+                            img(src="/assets/images/ico_menu_red.svg", alt="", style="height:40px; margin-right:5px;")
+                            i.fa-solid.fa-angle-down
+                        .inner-form(search)
+                            input.inner-input(
+                                placeholder="Bạn muốn tìm kiếm sách gì?" 
+                                type="text"
+                                find-book)
+                            i.fa-solid.fa-magnifying-glass
+                        .inner-bar(menu-default)
+                            .inner-back
+                                i(back-home).fa-solid.fa-arrow-left
+                                span Danh mục sản phẩm
+                            .inner-parent
+                                span Danh mục sản phẩm
+                                each item in categoryList
+                                    a(href=`/book/${item.slug}` hover-cate data-menu=item.id) #{item.name}
+                            .inner-child-wrapper
+                                each item in categoryList
+                                    each i in item.children
+                                        .inner-child(data-same-menu=item.id)
+                                            .child-title 
+                                                a(href=`/book/${i.slug}`) #{i.name}
+                                            .child-detail
+                                                each it in i.children
+                                                    a(href=`/book/${it.slug}`) #{it.name}
                     .inner-user-cart
                         //cart
                         .inner-cart
                             a(href="/cart")
-                                img(
-                                    alt="Cart" 
-                                    src="/assets/images/icon-cart.svg"
-                                    )
+                                i.fa-solid.fa-cart-shopping
                             span() #{lengthCart}
+                            .text-cart Giỏ hàng
                         //user
                         .inner-user                 
-                            img(
-                                alt="user" 
-                                src="/assets/images/icon-user.svg"
-                                )
+                            i.fa-regular.fa-user
+                            .text-user Tài khoản
                             .inner-user-unsuccess
                                 .inner-wrap 
                                     .inner-item 
@@ -201,8 +200,8 @@ html(lang="vi")
         // End Footer
         .box-contact
             ul
-                //- li(style="color:white" open-chat )  
-                //-     i.fa-solid.fa-comment
+                li(style="color:white" open-chat )  
+                    i.fa-solid.fa-comment
                 li
                     a(
                         target="_blank" 

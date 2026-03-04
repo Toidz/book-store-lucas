@@ -27,10 +27,6 @@ global.pathAdmin = variableConfig.pathAdmin;
 
 app.use(express.json());
 
-
-const chatbotRouter = require('./router/client/chat.route');
-app.use('/api/chatbot', chatbotRouter);
-
 const clientRouter= require("./router/client/index.route")
 app.use("/",clientRouter);
 const adminRouter= require("./router/admin/index.route")

@@ -53,4 +53,7 @@ router.post("/api/auth/verify",async (req,res) =>{
    }
 });
 
+const  aiController = require("../../controllers/client/ai.controller")
+router.post("/api/ai-book-advisor", aiController.aiBookAdvisor);
+
 module.exports = router;
