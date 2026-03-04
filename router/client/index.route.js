@@ -53,7 +53,7 @@ router.post("/api/auth/verify",async (req,res) =>{
    }
 });
 
-const  aiController = require("../../controllers/client/ai.controller")
-router.post("/api/ai-book-advisor", aiController.aiBookAdvisor);
+const chatBotController = require("../../controllers/client/chatBot.controller")
+router.post("/api/chat-bot", chatBotController.chatBot);
 
 module.exports = router;

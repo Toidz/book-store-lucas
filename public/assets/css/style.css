@@ -3421,21 +3421,27 @@ input, button, textarea {
 
 .inner-chat-user {
   align-self: flex-end;
-  background: var(--color-primary);
+  background: var(--color-second);
   color: white;
   padding: 12px 18px;
   border-radius: 10px;
-  max-width: 70%;
+  max-width: 80%;
   font-size: 14px;
 }
 .inner-chat-bot {
   align-self: flex-start; 
-  background: gray;
+  background: var(--color-second);
   color: white;
   padding: 12px 18px;
   border-radius: 10px;
-  max-width: 70%;
+  max-width: 80%;
   font-size: 14px;
+}
+.inner-chat-bot a{
+  text-decoration: underline;
+}
+.inner-chat-bot a:hover{
+  color:var(--color-primary)
 }
 .inner-none{
   display: none;

@@ -118,7 +118,8 @@ module.exports.deletePatch = async (req,res)=>{
                     _id:item.id_book,
                     deleted:false
                 },{
-                    numberBook:bookDetail.numberBook+parseInt(item.quantity)
+                    numberBook:bookDetail.numberBook+parseInt(item.quantity),
+                    numberSale:bookDetail.numberSale-parseInt(item.quantity)
                 })
                 
             }

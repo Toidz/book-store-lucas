@@ -1247,7 +1247,7 @@ if (boxChat) {
       chatUser.className = "inner-chat-user";
       chatUser.textContent = value;
 
-      fetch('/api/ai-book-advisor', {
+      fetch('/api/chat-bot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: value })
@@ -1256,7 +1256,25 @@ if (boxChat) {
       .then(data=>{
         const chatBot = document.createElement("div");
         chatBot.className = "inner-chat-bot";
-        chatBot.textContent = data.message;
+        let rep = `
+          <strong>${data.message}</strong><br/><br/>
+          <b>Các sản phẩm đề xuất:</b><br/>
+          `;
+
+          if (data.books && data.books.length > 0) {
+            data.books.forEach((item, index) => {
+              rep += `
+                ${index + 1}. 
+                <a href="/book/detail/${item.slug}" target="_blank">
+                  ${item.name}
+                </a><br/>
+              `;
+            });
+          } else {
+            rep += "Không có sản phẩm phù hợp.";
+          }
+
+          chatBot.innerHTML = rep;
         const innerReply = document.querySelector(".inner-reply");
         innerReply.appendChild(chatUser);
         innerReply.appendChild(chatBot);

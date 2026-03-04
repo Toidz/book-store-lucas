@@ -30,7 +30,8 @@ module.exports.create = async (req,res)=>{
                 await Book.updateOne({
                     _id: item.id_book
                 },{
-                    numberBook : book.numberBook - item.quantity
+                    numberBook : book.numberBook - parseInt(item.quantity),
+                    numberSale: book.numberSale + parseInt(item.quantity) 
                 })
             }
             req.body.id_user =item.id_user;
@@ -83,7 +84,7 @@ module.exports.success = async (req,res)=>{
     let fee = 0;
     if(!order.note.includes("Hà Nội")) fee=30000
 
-    order.createdAtFormat = moment(order.createdAt).format("HH:MM - DD/MM/YYYY")
+    order.createdAtFormat = moment(order.createdAt).format("HH:mm - DD/MM/YYYY");
 
     res.render("client/pages/order-success",{
         pageTitle:"Thông tin đơn hàng",
@@ -107,12 +108,9 @@ module.exports.zalopay = async (req,res)=>{
             res.redirect("/")
             return
         }
-    // Node v10.15.3
         const axios = require('axios').default; 
         const CryptoJS = require('crypto-js'); 
         const moment = require('moment'); 
-
-        // APP INFO
         const config = {
             app_id: process.env.ZALOPAY_ID,
             key1: process.env.ZALOPAYKEY1,
@@ -128,13 +126,13 @@ module.exports.zalopay = async (req,res)=>{
         const transID = Math.floor(Math.random() * 1000000);
         const order = {
             app_id: config.app_id,
-            app_trans_id: `${moment().format('YYMMDD')}_${transID}`, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
-            app_user: `${orderDetail.id}-${orderDetail.phone}`,//info
-            app_time: Date.now(), // miliseconds
+            app_trans_id: `${moment().format('YYMMDD')}_${transID}`, 
+            app_user: `${orderDetail.id}-${orderDetail.phone}`,
+            app_time: Date.now(), 
             item: JSON.stringify(items),
             embed_data: JSON.stringify(embed_data),
-            amount: orderDetail.priceTotal,//tong tien
-            description: `Thanh toán đơn hàng #${orderDetail.orderCode}`,//mota
+            amount: orderDetail.priceTotal,
+            description: `Thanh toán đơn hàng #${orderDetail.orderCode}`,
             bank_code: "",
             callback_url:`${process.env.DOMAIN_WEBSITE}/order/payment-zalopay-result`
         };

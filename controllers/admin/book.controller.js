@@ -313,7 +313,7 @@ module.exports.editPatch = async (req,res) =>{
         const exitsBook = await Book.findOne({
         name: current
         })
-        console.log(exitsBook)
+  
         if(exitsBook && exitsBook.name!=req.body.name){
             res.json({
                 code:"error",
