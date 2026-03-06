@@ -1,6 +1,7 @@
 const Book = require("../../models/book.model");
 const Category = require("../../models/category.model");
-const normalizeText = (str) => {
+module.exports.chatBot = async (req, res) => {
+  const normalizeText = (str) => {
   return str
     .toLowerCase()
     .normalize("NFD")
@@ -44,7 +45,6 @@ const extractPriceFilter = (message) => {
   }
   return null;
 };
-module.exports.chatBot = async (req, res) => {
   try {
     const message = req.body.message;
     const cleaned = cleanMessage(message);
