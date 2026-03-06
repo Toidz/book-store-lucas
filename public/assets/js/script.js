@@ -1247,7 +1247,7 @@ if (boxChat) {
       chatUser.className = "inner-chat-user";
       chatUser.textContent = value;
 
-      fetch('/api/chat-bot', {
+      fetch('/api/chat/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: value })

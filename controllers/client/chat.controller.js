@@ -1,6 +1,6 @@
 const Book = require("../../models/book.model");
 const Category = require("../../models/category.model");
-module.exports.chatBot = async (req, res) => {
+module.exports.chat = async (req, res) => {
   const normalizeText = (str) => {
   return str
     .toLowerCase()
