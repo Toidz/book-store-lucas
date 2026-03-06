@@ -1265,7 +1265,7 @@ if (boxChat) {
             data.books.forEach((item, index) => {
               rep += `
                 ${index + 1}. 
-                <a href="/book/detail/${item.slug}" target="_blank">
+                <a href="/book/detail/${item.slug}"  target="_blank">
                   ${item.name}
                 </a><br/>
               `;
@@ -1312,7 +1312,7 @@ if(innerFillAddress){
       },
       {
         rule: 'customRegexp',
-         value: /^0(3|5|7|8|9)[0-9]{9}$/,
+         value: /^0(3|5|7|8|9)[0-9]{8}$/,
         errorMessage: 'Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng.',
       },
     ])

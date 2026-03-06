@@ -1,0 +1,51 @@
+extends ../layouts/default.pug
+include ../mixins/options.pug
+block main
+  h1.box-title Chỉnh sửa sự kiện
+  - if(permissions.includes("event-edit"))
+    .section-8
+      form#event-edit-form
+        .inner-group(style="display:none")
+          label(class="inner-label" for="id") id
+          input(type="text" id="id" name="id" value=currentEvent.id)
+        .inner-group
+          label(class="inner-label" for="name") Tên sự kiện
+          input(type="text" id="name" name="name" value=currentEvent.name)
+        .inner-group
+          label(class="inner-label" for="discount") Giảm giá (%)
+          input(type="text" id="discount" name="discount" value=currentEvent.discount)
+        .inner-group 
+            label.inner-label(for="startDate") Ngày bắt đầu
+            input(type="date" id="startDate" name="startDate" value=currentEvent.startDate.toISOString().split('T')[0])
+
+        .inner-group 
+            label.inner-label(for="endDate") Ngày kết thúc
+            input(type="date" id="endDate" name="endDate" value=currentEvent.endDate.toISOString().split('T')[0])
+        .inner-group
+          label(class="inner-label" for="status") Trạng thái
+          select(id="status" name="status")
+            option(value="active" selected=(currentEvent.status=="active")) Hoạt động
+            option(value="stop" selected=(currentEvent.status=="stop")) Tạm dừng
+        .inner-group.inner-two-col
+          label(class="inner-label" for="avatar") Ảnh đại diện
+          div(class="inner-upload-image" image-default=currentEvent.avatar?currentEvent.avatar:"" )
+            input(type="file" id="avatar" accept="image/*" filepond-image name="avatar")
+        .inner-group.inner-two-col
+          label(class="inner-label" for="information") Nội dung sự kiện
+          textarea(id="information" textarea-mce name="information") #{currentEvent.information}
+        .inner-button.inner-two-col
+          button Cập nhật
+      .inner-back
+        a(href=`/${pathAdmin}/event/list`) Quay lại danh sách
+  - else
+    script.
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi truy cập!',
+        text: 'Bạn không có đủ thẩm quyền vào trang này!',
+        timer: 3000,
+        showConfirmButton: false,
+        willClose: () => {
+          window.location.href = `/${pathAdmin}/dashboard`;
+        }
+      });

@@ -4,6 +4,7 @@ const schema = new mongoose.Schema(
         id_user:String,
         id_book:String,
         quantity:Number,
+        priceLast:Number,
         checkItem:{
             type: Boolean,
             default: false

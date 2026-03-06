@@ -3,6 +3,7 @@ slug = require('mongoose-slug-updater')
 mongoose.plugin(slug)
 const schema = new mongoose.Schema(
     {   
+        idEvent:String,
         bookCode:String,
         name: String,
         category: String,
@@ -18,6 +19,7 @@ const schema = new mongoose.Schema(
         information:String,
         createdBy: String,
         updatedBy: String,
+        authorSlug:String, 
         slug: {   
             type: String, 
             slug: "name",

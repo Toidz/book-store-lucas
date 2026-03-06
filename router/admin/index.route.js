@@ -12,7 +12,7 @@ const uploadRouer = require("./upload.route")
 const errorController = require("../../controllers/admin/error.controller");
 const authMidderWare = require("../../middlewares/admin/auth.middleware")
 const infoMiddleware = require("../../middlewares/client/infowebsite.middleware")
-
+const eventRouter = require("./event.route")
 router.use(infoMiddleware.info)
 router.use("/account",accountRouter);
 router.use("/dashboard",authMidderWare.verifyToken,dashboardRouter);
@@ -24,6 +24,7 @@ router.use("/setting",authMidderWare.verifyToken,settingRouter);
 router.use("/book",authMidderWare.verifyToken,bookRouter);
 router.use("/new",authMidderWare.verifyToken,newRouter);
 router.use("/upload",authMidderWare.verifyToken,uploadRouer);
+router.use("/event",authMidderWare.verifyToken,eventRouter)
 router.get("*",authMidderWare.verifyToken,errorController.error);
 
 module.exports = router;

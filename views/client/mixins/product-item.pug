@@ -1,5 +1,11 @@
 mixin product-item(item)
   .product-item
+    - if(item.decorate=="new")
+      .inner-deco 
+        img(src="/assets/images/new.png" style="width:100px")
+    - if(item.decorate=="hot")
+      .inner-deco 
+        img(src="/assets/images/bestSale.png" style="width:100px")
     .inner-image
       a(href=`/book/detail/${item.slug}`)
         img(
@@ -13,10 +19,17 @@ mixin product-item(item)
       h3.inner-title
         a(href=`/book/detail/${item.slug}`) #{item.name}
       .inner-prices
-        .inner-price-new
-          | Giá: #{item.priceBook.toLocaleString('vi-VN')}
-          span.inner-unit đ
-      .inner-meta
-        .inner-stock
-          .inner-label Số lượng còn:
-          .inner-number #{item.numberBook}
+        - if(item.idEvent)
+          .inner-price-new
+            div Giá: #{item.priceLast.toLocaleString('vi-VN')}đ 
+            span -#{item.discount}%
+          .inner-intial
+            span #{item.priceBook.toLocaleString('vi-VN')}đ
+        - else
+          .inner-price-new
+            div Giá: #{item.priceBook.toLocaleString('vi-VN')}đ
+      .inner-stock
+        .inner-label Số lượng còn:
+        .inner-number #{item.numberBook}
+      .inner-sale
+        span Đã bán: #{item.numberSale?item.numberSale:0}

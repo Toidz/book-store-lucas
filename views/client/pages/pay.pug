@@ -40,7 +40,7 @@ block main
                     .inner-item-price
                       span(number-quantity) #{item.quantity}
                       span x
-                      span.inner-highlight(priceBook=item.priceBook) #{item.priceBook.toLocaleString("vi-VN")} đ
+                      span.inner-highlight(priceBook=item.priceLast?item.priceLast:item.priceBook) #{(item.priceLast?item.priceLast:item.priceBook).toLocaleString("vi-VN")} đ
         .inner-list-price
           .inner-item
             .inner-label Phí vận chuyển:

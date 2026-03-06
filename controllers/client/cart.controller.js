@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken")
 const Book = require("../../models/book.model")
-const AccountClient = require("../../models/account-client.model")
 const Cart = require("../../models/cart.model")
+const moment =require("moment")
+const Event = require("../../models/event.model")
 module.exports.cart = async (req,res)=>{
   const listItem = await Cart.find({
     id_user:req.account.id,
@@ -20,7 +20,18 @@ module.exports.cart = async (req,res)=>{
     item.slug = book?.slug;
     item.avatar = book?.avatar1;
     item.stock = book?.numberBook;
+    if(book.idEvent){
+      const event = await Event.findOne({
+        _id:book.idEvent
+      })
+      item.eventName = event.name
+      item.discount= event.discount
+      item.start = moment(event.startDate).format("DD/MM/YYYY")
+      item.end = moment(event.endDate).format("DD/MM/YYYY")
+      item.priceLast = parseInt(book.priceBook)-parseInt(book.priceBook)*parseInt(item.discount)/100 
+    }
   }
+  
   res.render("client/pages/cart",{
     pageTitle:"Trang giỏ hàng",
     listItem:listItem

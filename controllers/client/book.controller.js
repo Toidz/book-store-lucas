@@ -3,6 +3,8 @@ const Book = require("../../models/book.model");
 const Category = require("../../models/category.model")
 const categoryHelper = require("../../helpers/category.helper")
 const AccountClient = require("../../models/account-client.model")
+const Event = require("../../models/event.model")
+const moment = require("moment")
 module.exports.book = async (req, res) => {
   const slugCurrent = req.params.slug
   const dataCategory = await Category.findOne({
@@ -27,8 +29,6 @@ module.exports.book = async (req, res) => {
     _id:{$in:arrayId}
   })
   const filterChildTree = categoryHelper.categoryTree(filterChild,dataCategory.parent)
-
-  // const filterCategory = req.query.category
   const filterPrice = req.query.price
   if(filterPrice){
     if(filterPrice){
@@ -75,6 +75,18 @@ module.exports.book = async (req, res) => {
   .sort(sort)
   .skip(skip)
   .limit(limit)
+  for(item of allBook){
+    if(item.idEvent){
+      const event = await Event.findOne({
+        _id:item.idEvent
+      })
+      item.eventName = event.name
+      item.discount= event.discount
+      item.start = moment(item.startDate).format("DD/MM/YYYY")
+      item.end = moment(item.endDate).format("DD/MM/YYYY")
+      item.priceLast = parseInt(item.priceBook)-parseInt(item.priceBook)*parseInt(item.discount)/100 
+    }
+  }   
   res.render("client/pages/book",{
     pageTitle:"Danh sách sách",
     dataCategory:dataCategory,
@@ -136,6 +148,17 @@ module.exports.detail = async (req,res) =>{
       } catch (error) {
       }
     }
+    if(book.idEvent){
+      const event = await Event.findOne({
+        _id:book.idEvent
+      })
+      book.eventName = event.name
+      book.discount= event.discount
+      book.start = moment(book.startDate).format("DD/MM/YYYY")
+      book.end = moment(book.endDate).format("DD/MM/YYYY")
+      book.priceLast = parseInt(book.priceBook)-parseInt(book.priceBook)*parseInt(book.discount)/100 
+    }
+    
     res.render("client/pages/book-detail",{
       pageTitle:"Chi tiết sách",
       category:category,

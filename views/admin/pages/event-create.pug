@@ -1,0 +1,47 @@
+extends ../layouts/default.pug
+include ../mixins/options.pug
+block main
+  h1.box-title Thêm sự kiện
+  - if(permissions.includes("event-create"))
+    .section-8
+      form#event-create-form
+        .inner-group
+          label(class="inner-label" for="name") Tên sự kiện
+          input(type="text" id="name" name="name")
+        .inner-group
+          label(class="inner-label" for="discount") Giảm giá (%)
+          input(type="text" id="discount" name="discount")
+        .inner-group 
+          label(class="inner-label" for="startDate") Ngày bắt đầu
+          input(type="date" id="startDate" name="startDate")
+        .inner-group 
+          label(class="inner-label" for="endDate") Ngày kết thúc
+          input(type="date" id="endDate" name="endDate")
+        .inner-group
+          label(class="inner-label" for="status") Trạng thái
+          select(id="status" name="status")
+            option(value="active") Hoạt động
+            option(value="stop") Tạm dừng
+        .inner-group.inner-two-col
+          label(class="inner-label" for="avatar") Ảnh đại diện
+          div(class="inner-upload-image")
+            input(type="file" id="avatar" accept="image/*" filepond-image name="avatar")
+        .inner-group.inner-two-col
+          label(class="inner-label" for="information") Nội dung sự kiện
+          textarea(id="information" textarea-mce name="information")
+        .inner-button.inner-two-col
+          button Tạo mới
+      .inner-back
+        a(href=`/${pathAdmin}/event/list`) Quay lại danh sách
+  - else
+    script.
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi truy cập!',
+        text: 'Bạn không có đủ thẩm quyền vào trang này!',
+        timer: 3000,
+        showConfirmButton: false,
+        willClose: () => {
+          window.location.href = `/${pathAdmin}/dashboard`;
+        }
+      });

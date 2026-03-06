@@ -1743,7 +1743,6 @@ if(innerPagination){
   const currentValue = url.searchParams.get("page")
   const totalHtml = document.querySelector("[total]")
   const total = totalHtml.getAttribute("total")
-  console.log(total)
   if(currentValue){
     if(currentValue>total){
       innerPagination.value = total
@@ -1883,7 +1882,7 @@ if(buttonAllbook){
 //end all button book
 
 //change-status book
-const changeStatus = document.querySelector("[change-status]")
+const changeStatus = document.querySelector("[change-status-book]")
 if(changeStatus){
   const select = changeStatus.querySelector("select")
   const button = changeStatus.querySelector("button")
@@ -1895,10 +1894,12 @@ if(changeStatus){
         const id = item.getAttribute("button-item")
         ids.push(id)
       });
-      if(select.value && ids.length>0){
+      if(ids.length>0){
         const dataFinal = {
-          ids:ids
+          ids:ids,
+          id_event:select.value
         }
+        console.log(dataFinal)
         fetch(`/${pathAdmin}/book/changePatch`,{
           method:"PATCH",
           headers:{
@@ -1957,7 +1958,6 @@ if(bookPage){
   const currentValue = url.searchParams.get("page")
   const totalHtml = document.querySelector("[total]")
   const total = totalHtml.getAttribute("total")
-  console.log(total)
   if(currentValue){
     if(currentValue>total){
       bookPage.value = total
@@ -2594,3 +2594,178 @@ if(orderSearch){
   }
 }
 //End filter order
+
+
+// event Create Form
+const eventCreateForm = document.querySelector("#event-create-form");
+if(eventCreateForm) {
+  const validation = new JustValidate('#event-create-form');
+  validation
+    .addField('#name', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập tên sự kiện!'
+      }
+    ])
+    .addField('#startDate', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng chọn ngày bắt đầu!'
+      }
+    ])
+    .addField('#endDate', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng chọn ngày kết thúc!'
+      },
+      {
+        validator: (value, fields) => {
+          if (!fields['#startDate'] || !fields['#startDate'].elem.value) {
+            return true; 
+          }
+          const start = new Date(fields['#startDate'].elem.value);
+          const end = new Date(value);
+          return end >= start;
+        },
+        errorMessage: 'Ngày kết thúc sự kiện không hợp lệ!'
+      }
+    ])
+    .onSuccess((event) => {
+      const name = event.target.name.value;
+      const discount = event.target.discount.value;
+      const avatars = filePond.avatar.getFiles();
+      const startDate = event.target.startDate.value;
+      const endDate = event.target.endDate.value;
+      const status = event.target.status.value;
+      let avatar = null;
+      if(avatars.length > 0) {
+        avatar = avatars[0].file;
+      }
+      const information = tinymce.get("information").getContent();
+      const formData = new FormData()
+      formData.append("name",name)
+      formData.append("discount",discount)
+      formData.append("avatar",avatar)
+      formData.append("startDate",startDate)
+      formData.append("endDate",endDate)
+      formData.append("status", status);
+      formData.append("information",information)
+      fetch(`/${pathAdmin}/event/create`,{
+        method:"POST",
+        body: formData
+      }).
+      then(res=>res.json()).
+      then(data=>{
+        if(data.code=="error"){
+          alert(data.message)
+        }
+        else{
+          window.location.href=`/${pathAdmin}/event/list`
+        }
+      })
+    })
+  ;
+}
+// End event Create Form
+// event Edit Form
+const eventEditForm = document.querySelector("#event-edit-form");
+if(eventEditForm) {
+  const validation = new JustValidate('#event-edit-form');
+  validation
+    .addField('#name', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập tên sự kiện!'
+      }
+    ])
+    .addField('#startDate', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng chọn ngày bắt đầu!'
+      }
+    ])
+    .addField('#endDate', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng chọn ngày kết thúc!'
+      },
+      {
+        validator: (value, fields) => {
+          if (!fields['#startDate'] || !fields['#startDate'].elem.value) {
+            return true; 
+          }
+          const start = new Date(fields['#startDate'].elem.value);
+          const end = new Date(value);
+          return end >= start;
+        },
+        errorMessage: 'Ngày kết thúc sự kiện không hợp lệ!'
+      }
+    ])
+    .onSuccess((event) => {
+      const id = event.target.id.value;
+      const name = event.target.name.value;
+      const discount = event.target.discount.value;
+      const startDate = event.target.startDate.value;
+      const endDate = event.target.endDate.value;
+      const status = event.target.status.value;
+      let avatar = null;
+      const avatars = filePond.avatar.getFiles();
+      if(avatars.length > 0) {
+        avatar= avatars[0].file;
+        const elementImageDefault = event.target.avatar.closest("[image-default]");
+        if(elementImageDefault){
+          const imageDefault = elementImageDefault.getAttribute("image-default");
+          if(imageDefault.includes(avatar.name)) {
+            avatar=null
+          }
+        }
+      }
+      const information = tinymce.get("information").getContent();
+      const formData = new FormData()
+      formData.append("name",name)
+      formData.append("discount",discount)
+      formData.append("avatar",avatar)
+      formData.append("startDate",startDate)
+      formData.append("endDate",endDate)
+      formData.append("status", status);
+      formData.append("information",information)
+      fetch(`/${pathAdmin}/event/edit/${id}`,{
+        method:"PATCH",
+        body: formData
+      }).
+      then(res=>res.json()).
+      then(data=>{
+        if(data.code=="error"){
+          alert(data.message)
+        }
+        else{
+          window.location.reload()
+        }
+      })
+    })
+  ;
+}
+// End event edit Form
+
+//button delete event
+const buttonDeleteEvents = document.querySelectorAll("[button-delete-event]")
+if(buttonDeleteEvents){  
+  buttonDeleteEvents.forEach(buttonDeleteEvent => {
+    buttonDeleteEvent.addEventListener("click",()=>{
+    const api= buttonDeleteEvent.getAttribute("button-delete-event")
+    fetch(api,{
+      method:"PATCH"
+    })
+    .then(res=>res.json())
+    .then(data=>{
+      if(data.code=="error"){
+        alert(data.message)
+      }
+      else{
+        window.location.reload()
+      }
+    })
+    })
+  });
+}
+//End button delete event

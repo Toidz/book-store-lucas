@@ -8,7 +8,7 @@ block main
                 .inner-info
                     .inner-find-order 
                         .inner-input 
-                            input(type="text" placeholder="Nhập mã đơn hàng hoặc tên sản phẩm bạn đã đặt!")
+                            input(type="text" placeholder="Nhập mã đơn hàng của bạn")
                         .inner-button
                             button Tìm kiếm
                     .inner-list
@@ -22,10 +22,10 @@ block main
                                         .inner-quantity 
                                             .inner-quantity-item Số lượng x #{item.cart[0].quantity}
                                         .inner-price 
-                                            .inner-price-item Giá tiền: #{item.cart[0].priceBook.toLocaleString("vi-VN")} đ
+                                            .inner-price-item Giá tiền: #{item.cart[0].priceLast.toLocaleString("vi-VN")}đ
                                         .inner-price-total
                                             .inner-price-sub Tổng số tiền (#{item.cartLength} sản phẩm): 
-                                            .inner-price-main #{item.priceTotal.toLocaleString("vi-VN")} vnđ
+                                            .inner-price-main #{item.priceTotal.toLocaleString("vi-VN")}đ
                                         .inner-more 
                                             a(href=`/order/success?orderId=${item.id}&phone=${item.phone}`) Xem chi tiết
                                         

@@ -35,11 +35,9 @@ module.exports.create = async (req,res)=>{
                 })
             }
             req.body.id_user =item.id_user;
-            await Cart.updateOne({
+            await Cart.deleteMany({
                 id_user: item.id_user,
                 id_book:item.id_book,
-            },{
-                deleted:true
             })
         }
         req.body.payStatus = "unpaid"
@@ -85,7 +83,6 @@ module.exports.success = async (req,res)=>{
     if(!order.note.includes("Hà Nội")) fee=30000
 
     order.createdAtFormat = moment(order.createdAt).format("HH:mm - DD/MM/YYYY");
-
     res.render("client/pages/order-success",{
         pageTitle:"Thông tin đơn hàng",
         order:order,

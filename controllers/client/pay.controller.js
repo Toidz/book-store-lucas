@@ -3,6 +3,7 @@ const AddressClient = require("../../models/address.model")
 const addressConfig = require("../../config/address")
 const AccountClient = require("../../models/account-client.model")
 const Cart = require("../../models/cart.model")
+const Event = require("../../models/event.model")
 module.exports.pay = async (req,res)=>{
   const city=[]
   const addressList = addressConfig.address;
@@ -22,8 +23,6 @@ module.exports.pay = async (req,res)=>{
   const listAddress = await AddressClient.find({
     user_id:req.account.id
   })
-
-  //get checkItem
   listAddress.forEach(item => {
     item.address = (item.ward ? item.ward : "") +
     (item.district ? ", " + item.district : "") +
@@ -52,7 +51,21 @@ module.exports.pay = async (req,res)=>{
     item.slug = book.slug;
     item.avatar = book.avatar1;
     item.stock = book.numberBook;
-    totalMoney+=parseInt(item.quantity)*parseInt(book.priceBook)
+   
+    if(book.idEvent){
+      const event = await Event.findOne({
+        _id:book.idEvent,
+        deleted:false,
+        status:"active"
+      })
+      let priceLast = parseInt(item.priceBook)-parseInt(item.priceBook)*parseInt(event.discount)/100 
+      item.priceLast = priceLast
+      totalMoney+=parseInt(item.quantity)*parseInt(item.priceLast)
+    }
+    else {
+      totalMoney+=parseInt(item.quantity)*parseInt(book.priceBook)
+      item.priceLast =  item.priceBook
+    }
   }
   if (!addressDefault) {
     return res.redirect("/info-user"); 

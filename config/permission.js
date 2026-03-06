@@ -36,6 +36,10 @@ module.exports.permission = [
         value:"book-delete"
     },
     {
+        lable:"Thêm sự kiện cho sách",
+        value:"book-event"
+    },
+    {
         lable:"Thùng rác sách",
         value:"book-trash"
     },
@@ -122,5 +126,21 @@ module.exports.permission = [
     {
         lable:"Xóa thông tin liên hệ",
         value:"contact-delete"
-    }
+    },
+    {
+        lable:"Xem sự kiện",
+        value:"event-view"
+    },
+    {
+        lable:"Tạo sự kiện",
+        value:"event-create"
+    },
+    {
+        lable:"Sửa sự kiện",
+        value:"event-edit"
+    },
+    {
+        lable:"Xóa sự kiện",
+        value:"event-delete"
+    },
 ]

@@ -18,7 +18,53 @@ block main
           )
           | Giữa thế giới đầy biến động, một cuốn sách hay không chỉ mở ra cánh cửa tri thức mà còn trở thành người bạn đồng hành lặng lẽ, giúp bạn tìm lại sự bình yên, khai phá tư duy và nuôi dưỡng tâm hồn theo cách mà không điều gì khác có thể làm được.
   // End Section 1
-  // Section 4
+  
+  if historyBook && historyBook.length > 0
+    .section-4
+      .container
+        h2.box-title(
+          data-aos-duration="800" 
+          data-aos="fade-up"
+        ) Có Thể Bạn Quan Tâm
+
+        .inner-wrap(
+          data-aos-delay="150" 
+          data-aos-duration="800" 
+          data-aos="fade-up"
+        )
+          each item in historyBook
+            +product-item(item)
+  .section-4
+    .container
+      h2.box-title(
+        data-aos-duration="800" 
+        data-aos="fade-up"
+        ) Sách Bán Chạy 
+      .inner-wrap(
+        data-aos-delay="150" 
+        data-aos-duration="800" 
+        data-aos="fade-up"
+        )
+        // Product Item
+        each item in bestBook
+          +product-item(item)
+        // End Product Item
+  .section-4
+    .container
+      h2.box-title(
+        data-aos-duration="800" 
+        data-aos="fade-up"
+        ) Sách Mới
+      .inner-wrap(
+        data-aos-delay="150" 
+        data-aos-duration="800" 
+        data-aos="fade-up"
+        )
+        // Product Item
+        each item in newBook
+          +product-item(item)
+        // End Product Item
+  // End Section 4
   .section-4
     .container
       h2.box-title(
@@ -37,7 +83,6 @@ block main
       .inner-button
         a.button-outline(href=`/book/sach-trong-nuoc`) Xem tất cả
   // End Section 4
-
   // Section 6
   .section-4
     .container
@@ -64,7 +109,7 @@ block main
       h2.box-title(
         data-aos-duration="800" 
         data-aos="fade-up"
-        ) Tin Tức Mới
+        ) Bài Viết Về Sách
       .inner-wrap(
         data-aos-delay="150" 
         data-aos-duration="800" 
@@ -93,5 +138,4 @@ block main
                 .inner-content
                   .inner-date #{item.createdAtFormat}
                   h3.inner-title #{item.name}
-                  .inner-desc !{item.content}
   // End Section 8

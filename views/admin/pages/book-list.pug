@@ -35,12 +35,15 @@ block main
     //- Section 5
     .section-5
       .inner-wrap
-        - if(permissions.includes("book-delete"))
-          .inner-change-status(change-status)
+        - if(permissions.includes("book-event"))
+          .inner-change-status(change-status-book)
             .inner-item
               select
-                option(value="") -- Hành động --
-                option(value="delete") Xóa
+                option(value="") -- Chọn sự kiện giảm giá --
+                each item in eventList
+                  option(value=item.id) #{item.name}
+                option(value="") Không
+                //- option(value="delete") Xóa
             .inner-item
               button Áp dụng
         .inner-search
@@ -67,6 +70,7 @@ block main
               th Tên tác giả
               th Nhà xuất bản
               th(style="width:130px") Giá
+              th(style="width:155px") Sự kiện giảm giá
               th(style="width:130px") Số lượng
               th(class="inner-center") Vị trí
               th Tạo bởi
@@ -84,6 +88,12 @@ block main
                 td #{item.produce}
                 td
                   div #{item.priceBook.toLocaleString("vi-VN")}đ
+                td
+                  - if(item.eventName) 
+                    div #{item.eventName}
+                    | Giảm #{item.discount}% #{(item.priceBook-item.priceBook*parseInt(item.discount)/100).toLocaleString("vi-VN")}
+                  - else 
+                    | Không
                 td
                   div #{item.numberBook}
                 td(class="inner-center") #{item.position}

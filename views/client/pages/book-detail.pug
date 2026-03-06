@@ -92,12 +92,12 @@ block main
                   .inner-item-price
                     span(number) 1
                     span x
-                    span.inner-highlight(priceBook=book.priceBook) #{book.priceBook.toLocaleString("vi-VN")}đ
+                    span.inner-highlight(priceBook=book.priceLast?book.priceLast:book.priceBook) #{(book.priceLast?book.priceLast:book.priceBook).toLocaleString("vi-VN")}đ
             .inner-total
               .inner-id-user(id_user=id_user)
               .inner-total-label Tổng cộng:
               .inner-total-price
-                span(totalPrice) #{book.priceBook.toLocaleString("vi-VN")}
+                span(totalPrice) #{(book.priceLast?book.priceLast:book.priceBook).toLocaleString("vi-VN")}
                 span đ
             button.inner-button-add-cart(idBook = book.id) Thêm Vào Giỏ Hàng
   // End Section 10

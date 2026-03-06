@@ -53,7 +53,7 @@ block main
                         img(src=it.avatar, alt=it.name)
                       .inner-content
                         .inner-name #{it.name}
-                        .inner-quantity Số lượng: #{it.numberBook} x #{it.priceBook.toLocaleString("vi-VN")}đ
+                        .inner-quantity Số lượng: #{it.quantity} x #{it.priceLast.toLocaleString("vi-VN")}đ
                 td
                   .inner-text Tổng tiền: #{item.priceTotal.toLocaleString("vi-VN")}đ
                   .inner-text PTTT: #{item.nameMethod}

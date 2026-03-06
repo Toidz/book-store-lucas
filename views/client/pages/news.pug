@@ -5,5 +5,5 @@ block main
     .container
       .inner-wrap
         img(src=currentNew.avatar?currentNew.avatar:"" , alt=currentNew.name) 
-        h2 #{currentNew.name}
-        p !{currentNew.content}
+        span(style="font-size:24px;font-weight:700") #{currentNew.name}
+        span(style="font-size:14px") !{currentNew.content}

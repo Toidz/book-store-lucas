@@ -136,7 +136,7 @@ html(lang="vi")
         footer.footer
             .container
                 .inner-top
-                    h2.inner-title Đăng ký ngay để không bỏ lỡ các chương trình của chúng tôi
+                    h2.inner-title Đăng ký ngay để nhận những thông báo, ưu đãi sắp tới
                     form#email-form.inner-form(action="#")
                         input#email-input(
                         name="email" 
@@ -180,17 +180,11 @@ html(lang="vi")
                             li
                                 a(
                                 target="_blank" 
-                                href="https://www.youtube.com/results?search_query=book+store"
+                                href="https://www.youtube.com"
                                 )
                                 i.fa-brands.fa-youtube
                 .inner-bottom
-                    .inner-copyright @BookShop 2025
-                    .inner-logo
-                        a(href="/")
-                        img(
-                            alt="" 
-                            src=""
-                            )
+                    .inner-copyright LucasBook
                     nav.inner-links
                         ul
                             li
@@ -200,8 +194,6 @@ html(lang="vi")
         // End Footer
         .box-contact
             ul
-                li(style="color:white" open-chat )  
-                    i.fa-solid.fa-comment
                 li
                     a(
                         target="_blank" 
@@ -213,20 +205,22 @@ html(lang="vi")
                         target="_blank" 
                         href="/"
                         )
-                        i.fa-brands.fa-instagram
+                        i.fa-brands.fa-x-twitter
                 li
                     a(
                         target="_blank" 
                         href="/"
                         )
-                        i.fa-brands.fa-viber
+                        i.fa-brands.fa-instagram
                 li
                     a(
                         target="_blank" 
-                        href="https://www.youtube.com/results?search_query=book+store"
+                        href="https://www.youtube.com"
                         )
                         i.fa-brands.fa-youtube
             // End Box Contact
+        .box-bot-chat
+            img(src="/assets/images/chat-bot.jpg" open-chat)
         .box-chat 
             .inner-top 
                 img(src=info.logo, alt="")

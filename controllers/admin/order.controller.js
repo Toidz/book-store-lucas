@@ -124,7 +124,6 @@ module.exports.deletePatch = async (req,res)=>{
                 
             }
         }
-
         await Order.updateOne({
             orderCode:orderCode
         },{

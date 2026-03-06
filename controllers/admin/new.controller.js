@@ -1,5 +1,3 @@
-const Category = require("../../models/category.model")
-const categoryHelper = require("../../helpers/category.helper")
 const New = require("../../models/new.model") 
 const AccountAdmin = require("../../models/account-admin.model")
 const moment = require("moment")

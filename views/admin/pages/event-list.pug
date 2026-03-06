@@ -1,0 +1,92 @@
+extends ../layouts/default.pug
+include ../mixins/options.pug
+block main
+  h1.box-title Quản lý sự kiện
+  - if(permissions.includes("event-view"))
+    //- Section 4
+    //- .section-4
+    //-   .inner-wrap
+    //-     .inner-item.inner-label
+    //-       <i class="fa-solid fa-filter"></i> Bộ lọc
+    //-     .inner-item
+    //-       select(event-creater)
+    //-         option(value="") Người tạo
+    //-         //- each item in accountList
+    //-         //-   option(value=item.id) #{item.fullName}
+    //-     .inner-item.inner-date
+    //-       input(type="date" start-date)
+    //-       span -
+    //-       input(type="date" end-date)
+    //-     .inner-item.inner-reset(button-reset)
+    //-       <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
+    //- //- End Section 4
+
+    //- Section 5
+    .section-5
+      .inner-wrap
+        .inner-search
+          i.fa-solid.fa-magnifying-glass
+          input(type="text" placeholder="Tìm kiếm" new-search)
+        - if(permissions.includes("event-create"))
+          .inner-button-create
+            a(href=`/${pathAdmin}/event/create`) + Tạo mới
+    //- End Section 5
+
+    //- Section 6
+    .section-6
+      .table-2
+        table
+          thead
+            tr
+              th(style="width:270px") Tên bài viết
+              th Ảnh đại diện
+              th(class="inner-center") Giảm giá %
+              th Thời gian
+              th Trạng thái
+              th Hành động
+          tbody
+            each item in eventList
+              tr
+                td #{item.name}
+                td
+                  img(src=item.avatar class="inner-avatar")
+                td(class="inner-center") #{item.discount}%
+                td
+                  div #{item.startFormat} 
+                  div ------------
+                  div #{item.endFormat}
+                td
+                  - if(item.status == "active")
+                    .badge.badge-green Hoạt động
+                  - if(item.status == "stop")
+                    .badge.badge-red Tạm dừng
+                td
+                  .inner-buttons
+                    - if(permissions.includes("event-edit"))
+                      a(
+                        href=`/${pathAdmin}/event/edit/${item.id}` 
+                        class="inner-edit") <i class="fa-regular fa-pen-to-square"></i>
+                    - if(permissions.includes("event-delete"))
+                      button(
+                        class="inner-delete" button-delete-event=`/${pathAdmin}/event/delete/${item.id}`) <i class="fa-regular fa-trash-can"></i>
+    //- End Section 6
+
+    //- Section 7
+    .section-7
+      span(class="inner-label" total=totalPage) Hiển thị #{totalPage>0? skip+1 : skip} - #{skip+eventList.length} của #{totalevent}
+      select(class="inner-pagination" event-page)
+        - for(let i=1;i<=totalPage;i++)
+          option(value=i) Trang #{i}
+    //- End Section 7
+  - else
+    script.
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi truy cập!',
+        text: 'Bạn không có đủ thẩm quyền vào trang này!',
+        timer: 3000,
+        showConfirmButton: false,
+        willClose: () => {
+          window.location.href = `/${pathAdmin}/dashboard`;
+        }
+      });

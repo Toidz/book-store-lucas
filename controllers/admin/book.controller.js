@@ -5,6 +5,7 @@ const AccountAdmin = require("../../models/account-admin.model")
 const moment = require("moment")
 const slugify = require("slugify")
 const generateHelper = require("../../helpers/generate.helper")
+const Event = require("../../models/event.model")
 module.exports.list = async (req,res) =>{
     const find = {
         deleted:false
@@ -133,7 +134,7 @@ module.exports.list = async (req,res) =>{
     })
     .limit(limit)
     .skip(skip)
-
+    
     const accountList = await AccountAdmin.find({
         status:"active"
     })
@@ -156,8 +157,18 @@ module.exports.list = async (req,res) =>{
         }
         item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY")
         item.updatedAtFormat = moment(item.updatedAt).format("HH:mm - DD/MM/YYYY")
+        if(item.idEvent){
+            const eventName = await Event.findOne({
+                _id:item.idEvent
+            })
+            item.eventName = eventName.name
+            item.discount= eventName.discount
+        }
     };
-    
+    const eventList = await Event.find({
+        deleted:false,
+        status:"active"
+    })
     res.render("admin/pages/book-list",{
         pageTitle:"Quản lý sách",
         bookList:bookList,
@@ -165,7 +176,8 @@ module.exports.list = async (req,res) =>{
         categoryList:categoryTree,
         totalBook:totalBook,
         totalPage:totalPage,
-        skip:skip
+        skip:skip,
+        eventList:eventList
     })
 }
 
@@ -233,16 +245,20 @@ module.exports.createPost = async (req,res) =>{
 
 module.exports.changePatch = async (req,res) =>{
     try {
-        
-        const {ids} = req.body
+        const { ids, id_event } = req.body
+        // await Book.updateMany({
+        //     _id:{$in:ids}
+        // },{
+        //     deleted:true,
+        //     deletedBy:req.account.id,
+        //     deletedAt:Date.now()
+        // })
         await Book.updateMany({
             _id:{$in:ids}
         },{
-            deleted:true,
-            deletedBy:req.account.id,
-            deletedAt:Date.now()
+            idEvent:id_event
         })
-        req.flash("success", "Xóa sách thành công!");
+        req.flash("success", "Gán sự kiện thành công!");
         res.json({
             code:"success"
         })
@@ -278,8 +294,10 @@ module.exports.edit = async (req,res) =>{
 }
 
 module.exports.editPatch = async (req,res) =>{
+    
     try {
         const current = req.body.current
+        console.log(current)
         const id = req.params.id
         if(req.body.position){
             req.body.position= parseInt(req.body.position)
@@ -310,17 +328,6 @@ module.exports.editPatch = async (req,res) =>{
         req.body.priceBook = req.body.priceBook? parseInt(req.body.priceBook): 0
         req.body.numberBook = req.body.numberBook? parseInt(req.body.numberBook): 0
         req.body.updatedBy = req.account.id
-        const exitsBook = await Book.findOne({
-        name: current
-        })
-  
-        if(exitsBook && exitsBook.name!=req.body.name){
-            res.json({
-                code:"error",
-                message:"Sách này đã có trong hệ thống!"
-            })
-            return
-        }
         await Book.updateOne({
             _id:id,
             deleted:false

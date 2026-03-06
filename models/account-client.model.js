@@ -15,6 +15,7 @@ const schema = new mongoose.Schema(
         updatedBy:String,
         deletedBy:String,
         deletedAt:Date,
+        history:Array,
         slug:{
             type: String, 
             slug: "fullName",

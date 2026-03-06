@@ -19,7 +19,7 @@ block main
                 input.inner-check(
                   check-item-cart
                   quantity = item.quantity
-                  priceBook = item.priceBook
+                  priceBook = item.priceLast?item.priceLast:item.priceBook
                   checked=item.checkItem? true : false
                   type="checkbox"
                   )
@@ -36,13 +36,13 @@ block main
                   .inner-meta
                     .inner-meta-item
                       | Mã sách:
-                      b #{item.bookCode}
+                      b  #{item.bookCode}
                     .inner-meta-item
                       | Tên tác giả:
-                      b #{item.author}
+                      b  #{item.author}
                     .inner-meta-item
                       | Nhà xuất bản:
-                      b #{item.produce}
+                      b  #{item.produce}
               .inner-quantity
                 .inner-list
                   .inner-item
@@ -60,7 +60,7 @@ block main
                     .inner-item-price
                       span(number-quantity) #{item.quantity}
                       span x
-                      span.inner-highlight(priceBook=item.priceBook) #{item.priceBook.toLocaleString("vi-VN")} đ
+                      span.inner-highlight(priceBook=item.priceLast?item.priceLast:item.priceBook) #{(item.priceLast?item.priceLast:item.priceBook).toLocaleString("vi-VN")}
         .inner-list-price
           .inner-item
             .inner-label Tổng tiền:
