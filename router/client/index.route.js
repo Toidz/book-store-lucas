@@ -53,7 +53,7 @@ router.post("/api/auth/verify",async (req,res) =>{
    }
 });
 
-const chatBotController = require("../../controllers/client/chatBot.controller")
+const chatBotController = require("../../controllers/client/chatBot.controller.js")
 router.post("/api/chat-bot", chatBotController.chatBot);
 
 module.exports = router;
