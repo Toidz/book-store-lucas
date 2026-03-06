@@ -44,7 +44,7 @@ const extractPriceFilter = (message) => {
   }
   return null;
 };
-exports.chatBot = async (req, res) => {
+module.exports.chatBot = async (req, res) => {
   try {
     const message = req.body.message;
     const cleaned = cleanMessage(message);

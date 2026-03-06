@@ -17,9 +17,9 @@ const infoUserRouter = require("./infoUser.route")
 const authMiddleWareClient = require("../../middlewares/client/auth.middleware")
 const payRouter = require(("./pay.route"))
 const orderHistoryRouter = require("./order-history.route")
+const chatBotRouter = require("./chatbot.route")
 router.use(infoMiddleware.info)
 router.use(categoryMiddleware.category)
-
 router.use("/book",bookRouter);
 router.use("/",homeRouter);
 router.use("/cart",authMiddleWareClient.verifyToken,cartRouter);
@@ -33,6 +33,7 @@ router.use("/policy-service",policyServiceRouter);
 router.use("/account",accountRouter);
 router.use("/info-user",authMiddleWareClient.verifyToken,infoUserRouter);
 router.use("/order-history",authMiddleWareClient.verifyToken,orderHistoryRouter);
+router.post("/api/chat-bot", chatBotRouter);
 router.post("/api/auth/verify",async (req,res) =>{
     try {
         const token = req.cookies.tokenUser;
@@ -53,7 +54,5 @@ router.post("/api/auth/verify",async (req,res) =>{
    }
 });
 
-const chatBotController = require("../../controllers/client/chatBot.controller.js")
-router.post("/api/chat-bot", chatBotController.chatBot);
 
 module.exports = router;
