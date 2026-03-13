@@ -27,7 +27,9 @@ block main
             option(value=0) Dưới 50k
             option(value=50) 50k đến 100k
             option(value=100) 100k đến 200k
-            option(value=200) Trên 200k
+            option(value=200) Từ 200k đến 500k
+            option(value=500) Từ 500k đến 1 triệu
+            option(value=1000) Trên 1 triệu
         .inner-item.inner-reset(button-reset)
           <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
     //- End Section 4
@@ -67,10 +69,10 @@ block main
                 input(type="checkbox" class="inner-check" button-all)
               th(style="width:200px") Tên sách
               th Ảnh đại diện
-              th Tên tác giả
-              th Nhà xuất bản
-              th(style="width:130px") Giá
-              th(style="width:155px") Sự kiện giảm giá
+              th(style="width:130px") Tên tác giả
+              th(style="width:130px") Nhà xuất bản
+              th(style="width:100px") Giá
+              th(style="width:200px") Sự kiện giảm giá
               th(style="width:130px") Số lượng
               th(class="inner-center") Vị trí
               th Tạo bởi
@@ -91,7 +93,7 @@ block main
                 td
                   - if(item.eventName) 
                     div #{item.eventName}
-                    | Giảm #{item.discount}% #{(item.priceBook-item.priceBook*parseInt(item.discount)/100).toLocaleString("vi-VN")}
+                    | Giảm #{item.discount}% -> #{(item.priceBook-item.priceBook*parseInt(item.discount)/100).toLocaleString("vi-VN")}
                   - else 
                     | Không
                 td

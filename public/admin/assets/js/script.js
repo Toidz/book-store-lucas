@@ -1587,17 +1587,28 @@ if(buttonDelete.length >0)
 {
   buttonDelete.forEach(button => {
     button.addEventListener("click",()=>{
-      const apiDelete = button.getAttribute("api-delete")
-      fetch(apiDelete,{
-        method:"PATCH"
-      })
-      .then(res=>res.json())
-      .then(data=>{
-        if(data.code=="error")
-          alert(data.message)
-        else
-          window.location.reload();
-      })
+      const apiDelete = button.getAttribute("api-delete-cate")
+      Swal.fire({
+        title: "Bạn có chắc chắn muốn xóa danh mục này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Đồng ý"
+      }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(apiDelete,{
+          method:"PATCH"
+        })
+        .then(res=>res.json())
+        .then(data=>{
+          if(data.code=="error")
+            alert(data.message)
+          else
+            window.location.reload();
+        })
+      }
+    })
     })
   });
 }
@@ -1978,18 +1989,28 @@ if(buttonDeletebooks){
   buttonDeletebooks.forEach(buttonDeletebook => {
     buttonDeletebook.addEventListener("click",()=>{
     const api= buttonDeletebook.getAttribute("button-delete-book")
-    fetch(api,{
-      method:"PATCH"
-    })
-    .then(res=>res.json())
-    .then(data=>{
-      if(data.code=="error"){
-        alert(data.message)
-      }
-      else{
-        window.location.reload()
-      }
-    })
+    Swal.fire({
+      title: "Bạn có chắc chắn muốn xóa sách này không?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng ý"
+    }).then((result) => {
+      if (result.isConfirmed) {
+      fetch(api,{
+        method:"PATCH"
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        if(data.code=="error"){
+          alert(data.message)
+        }
+        else{
+          window.location.reload()
+        }
+      })
+    }})
     })
   });
 }

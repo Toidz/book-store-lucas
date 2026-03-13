@@ -18,6 +18,7 @@ const authMiddleWareClient = require("../../middlewares/client/auth.middleware")
 const payRouter = require(("./pay.route"))
 const orderHistoryRouter = require("./order-history.route")
 const chatRouter = require("./chat.route")
+const saleRouter = require("./sale.route")
 router.use(infoMiddleware.info)
 router.use(categoryMiddleware.category)
 router.use("/book",bookRouter);
@@ -34,6 +35,7 @@ router.use("/account",accountRouter);
 router.use("/info-user",authMiddleWareClient.verifyToken,infoUserRouter);
 router.use("/order-history",authMiddleWareClient.verifyToken,orderHistoryRouter);
 router.use("/api/chat", chatRouter);
+router.use("/sale", saleRouter);
 router.post("/api/auth/verify",async (req,res) =>{
     try {
         const token = req.cookies.tokenUser;
@@ -53,6 +55,5 @@ router.post("/api/auth/verify",async (req,res) =>{
         })
    }
 });
-
 
 module.exports = router;

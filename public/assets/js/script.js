@@ -1241,7 +1241,6 @@ if (boxChat) {
   const handleSendMessage = () => {
    
     const value = info.value.trim();
-     console.log(value)
     if (value) {
       const chatUser = document.createElement("div");
       chatUser.className = "inner-chat-user";
@@ -1274,10 +1273,22 @@ if (boxChat) {
             rep += "Không có sản phẩm phù hợp.";
           }
 
-          chatBot.innerHTML = rep;
+        chatBot.innerHTML = rep;
         const innerReply = document.querySelector(".inner-reply");
+        const innerLine = document.createElement("div");
+        innerLine.className = "inner-line";
+        const img = document.createElement("img");
+        const favicon = document.querySelector("link[rel='icon']").href;
+        img.src = favicon;
+        img.style.width = "30px";
+        img.style.height = "30px";
+
+        innerLine.appendChild(img);
+        innerLine.appendChild(chatBot);
+
         innerReply.appendChild(chatUser);
-        innerReply.appendChild(chatBot);
+        innerReply.appendChild(innerLine);
+
         innerReply.scrollTop = innerReply.scrollHeight;
         info.value = "";
       })
@@ -1755,3 +1766,4 @@ if (innerFindOrder) {
 }
 
 //End inner-find-order 
+

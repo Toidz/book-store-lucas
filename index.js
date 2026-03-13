@@ -14,7 +14,12 @@ const session = require('express-session');
 
 app.use(cookieParser("SFGWHSDSGSDSD"));
 // Nhúng Flash
-app.use(session({ cookie: { maxAge: 60000 }}));
+app.use(session({
+  secret: "keyboard cat",
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60000 }
+}));
 app.use(flash());
 
 app.set("views",path.join(__dirname,"views"));
@@ -31,7 +36,9 @@ const clientRouter= require("./router/client/index.route")
 app.use("/",clientRouter);
 const adminRouter= require("./router/admin/index.route")
 app.use(`/${variableConfig.pathAdmin}`,adminRouter);
-
+app.use((req, res) => {
+  res.status(404).render("client/pages/404-page");
+});
 app.listen(port, () => {
   console.log(`Server chạy tại http://localhost:${port}`);
 });

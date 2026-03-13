@@ -45,6 +45,14 @@ module.exports.list = async (req,res) =>{
             break
         case 200:
             priceCurrent.$gte = 200000
+            priceCurrent.$lte = 500000
+            break
+        case 500:
+            priceCurrent.$gte = 500000
+            priceCurrent.$lte = 1000000
+            break
+        case 1000:
+            priceCurrent.$gte = 1000000
             break
         }
         if (Object.keys(priceCurrent).length > 0) {
@@ -221,6 +229,7 @@ module.exports.createPost = async (req,res) =>{
         delete req.body.avatar3
     }
     req.body.priceBook = req.body.priceBook? parseInt(req.body.priceBook): 0
+    req.body.priceSale = req.body.priceBook? parseInt(req.body.priceBook): 0
     req.body.numberBook = req.body.numberBook? parseInt(req.body.numberBook): 0
     req.body.createdBy = req.account.id
     req.body.updatedBy = req.account.id
@@ -246,23 +255,46 @@ module.exports.createPost = async (req,res) =>{
 module.exports.changePatch = async (req,res) =>{
     try {
         const { ids, id_event } = req.body
-        // await Book.updateMany({
-        //     _id:{$in:ids}
-        // },{
-        //     deleted:true,
-        //     deletedBy:req.account.id,
-        //     deletedAt:Date.now()
-        // })
-        await Book.updateMany({
-            _id:{$in:ids}
-        },{
-            idEvent:id_event
-        })
+        if(id_event){
+            const eventCurrent = await Event.findOne({
+                deleted:false,
+                _id:id_event
+            })
+            const bookList = await Book.find({
+                _id:{$in:ids},
+                deleted:false
+            })
+            for(const item of bookList){
+                const priceSale = parseInt(item.priceBook)-parseInt(item.priceBook)*parseInt(eventCurrent.discount)/100
+                await Book.updateOne({
+                    _id:item.id
+                },{
+                    idEvent:id_event,
+                    priceSale:priceSale
+                })
+            }
+        }
+        else{
+            const bookList = await Book.find({
+                _id:{$in:ids},
+                deleted:false
+            })
+            for(const item of bookList){
+                console.log(item.priceBook)
+                await Book.updateOne({
+                    _id:item.id
+                },{
+                    idEvent:id_event,
+                    priceSale:parseInt(item.priceBook)
+                })
+            }
+        }
         req.flash("success", "Gán sự kiện thành công!");
         res.json({
             code:"success"
         })
     } catch (error) {
+        console.log(error.message)
         res.json({
             code:"error",
             message:"Cập nhật thất bại!"
@@ -294,10 +326,7 @@ module.exports.edit = async (req,res) =>{
 }
 
 module.exports.editPatch = async (req,res) =>{
-    
     try {
-        const current = req.body.current
-        console.log(current)
         const id = req.params.id
         if(req.body.position){
             req.body.position= parseInt(req.body.position)

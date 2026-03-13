@@ -6,18 +6,15 @@ block main
   .box-breadcrumb
     .inner-image
       img(
-        alt=dataCategory.name
-        src=dataCategory.avatar
+        alt=event.name
+        src=event.avatar
         )
     .inner-content
       .container
-        h1.inner-title #{dataCategory.name}
+        h1.inner-title #{event.name}
         .inner-list
           a(href="/") Trang Chủ
-          if(breadList.length >0)
-            each item in breadList
-              a(href=`/book/${item.slug}`) #{item.name}
-          a(href=`/book/${dataCategory.slug}`) #{dataCategory.name}
+          a(href=`/sale/${event.slug}`) #{event.name}
    
   // End Breadcrumb
   // Section 9
@@ -31,11 +28,6 @@ block main
               .inner-title Bộ Lọc
               i.fa-solid.fa-filter
             .inner-body(filter-price)
-              //- .inner-group
-              //-   .inner-label Thể loại
-              //-   select(name="" category)
-              //-     option(value="") -- Chọn thể loại --
-              //-     +options(filterChild,0)
               .inner-group
                 .inner-label Mức giá
                 select(name="" price)
@@ -54,8 +46,7 @@ block main
           // End Box Filter
         .inner-right
           .inner-info
-            h2.inner-title #{dataCategory.name}
-            .inner-desc !{dataCategory.description} 
+            h2.inner-title #{event.name}
           .inner-info-2
             .inner-sort
               .inner-label Sắp xếp:
@@ -73,8 +64,8 @@ block main
               span.inner-title Bộ Lọc
               i.fa-solid.fa-filter
           .inner-list-tour
-            - if(allBook.length >0 )
-              each item in allBook 
+            - if(findBook.length >0 )
+              each item in findBook
                 +product-item(item)
             -else
               p(style ="font-size:21px;color:red") Không tồn tại sản phẩm này!

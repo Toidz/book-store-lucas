@@ -71,7 +71,6 @@ module.exports.list = async (req,res) =>{
         const slug= slugify(keyword, {
             lower:true
         })
-        console.log(slug)
         const keywordRegex =  new RegExp(slug,"i")
         find.slug = keywordRegex 
     }
@@ -87,7 +86,6 @@ module.exports.list = async (req,res) =>{
         totalCategory:totalCategory,
         skip:skip
     }
-    console.log(pagination)
     const categoryList = await Category
     .find(find).
     sort({
@@ -169,8 +167,6 @@ module.exports.edit = async (req,res) =>{
 
 module.exports.editPatch = async (req,res) =>{
    try{
-    const current = req.body.current
-    console.log(current)
     const id = req.params.id
     if(req.body.position){
         req.body.position = parseInt(req.body.position)
@@ -184,17 +180,6 @@ module.exports.editPatch = async (req,res) =>{
         req.body.avatar = req.file.path
     } else{
         delete req.body.avatar
-    }
-    const exitsCategory = await Category.findOne({
-        name: current
-    })
-    console.log(exitsCategory)
-    if(exitsCategory && exitsCategory.name!=req.body.name){
-        res.json({
-            code:"error",
-            message:"Danh mục này đã có trong hệ thống!"
-        })
-        return
     }
     await Category.updateOne({
         _id:id,

@@ -1,6 +1,7 @@
 const Event = require("../../models/event.model")
 const moment = require("moment")
 const slugify = require("slugify")
+const Book = require("../../models/book.model")
 module.exports.list= async (req,res)=>{
     let find ={
         deleted:false
@@ -90,18 +91,34 @@ module.exports.edit = async (req,res) =>{
 module.exports.editPatch = async (req,res) =>{
     try {
         const id = req.params.id
-        console.log(id)
         if(req.file){
             req.body.avatar =  req.file.path
         }
         else{
             delete req.body.avatar
         }
-      
+        
         await Event.updateOne({
             _id:id,
             deleted:false
         },req.body)
+        
+        if(req.body.status=="stop"){
+            const bookFind = await Book.find({
+                deleted:false,
+            })
+            for(let item of bookFind){
+                if(item.idEvent == id){
+                    await Book.updateOne({
+                        deleted:false,
+                        idEvent:id
+                    },{
+                        idEvent:"",
+                        priceSale:parseInt(item.priceBook)
+                    })
+                }        
+            }
+        }
         req.flash("success","Cập nhật sự kiện thành công!")
         res.json({
             code:"success"

@@ -18,7 +18,21 @@ block main
           )
           | Giữa thế giới đầy biến động, một cuốn sách hay không chỉ mở ra cánh cửa tri thức mà còn trở thành người bạn đồng hành lặng lẽ, giúp bạn tìm lại sự bình yên, khai phá tư duy và nuôi dưỡng tâm hồn theo cách mà không điều gì khác có thể làm được.
   // End Section 1
-  
+  if eventList && eventList.length > 0
+    .event
+      .container
+        h2.box-title(
+          data-aos-duration="800" 
+          data-aos="fade-up"
+        ) Sự kiện giảm giá cùng LucasBook
+        .inner-wrap(
+          data-aos-delay="150" 
+          data-aos-duration="800" 
+          data-aos="fade-up"
+        )
+          each item in eventList
+            a(href=`/sale/${item.slug}`)
+              img(src=item.avatar alt="")
   if historyBook && historyBook.length > 0
     .section-4
       .container

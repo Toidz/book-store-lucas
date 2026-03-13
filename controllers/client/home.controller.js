@@ -98,6 +98,10 @@ module.exports.home = async (req,res) => {
     }
     item.decorate="hot"
   }
+  const eventList = await Event.find({
+    deleted:false,
+    status:"active"
+  })
   const token = req.cookies.tokenUser;
   if(token){
     const decoded = jwt.verify(token,process.env.JWT_SECRET_CLIENT);
@@ -129,7 +133,8 @@ module.exports.home = async (req,res) => {
       newList:newList,
       bestBook:bestBook,
       historyBook:historyBook,
-      newBook:newBook
+      newBook:newBook,
+      eventList:eventList
     });
   }
   else{
@@ -139,7 +144,8 @@ module.exports.home = async (req,res) => {
       bookNn:bookNn,
       newList:newList,
       bestBook:bestBook,
-      newBook:newBook
+      newBook:newBook,
+      eventList:eventList
     });
   }
 }

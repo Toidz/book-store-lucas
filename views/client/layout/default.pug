@@ -224,10 +224,11 @@ html(lang="vi")
         .box-chat 
             .inner-top 
                 img(src=info.logo, alt="")
-                span(style="color:white") Chat Bot
                 i.fa-solid.fa-circle-minus(close-chat)
             .inner-reply
-                .inner-chat-bot Mình là chat bot, mình sẽ trả lời tự động!
+                .inner-line 
+                    img(src=info.favicon, alt="" style="width:30px; height:30px;")
+                    .inner-chat-bot Mình là chat bot, mình sẽ trả lời tự động!
             .inner-chat
                 input(type="text" input-chat placeholder="Nhập vào đây...")
                 button(send-chat)
