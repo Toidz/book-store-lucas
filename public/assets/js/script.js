@@ -1024,7 +1024,7 @@ if(innerFillAddress1){
       },
       {
         rule: 'customRegexp',
-        value: /^0(3|5|7|8|9)[0-9]{9}$/,
+        value: /^0(3|5|7|8|9)[0-9]{8}$/,
         errorMessage: 'Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng.',
       },
     ])
@@ -1412,7 +1412,7 @@ if(innerAddNewAddress){
       },
       {
         rule: 'customRegexp',
-        value: /^0(3|5|7|8|9)[0-9]{9}$/,
+        value: /^0(3|5|7|8|9)[0-9]{8}$/,
         errorMessage: 'Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng.',
       },
     ])
