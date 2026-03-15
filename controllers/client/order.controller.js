@@ -10,34 +10,35 @@ module.exports.create = async (req,res)=>{
         const orderCode = "OD" + generateHelper.generateRandomNumber(8);
         const transportCode = "LI" + generateHelper.generateRandomNumber(8);
         for (const item of req.body.cart) {
-            const book = await Book.findOne({
-                _id:item.id_book,
-                deleted:false,
-            })
-            if(book){
-                item.name = book.name
-                item.avatar = book.avatar1
-                item.priceBook = book.priceBook
-                item.slug = book.slug
-                if(item.quantity>book.numberBook){
-                    res.json({
-                        code:"error",
-                        message:"Số lượng sách đã vượt quá số lượng còn lại!"
-                    })
-                    return;
-                }
-                
-                await Book.updateOne({
-                    _id: item.id_book
-                },{
-                    numberBook : book.numberBook - parseInt(item.quantity),
-                    numberSale: book.numberSale + parseInt(item.quantity) 
+            const book = await Book.findOneAndUpdate(
+                {
+                    _id: item.id_book,
+                    deleted:false,
+                    numberBook: { $gte: item.quantity }
+                },
+                {
+                    $inc:{
+                        numberBook: -parseInt(item.quantity),
+                        numberSale: parseInt(item.quantity)
+                    }
+                },
+                { new:true })
+
+            if(!book){
+                return res.json({
+                    code:"error",
+                    message:"Số lượng sách không đủ!"
                 })
             }
-            req.body.id_user =item.id_user;
+
+            item.name = book.name
+            item.avatar = book.avatar1
+            item.priceBook = book.priceBook
+            item.slug = book.slug
+
             await Cart.deleteMany({
-                id_user: item.id_user,
-                id_book:item.id_book,
+                id_user:item.id_user,
+                id_book:item.id_book
             })
         }
         req.body.payStatus = "unpaid"
