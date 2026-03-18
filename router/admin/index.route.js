@@ -12,9 +12,10 @@ const uploadRouer = require("./upload.route")
 const errorController = require("../../controllers/admin/error.controller");
 const authMidderWare = require("../../middlewares/admin/auth.middleware")
 const infoMiddleware = require("../../middlewares/client/infowebsite.middleware")
+const websiteInfoMiddleware = require("../../middlewares/admin/setting-info.middleware");
 const eventRouter = require("./event.route")
 router.use(infoMiddleware.info)
-router.use("/account",accountRouter);
+router.use("/account",websiteInfoMiddleware,accountRouter);
 router.use("/dashboard",authMidderWare.verifyToken,dashboardRouter);
 router.use("/category",authMidderWare.verifyToken,categoryRouter);
 router.use("/contact",authMidderWare.verifyToken,contactRouter);

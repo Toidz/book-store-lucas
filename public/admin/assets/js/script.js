@@ -2790,3 +2790,110 @@ if(buttonDeleteEvents){
   });
 }
 //End button delete event
+
+// Biểu đồ doanh thu
+const revenueChart = document.querySelector("#revenue-chart");
+let revenueChartInstance = null;
+const drawChart = (now)=>{
+  const currentMonth = now.getMonth()+1
+  const currentYear = now.getFullYear()
+
+  const previousMonthDate = new Date(currentYear, now.getMonth()-1,1)
+  const previousMonth = previousMonthDate.getMonth()+1
+  const previousYear = previousMonthDate.getFullYear()
+
+  const daysInMonthCurrent = new Date(currentYear,currentMonth,0).getDate()
+  const daysInMonthPrevious = new Date(previousYear,previousMonth,0).getDate()
+  const days = daysInMonthCurrent>daysInMonthPrevious? daysInMonthCurrent :daysInMonthPrevious
+  const arrayDay =[]
+  for(let i=1;i<=days;i++){
+    arrayDay.push(i)
+  }
+  const dataFinal ={
+    currentMonth,
+    currentYear,
+    previousMonth,
+    previousYear,
+    arrayDay
+  }
+  fetch(`/${pathAdmin}/dashboard/revenueChart`,{
+    method:"POST",
+    headers:{
+      "Content-type":"application/json"
+    },
+    body:JSON.stringify(dataFinal)
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.code=="error"){
+      alert(data.message)
+    }
+    else{
+      if (revenueChartInstance) {
+        revenueChartInstance.destroy();
+      }
+      revenueChartInstance =new Chart(revenueChart, {
+        type: 'line',
+        data: {
+          labels: arrayDay,
+          datasets: [
+            {
+              label: `Tháng ${currentMonth}/${currentYear}`, 
+              data: data.dataMonthCurrent, 
+              borderColor: '#4379EE', 
+              borderWidth: 1.5, 
+            },
+            {
+              label: `Tháng ${previousMonth}/${previousYear}`, 
+              data: data.dataMonthPrevious , 
+              borderColor: '#EF3826', 
+              borderWidth: 1.5, 
+            }
+          ]
+        },
+        options: {
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Ngày'
+              },
+              ticks: {
+                maxRotation: 0,
+                minRotation: 0
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Doanh thu (VND)'
+              }
+            }
+          },
+          maintainAspectRatio: false, 
+        }
+      });
+    }
+  })
+}
+
+if(revenueChart) {
+  const chartInput = document.querySelector("[chart]")
+  if(chartInput){
+    chartInput.addEventListener("change",()=>{
+      console.log(chartInput.value)
+      let now = new Date(chartInput.value)
+      drawChart(now)
+    })
+  }
+
+  let now = new Date()
+  drawChart(now)
+}
+
+// Hết Biểu đồ doanh thu

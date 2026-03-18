@@ -2,8 +2,6 @@ const AccountAdmin = require("../../models/account-admin.model")
 const Order = require("../../models/order.model")
 const variable = require("../../config/variable")
 const moment = require("moment")
-const Book = require("../../models/book.model")
-const Event = require("../../models/event.model")
 module.exports.dashboard =  async (req,res)=>{
     const dashboard ={
         account:0,
@@ -50,5 +48,56 @@ module.exports.dashboard =  async (req,res)=>{
         pageTitle:"Trang tổng quan",
         dashboard:dashboard,
         orderNew:orderNew
+    })
+}
+module.exports.revenueChart =  async (req,res)=>{
+    const {
+        currentMonth,
+        currentYear,
+        previousMonth,
+        previousYear,
+        arrayDay
+    } = req.body
+    const orderCurrent = await Order.find({
+        deleted:false,
+        createdAt:{
+            $gte:new Date(currentYear,currentMonth-1,1),
+            $lte:new Date(currentYear,currentMonth,1),
+        }
+    })
+    const orderPrevious = await Order.find({
+        deleted:false,
+        createdAt:{
+            $gte:new Date(previousYear,previousMonth-1,1),
+            $lte:new Date(previousYear,previousMonth,1),
+        }
+    })
+    const dataMonthCurrent = []
+    const dataMonthPrevious = []
+    for (const day of arrayDay) {
+        let total =0
+        for (const item of orderCurrent) {
+            const orderDate = new Date(item.createdAt).getDate()
+            if(day==orderDate&&item.payStatus=="paid"){
+                total += item.priceTotal
+            }
+        }
+        dataMonthCurrent.push(total)
+    }
+    for (const day of arrayDay) {
+        let total =0
+        for (const item of orderPrevious) {
+            const orderDate = new Date(item.createdAt).getDate()
+            if(day==orderDate&&item.payStatus=="paid"){
+                total += item.priceTotal
+            }
+        }
+        dataMonthPrevious.push(total)
+    }
+    console.log(dataMonthCurrent)
+    res.json({
+        code:"success",
+        dataMonthCurrent:dataMonthCurrent,
+        dataMonthPrevious:dataMonthPrevious
     })
 }

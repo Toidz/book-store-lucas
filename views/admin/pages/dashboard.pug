@@ -23,7 +23,18 @@ block main
           .inner-title Doanh thu
           .inner-number #{dashboard.priceTotal?dashboard.priceTotal.toLocaleString("vi-VN"): 0}đ
     //- End Section 1
-    
+    .section-2
+      .inner-head
+        h2.inner-title Biểu đồ doanh thu
+        .inner-filter
+          input(
+            type="month"
+            name=""
+            chart
+          )
+      .inner-chart
+        canvas(id="revenue-chart")
+    //- End Section 2
     //- Section 3
     .section-3
       h2.inner-title Đơn hàng mới
