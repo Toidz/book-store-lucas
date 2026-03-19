@@ -25,17 +25,20 @@ module.exports.editPatch = async (req,res)=>{
                 checkStatus:false
             })
             if(orderCurrent){
-                for(let item of orderCurrent){
-                    for(let it of item.cart){
-                        await Book.updateOne({
-                            _id:it.id_book,
-                        },{
-                            $inc:{
-                                numberSale:parseInt(it.quantity)
-                            }
-                        })
-                    }
-                }
+                for(let it of orderCurrent.cart){
+                    await Book.updateOne({
+                        _id:it.id_book,
+                    },{
+                        $inc:{
+                            numberSale:parseInt(it.quantity)
+                        }
+                    })
+                } 
+                await Order.updateOne({
+                    orderCode:orderCode
+                },{
+                    checkStatus:true
+                })   
             }
         }
         await Order.updateOne({

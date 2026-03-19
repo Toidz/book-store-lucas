@@ -81,11 +81,13 @@ module.exports.dashboard =  async (req,res)=>{
     })
     for(let b of listBook){
         b.sold=0
+        b.profit=0
         for (let order of allOrder) {
             if (order.payStatus == "paid") {
                 for (let item of order.cart) {
                     if (item.id_book==b.id) {
                         b.sold += item.quantity;
+                        b.profit+=(item.priceLast*item.quantity);
                     }
                 }
             }

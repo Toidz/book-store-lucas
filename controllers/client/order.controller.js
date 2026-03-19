@@ -7,7 +7,6 @@ const CryptoJS = require("crypto-js");
 const generateHelper = require("../../helpers/generate.helper")
 module.exports.create = async (req,res)=>{
     try {
-        console.log(req.body)
         const orderCode = "OD" + generateHelper.generateRandomNumber(8);
         const transportCode = "LI" + generateHelper.generateRandomNumber(8);
         for (const item of req.body.cart) {
@@ -65,30 +64,39 @@ module.exports.create = async (req,res)=>{
 }
 
 module.exports.success = async (req,res)=>{
-    const orderId = req.query.orderId
-    const phone = req.query.phone
-    const order = await Order.findOne({
-        _id:orderId,
-        phone:phone,
-        deleted:false
-    })
-    const method = variable.method.find(item => item.value == order.method);
-    order.methodName = method ? method.lable : "";
-
-    const payStatus = variable.payStatus.find(item => item.value == order.payStatus);
-    order.payStatusName = payStatus ? payStatus.lable : "";
-
-    const status = variable.status.find(item => item.value == order.status);
-    order.statusName = status ? status.lable : "";
-    let fee = 0;
-    if(!order.note.includes("Hà Nội")) fee=30000
-
-    order.createdAtFormat = moment(order.createdAt).format("HH:mm - DD/MM/YYYY");
-    res.render("client/pages/order-success",{
-        pageTitle:"Thông tin đơn hàng",
-        order:order,
-        fee:fee
-    })
+    try {
+        const orderId = req.query.orderId
+        const phone = req.query.phone
+        const find ={
+            deleted:false
+        }
+        if(orderId){
+            find._id = orderId
+        }
+        if(phone){
+            find.phone=phone
+        }
+        const order = await Order.findOne(find)
+        const method = variable.method.find(item => item.value == order.method);
+        order.methodName = method ? method.lable : "";
+    
+        const payStatus = variable.payStatus.find(item => item.value == order.payStatus);
+        order.payStatusName = payStatus ? payStatus.lable : "";
+    
+        const status = variable.status.find(item => item.value == order.status);
+        order.statusName = status ? status.lable : "";
+        let fee = 0;
+        if(!order.note.includes("Hà Nội")) fee=30000
+    
+        order.createdAtFormat = moment(order.createdAt).format("HH:mm - DD/MM/YYYY");
+        res.render("client/pages/order-success",{
+            pageTitle:"Thông tin đơn hàng",
+            order:order,
+            fee:fee
+        })
+    } catch (error) {
+        res.render("client/pages/404-page")
+    }
 }
 
 module.exports.zalopay = async (req,res)=>{
@@ -193,7 +201,6 @@ module.exports.zalopayPost = async (req,res)=>{
                 }
             })
         }
-
         result.return_code = 1;
         result.return_message = "success";
         }

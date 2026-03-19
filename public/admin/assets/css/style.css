@@ -631,8 +631,17 @@ a {
 .section-2 .inner-inventory span:hover{
   background-color:var(--color-second);
 }
+.section-2 .inner-inventory-status{
+  margin:auto;
+}
 .section-2 #inventoryChart{
   width:100%;
+}
+@media(max-width:1200px){
+  .section-2 .inner-inventory-status{
+    width:360px;
+    height:330px; 
+  }
 }
 @media(max-width:768px){
   .section-2 .inner-inventory span{
@@ -657,6 +666,9 @@ a {
 @media(max-width:992px){
   .section-top-list{
     flex-direction:column
+  }
+  #inventoryStatusChart {
+    display: block;
   }
   .section-top-list .section-2{
     width:100%;

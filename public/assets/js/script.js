@@ -748,7 +748,7 @@ if(alertTime) {
 //find Book
 const findBook = document.querySelector("[find-book]")
 if(findBook){
-  const url = new URL(`${window.location.href}search`)
+  const url = new URL("/search", window.location.origin);
   findBook.addEventListener("keyup",(event)=>{
     if(event.code=="Enter"){
       if(findBook.value){

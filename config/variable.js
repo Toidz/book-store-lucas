@@ -8,7 +8,7 @@ module.exports.method =[
     {
         lable:"Zalopay",
         value:"zalopay"
-    },
+    }
 ]
 
 module.exports.payStatus =[

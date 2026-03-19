@@ -3009,8 +3009,13 @@ const drawInventoryStatusChart = ({almostOver, many, soldOut}) => {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'right' },
+        legend: { position: 'bottom',
+          labels: {
+            padding: 20 
+          }
+        },
         tooltip: {
           callbacks: {
             label: function(context) {

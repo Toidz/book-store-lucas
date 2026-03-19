@@ -58,7 +58,7 @@ block main
           span(id="data-almostOver", data-value=almostOver)
           span(id="data-soldOut", data-value=soldOut)
           span(id="data-many", data-value=many)
-        .inner-inventory-chart(style="width:350px; height:400px; margin:auto")
+        .inner-inventory-status()
           canvas#inventoryStatusChart(width=400, height=400)
       .section-2
         .inner-head
@@ -117,7 +117,12 @@ block main
                   .inner-text PTTT: #{item.nameMethod}
                   .inner-text TTTT: #{item.nameStatusPay}
                 td
-                  .badge.badge-orange Khởi tạo
+                  - if(item.status == "initial")
+                    .badge.badge-red Khởi tạo
+                  - if(item.status == "ship")
+                    .badge.badge-orange Đang giao
+                  - if(item.status == "done")
+                    .badge.badge-green Đã giao 
                 td.inner-text-right
                   .inner-text #{item.formatTime}
                   .inner-text #{item.formatDay}
