@@ -22,7 +22,14 @@ block main
         .inner-content
           .inner-title Doanh thu
           .inner-number #{dashboard.priceTotal?dashboard.priceTotal.toLocaleString("vi-VN"): 0}đ
-    //- End Section 1
+      .inner-item
+        .inner-icon
+          img(src="/admin/assets/images/bookLogo.png")
+        .inner-content
+          .inner-title Tổng số sách
+          .inner-number #{totalBook?totalBook:0}
+ 
+    //- End Section 1  
     .section-2
       .inner-head
         h2.inner-title Biểu đồ doanh thu
@@ -32,9 +39,49 @@ block main
             name=""
             chart
           )
-      .inner-chart
-        canvas(id="revenue-chart")
+      .inner-chart(style="overflow-x:auto;")
+        canvas(id="revenue-chart" style="height:250px")
     //- End Section 2
+    .section-2
+      .inner-head
+        h2.inner-title Thống kê tồn kho
+      .inner-inventory 
+        each item in categoryList 
+          span(inventory-id=item.id) #{item.name}
+      .inner-inventory-chart(style="overflow-x:auto")
+        canvas#inventoryChart(style="height:270px")
+    .section-top-list
+      .section-2
+        .inner-head
+          h2.inner-title Tình trạng tồn kho
+        .inner-data(style="display:none")
+          span(id="data-almostOver", data-value=almostOver)
+          span(id="data-soldOut", data-value=soldOut)
+          span(id="data-many", data-value=many)
+        .inner-inventory-chart(style="width:350px; height:400px; margin:auto")
+          canvas#inventoryStatusChart(width=400, height=400)
+      .section-2
+        .inner-head
+          h2.inner-title Top sách bán chạy 
+        .table-1
+          table
+            thead
+              tr
+                th(style="width:2px") STT
+                th(style="width:170px") Tên sách
+                th(style="width:100px") Đã bán
+                th(style="width:170px") Doanh thu 
+            tbody
+              each item,index in topBook
+                tr
+                  td
+                    .inner-code #{index+1}
+                  td
+                    .inner-text #{item.name}
+                  td
+                    .inner-text #{item.sold}
+                  td
+                    .inner-text #{item.profit?item.profit.toLocaleString("vi-VN"):0}đ
     //- Section 3
     .section-3
       h2.inner-title Đơn hàng mới

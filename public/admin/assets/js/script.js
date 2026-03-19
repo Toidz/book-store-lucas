@@ -482,7 +482,6 @@ if(bookeditForm) {
       formData.append("numberBook",numberBook)
       formData.append("information",information)
       formData.append("current",current)
-      console.log(avatar1,avatar2,avatar3)
       fetch(`/${pathAdmin}/book/edit/${id}`,{
         method:"PATCH",
         body: formData
@@ -686,10 +685,6 @@ if(orderDeletes){
       confirmButtonText: "Đồng ý"
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire({
-          title: "Đã xóa đơn hàng thành công!",
-          icon: "success"
-        });
         fetch(apiDelete,{
           method:"PATCH"
         })
@@ -699,6 +694,10 @@ if(orderDeletes){
             alert(data.message)
           }
           else{
+            Swal.fire({
+              title: "Đã xóa đơn hàng thành công!",
+              icon: "success"
+            });
             window.location.reload()
           }
         })
@@ -2865,7 +2864,7 @@ const drawChart = (now)=>{
               },
               ticks: {
                 maxRotation: 0,
-                minRotation: 0
+                minRotation: 0,
               }
             },
             y: {
@@ -2881,7 +2880,6 @@ const drawChart = (now)=>{
     }
   })
 }
-
 if(revenueChart) {
   const chartInput = document.querySelector("[chart]")
   if(chartInput){
@@ -2895,5 +2893,187 @@ if(revenueChart) {
   let now = new Date()
   drawChart(now)
 }
-
 // Hết Biểu đồ doanh thu
+
+//inventory
+const inventories = document.querySelectorAll("[inventory-id]")
+if(inventories){
+  inventories.forEach(inventory=>{
+    inventory.addEventListener("click",()=>{
+      const url = new URL(window.location.href)
+      let value = inventory.getAttribute("inventory-id")
+      if(value){
+        url.searchParams.set("category",value)
+      }
+      else{
+        url.searchParams.delete("category")
+      }
+      window.location.href = url.href
+    })
+  })
+}
+let inventoryChartInstance = null;
+const drawInventoryChart = (data) => {
+  const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
+  const labels = data.result.map(c => c.name);
+  console.log(data.result)
+  const dataCounts = data.result.map(c => c.count);
+  const colors = labels.map(() => 
+    `rgba(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, 0.6)`
+  );
+
+  if (inventoryChartInstance) {
+    inventoryChartInstance.destroy();
+  }
+  inventoryChartInstance = new Chart(inventoryCtx, {
+    type: 'bar', 
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Số lượng tồn kho',
+        data: dataCounts,
+        backgroundColor: colors,
+        borderColor: colors.map(c => c.replace('0.6','1')),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: false, 
+      plugins: {
+        legend: { position: 'bottom' }
+      },
+      scales: {
+        x: { 
+          title: { display: true, text: 'Thể loại' },
+          ticks: {
+            maxRotation: 0,
+            minRotation: 0,
+            autoSkip: false 
+          }
+        },
+        y: { 
+          title: { display: true, text: 'Số lượng tồn kho' },
+          beginAtZero: true
+        }
+      },
+      maintainAspectRatio: false
+    }
+  });
+};
+const inventoryCtx = document.getElementById('inventoryChart')
+if(inventoryCtx){
+  const inventoryCategory = url.searchParams.get("category");
+  if(inventoryCtx.getContext('2d')){
+    fetch(`/${pathAdmin}/dashboard/inventory?category=${inventoryCategory?inventoryCategory:"6825e6759800453576be8447"}`, {
+      method: "GET",
+      headers: { "Content-type": "application/json" }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.code === "error"){
+        alert(data.message);
+      } else {
+        drawInventoryChart(data);
+      }
+    });
+  }
+}
+//end inventory
+
+//circle
+let inventoryStatusChartInstance = null;
+const drawInventoryStatusChart = ({almostOver, many, soldOut}) => {
+  const ctx = document.getElementById('inventoryStatusChart').getContext('2d');
+
+  const labels = ['Sắp hết', 'Nhiều', 'Hết hàng'];
+  const dataCounts = [almostOver, many, soldOut];
+
+  const colors = [
+    'rgba(232, 150, 7, 0.85)',   
+    'rgba(54, 162, 235, 0.6)',   
+    'rgba(211, 8, 8, 0.93)'    
+  ];
+
+  if (inventoryStatusChartInstance) inventoryStatusChartInstance.destroy();
+
+  inventoryStatusChartInstance = new Chart(ctx, {
+    type: 'pie', 
+    data: {
+      labels: labels,
+      datasets: [{
+        data: dataCounts,
+        backgroundColor: colors,
+        borderColor: colors.map(c => c.replace('0.6','1')),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'right' },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const total = context.dataset.data.reduce((a,b)=>a+b,0);
+              const value = context.raw;
+              const percent = ((value/total)*100).toFixed(1);
+              return `${context.label}: ${value} (${percent}%)`;
+            }
+          }
+        }
+      },
+      maintainAspectRatio: false,
+      animation: {
+        onComplete: function() {
+          const chart = this;
+          const ctx = chart.ctx;
+          ctx.font = 'bold 14px sans-serif';
+          ctx.fillStyle = '#fff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          const dataset = chart.data.datasets[0];
+          const total = dataset.data.reduce((a,b)=>a+b,0);
+          
+          const meta = chart.getDatasetMeta(0);
+          meta.data.forEach((arc,index)=>{
+            const value = dataset.data[index];
+            const percent = ((value/total)*100).toFixed(1) + '%';
+            const pos = arc.getCenterPoint();
+            ctx.fillText(percent, pos.x, pos.y);
+          });
+        }
+      }
+    }
+  });
+};
+const almostOver = document.getElementById("data-almostOver")
+const soldOut = document.getElementById("data-soldOut")
+const many = document.getElementById("data-many")
+if(almostOver&&soldOut&&many){
+  drawInventoryStatusChart({
+    almostOver: Number(almostOver.dataset.value),
+    soldOut: Number(soldOut.dataset.value),
+    many: Number(many.dataset.value)
+  });
+}
+//end circle
+
+//tat scroll tang giam 
+const numberInput = document.querySelector("#numberBook");
+if(numberInput){
+  numberInput.addEventListener("wheel", (e) => {
+    e.preventDefault();
+});
+}
+const priceInput = document.querySelector("#priceBook");
+if(priceInput){
+  priceInput.addEventListener("wheel", (e) => {
+    e.preventDefault();
+});
+}
+const positionInput = document.querySelector("#position");
+if(positionInput){
+  positionInput.addEventListener("wheel", (e) => {
+    e.preventDefault();
+});
+}

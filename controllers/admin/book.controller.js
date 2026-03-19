@@ -16,6 +16,12 @@ module.exports.list = async (req,res) =>{
     if(req.query.id){
         find.createdBy = req.query.id
     }
+    if(req.query.stock){
+        if(req.query.stock==0) find.numberBook = 0
+        if(req.query.stock == 15) {
+            find.numberBook = { $lte: 15 , $gt:0}; 
+        }
+    }
     const startDate = req.query.startDate
     const endDate = req.query.endDate
     const filterDate = {}
@@ -132,10 +138,8 @@ module.exports.list = async (req,res) =>{
     if(req.query.page>totalPage && totalPage >0 ){
         page = totalPage
     }
-
     const skip = limit*(page-1)
 
-    
     const bookList = await Book.find(find
     ).sort({
         position:"desc"
@@ -354,6 +358,7 @@ module.exports.editPatch = async (req,res) =>{
         else{
             delete req.body.avatar3
         }
+     
         req.body.priceBook = req.body.priceBook? parseInt(req.body.priceBook): 0
         req.body.numberBook = req.body.numberBook? parseInt(req.body.numberBook): 0
         req.body.updatedBy = req.account.id

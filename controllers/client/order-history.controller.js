@@ -7,7 +7,6 @@ module.exports.list = async (req,res)=>{
     const dataFind ={
         deleted:false,
         id_user:req.account.id,
-
     }
     if (keyword) {
         dataFind.$or = [

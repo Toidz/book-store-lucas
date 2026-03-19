@@ -18,10 +18,30 @@ module.exports.edit = async (req,res)=>{
 module.exports.editPatch = async (req,res)=>{
     try {
         const orderCode = req.params.code
+        const status= req.body.payStatus
+        if(status=="paid"){
+            const orderCurrent = await Order.findOne({
+                orderCode:orderCode,
+                checkStatus:false
+            })
+            if(orderCurrent){
+                for(let item of orderCurrent){
+                    for(let it of item.cart){
+                        await Book.updateOne({
+                            _id:it.id_book,
+                        },{
+                            $inc:{
+                                numberSale:parseInt(it.quantity)
+                            }
+                        })
+                    }
+                }
+            }
+        }
         await Order.updateOne({
             orderCode:orderCode
         },req.body)
-
+        
         req.flash("success","Cập nhật thành công!")
         res.json({
             code:"success"

@@ -1131,89 +1131,65 @@ if(deleteCurrentAddress){
 }
 // End delete-current-address
 
+//get city district ward
+document.addEventListener("DOMContentLoaded", () => {
+  const citySelect = $("#city");
+  const districtSelect = $("#district");
+  const wardSelect = $("#ward");
+  const savedCity = citySelect.attr("saveCity");
+  const savedDistrict = districtSelect.attr("saveDistrict");
+  const savedWard = wardSelect.attr("saveWard");
+  citySelect.select2({ placeholder: "Chọn Tỉnh/Thành phố", width: "100%" });
+  districtSelect.select2({ placeholder: "Chọn Quận/Huyện", width: "100%" });
+  wardSelect.select2({ placeholder: "Chọn Phường/Xã", width: "100%" });
 
-//get district
-const citySelect = document.getElementById("city");
-const valueCity = citySelect?.getAttribute("saveCity");
-const districtSelect = document.getElementById("district");
-const valueDistrict = districtSelect?.getAttribute("saveDistrict");
-if(valueCity){
-  console.log(1)
-  fetch(`/pay/districts?cityName=${valueCity}`)
-    .then(res => res.json())
-    .then(data => {
-      const districtSelect = document.querySelector("#district");
-      const valueDistrict = districtSelect.getAttribute("saveDistrict");
-      data.districts.forEach(d => {
-        const option = document.createElement("option");
-        option.value = d;
-        option.textContent = d;
-        if(valueDistrict==d) option.selected=true;
-        districtSelect.appendChild(option);
+  function loadDistrict(city, selectedDistrict = null, callback) {
+    districtSelect.empty().append('<option value="">Chọn Quận/Huyện</option>');
+    wardSelect.empty().append('<option value="">Chọn Phường/Xã</option>');
+    if (!city) return;
+    fetch(`/pay/districts?cityName=${encodeURIComponent(city)}`)
+      .then(res => res.json())
+      .then(data => {
+        data.districts.forEach(d => {
+          const option = new Option(d, d, false, d === selectedDistrict);
+          districtSelect.append(option);
+        });
+        districtSelect.trigger("change"); 
+        if (callback) callback();
       });
-    });
-}
-if(citySelect){
-  citySelect.addEventListener("change", (e)=> {
-  // console.log(e.target.value)
-  const wardSelect = document.getElementById("ward");
-  districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
-  wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
-  fetch(`/pay/districts?cityName=${e.target.value}`)
-    .then(res => res.json())
-    .then(data => {
-      const districtSelect = document.querySelector("#district");
-      const valueDistrict = districtSelect.getAttribute("saveDistrict");
-      data.districts.forEach(d => {
-        const option = document.createElement("option");
-        option.value = d;
-        option.textContent = d;
-        if(valueDistrict==d) option.selected=true;
-        districtSelect.appendChild(option);
+  }
+
+  function loadWard(district, selectedWard = null) {
+    wardSelect.empty().append('<option value="">Chọn Phường/Xã</option>');
+    if (!district) return;
+
+    fetch(`/pay/wards?districtName=${encodeURIComponent(district)}`)
+      .then(res => res.json())
+      .then(data => {
+        data.wards.forEach(w => {
+          const option = new Option(w, w, false, w === selectedWard);
+          wardSelect.append(option);
+        });
+        wardSelect.trigger("change");
       });
+  }
+
+  if (savedCity) {
+    loadDistrict(savedCity, savedDistrict, () => {
+      if (savedDistrict) loadWard(savedDistrict, savedWard);
     });
   }
-  
-)}
-//end get district  
 
-//get ward
-if(valueDistrict){
-  fetch(`/pay/wards?districtName=${valueDistrict}`)
-  .then(res => res.json())
-  .then(data => {
-    const wardSelect = document.querySelector("#ward");
-    const valueWard =wardSelect.getAttribute("saveWard");
-    data.wards.forEach(d => {
-      const option = document.createElement("option");
-      option.value = d;
-      option.textContent = d;
-      if(valueWard==d) option.selected=true;
-      wardSelect.appendChild(option);
-    });
+  citySelect.on("change", function () {
+    const city = $(this).val();
+    loadDistrict(city);
   });
-}
-const wardSelect = document.getElementById("ward");
-if(districtSelect){
-  districtSelect.addEventListener("change", (e)=> {
-  // console.log(e.target.value)
-  wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
-  fetch(`/pay/wards?districtName=${e.target.value}`)
-    .then(res => res.json())
-    .then(data => {
-      const wardSelect = document.querySelector("#ward");
-      const valueWard =wardSelect.getAttribute("saveWard");
-      data.wards.forEach(d => {
-        const option = document.createElement("option");
-        option.value = d;
-        option.textContent = d;
-        if(valueWard==d) option.selected=true;
-        wardSelect.appendChild(option);
-      });
-    });
-  }
-)}
-//end get ward
+
+  districtSelect.on("change", function () {
+    const district = $(this).val();
+    loadWard(district);
+  });
+});
 
 //chat
 const openChat = document.querySelector("[open-chat]")

@@ -7,6 +7,7 @@ const CryptoJS = require("crypto-js");
 const generateHelper = require("../../helpers/generate.helper")
 module.exports.create = async (req,res)=>{
     try {
+        console.log(req.body)
         const orderCode = "OD" + generateHelper.generateRandomNumber(8);
         const transportCode = "LI" + generateHelper.generateRandomNumber(8);
         for (const item of req.body.cart) {
@@ -19,7 +20,6 @@ module.exports.create = async (req,res)=>{
                 {
                     $inc:{
                         numberBook: -parseInt(item.quantity),
-                        numberSale: parseInt(item.quantity)
                     }
                 },
                 { new:true })
@@ -35,7 +35,7 @@ module.exports.create = async (req,res)=>{
             item.avatar = book.avatar1
             item.priceBook = book.priceBook
             item.slug = book.slug
-
+            req.body.id_user=item.id_user
             await Cart.deleteMany({
                 id_user:item.id_user,
                 id_book:item.id_book
@@ -180,6 +180,19 @@ module.exports.zalopayPost = async (req,res)=>{
         },{
             payStatus: "paid"
         })
+        const order = await Order.findOne({
+            deleted:false,
+             _id: orderId
+        })
+        for(let it of order.cart){
+            await Book.updateOne({
+                _id:it.id_book
+            },{
+                $inc:{
+                    numberSale:it.quantity
+                }
+            })
+        }
 
         result.return_code = 1;
         result.return_message = "success";
@@ -188,7 +201,6 @@ module.exports.zalopayPost = async (req,res)=>{
     result.return_code = 0;
     result.return_message = ex.message;
   }
-
   res.json(result);
 }
 

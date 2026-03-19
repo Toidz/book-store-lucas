@@ -15,6 +15,10 @@ const schema = new mongoose.Schema(
         updatedBy:String,
         deletedBy:String,
         deletedAt:Date,
+        checkStatus:{
+            type:Boolean,
+            default:false
+        },
         deleted:{
             type:Boolean,
             default:false

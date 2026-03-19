@@ -2,6 +2,7 @@
 
 :root {
   --color-primary: #c70223;
+  --color-second: #FF9AA2;
   --color-text: #202224;
 }
 
@@ -611,6 +612,59 @@ a {
 .section-2 .inner-chart canvas {
   width: 100% !important;
   height: 100% !important;
+}
+
+.section-2 .inner-inventory{
+  display:flex;
+  gap:20px;
+  margin-top:-20px;
+  margin-bottom:20px;
+}
+.section-2 .inner-inventory span{
+  padding: 10px 16px;
+  background-color:var(--color-primary);
+  border-radius:8px;
+  color:white;
+  font-size:14px;
+  cursor:pointer
+}
+.section-2 .inner-inventory span:hover{
+  background-color:var(--color-second);
+}
+.section-2 #inventoryChart{
+  width:100%;
+}
+@media(max-width:768px){
+  .section-2 .inner-inventory span{
+    font-size:12px;
+  }
+  .section-2 #inventoryChart{
+    height:180px;
+    width:700px;
+  }
+}
+.section-top-list{
+  display:flex;
+  gap:10px
+}
+.section-top-list .section-2{
+  width:50%;
+}
+.section-top-list .section-2 .table-1 table{
+  width:50%;
+  min-width: 500px !important;
+}
+@media(max-width:992px){
+  .section-top-list{
+    flex-direction:column
+  }
+  .section-top-list .section-2{
+    width:100%;
+  }
+  .section-top-list .section-2 .table-1 table{
+    width:100%;
+    
+  }
 }
 /* End Section 2 */
 

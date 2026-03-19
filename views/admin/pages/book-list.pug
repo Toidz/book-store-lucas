@@ -30,6 +30,11 @@ block main
             option(value=200) Từ 200k đến 500k
             option(value=500) Từ 500k đến 1 triệu
             option(value=1000) Trên 1 triệu
+        .inner-item
+          select(filter-stock)
+            option(value="") Tình trạng tồn hàng
+            option(value=0) Hết hàng
+            option(value=15) Sắp hết 
         .inner-item.inner-reset(button-reset)
           <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
     //- End Section 4
