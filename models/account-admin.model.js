@@ -18,7 +18,7 @@ const schema = new mongoose.Schema(
         slug:{
             type: String, 
             slug: "fullName",
-            unique: true
+            unique:true
         },
         deleted:{
             type:Boolean,

@@ -66,15 +66,15 @@ module.exports.create = async (req,res)=>{
 module.exports.success = async (req,res)=>{
     try {
         const orderId = req.query.orderId
-        const phone = req.query.phone
+        const id_user = req.account.id
         const find ={
             deleted:false
         }
-        if(orderId){
-            find._id = orderId
+        if(id_user){
+            find.id_user = id_user
         }
-        if(phone){
-            find.phone=phone
+        if(orderId){
+            find._id=orderId
         }
         const order = await Order.findOne(find)
         const method = variable.method.find(item => item.value == order.method);
@@ -107,10 +107,8 @@ module.exports.zalopay = async (req,res)=>{
             _id:orderId,
             deleted:false,
             payStatus:"unpaid"
-        })
-      
+        })  
         if(!orderDetail){
-            console.log(1)
             res.redirect("/")
             return
         }
@@ -125,7 +123,7 @@ module.exports.zalopay = async (req,res)=>{
         };
 
         const embed_data = {
-            redirecturl:`${process.env.DOMAIN_WEBSITE}/order/success?orderId=${orderDetail.id}&phone=${orderDetail.phone}`
+            redirecturl:`${process.env.DOMAIN_WEBSITE}/order/success?orderId=${orderDetail.id}`
         };
 
         const items = [{}];
@@ -142,13 +140,9 @@ module.exports.zalopay = async (req,res)=>{
             bank_code: "",
             callback_url:`${process.env.DOMAIN_WEBSITE}/order/payment-zalopay-result`
         };
-
         const data = config.app_id + "|" + order.app_trans_id + "|" + order.app_user + "|" + order.amount + "|" + order.app_time + "|" + order.embed_data + "|" + order.item;
         order.mac = CryptoJS.HmacSHA256(data, config.key1).toString();
-
         const response =  await axios.post(config.endpoint, null, { params: order })
-
-        console.log(response.data);
         if(response.data.return_code==1){
             res.redirect(response.data.order_url)
         }

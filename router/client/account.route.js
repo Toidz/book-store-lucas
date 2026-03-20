@@ -6,7 +6,9 @@ router.get("/login",accountController.login);
 router.post("/login",accountController.loginPost);
 
 router.get("/register",accountController.register);
-router.post("/register",accountController.registerPost);
+router.post("/otp-register",accountController.otpRegister);
+router.get("/verify-otp",accountController.verifyOtp)
+router.post("/verify-otp",accountController.verifyOtpPost);
 
 
 router.get("/forgot-password",accountController.forgotPassword);

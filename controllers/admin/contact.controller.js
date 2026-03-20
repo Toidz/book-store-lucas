@@ -70,7 +70,6 @@ module.exports.changPatch = async(req,res)=>{
 }
 
 module.exports.deletePatch = async(req,res)=>{
-    console.log(1)
     try {
         const id = req.params.id
         await Contact.updateOne({

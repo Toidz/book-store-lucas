@@ -39,7 +39,6 @@ const extractPriceFilter = (message) => {
     return priceFilter;
   }
   const overMatch = text.match(/tren\s*(\d+)/);
-  // console.log(overMatch)
   if (overMatch) {
     priceFilter.$gte = parseInt(overMatch[1]);
     return priceFilter;
@@ -115,7 +114,6 @@ const extractPriceFilter = (message) => {
         deleted:false,
         numberBook:{ $gt:0 }
       };
-      console.log(priceFilter)
       if (priceFilter) {
         query.priceBook = priceFilter;
       }

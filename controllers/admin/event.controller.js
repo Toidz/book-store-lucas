@@ -49,14 +49,12 @@ module.exports.create = async (req,res) =>{
 }
 module.exports.createPost = async (req,res) =>{
     try {
-        console.log(req.body)
         if(req.file){
             req.body.avatar =  req.file.path
         }
         else{
             delete req.body.avatar
         }
-        console.log(req.body.avatar)
         const dataFinal = new Event(req.body)
         await dataFinal.save()
         req.flash("success", "Tạo sự kiện thành công!");

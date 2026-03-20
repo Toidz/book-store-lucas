@@ -160,7 +160,6 @@ module.exports.edit = async (req,res) =>{
 module.exports.editPatch = async (req,res) =>{
     try {
         const id = req.params.id
-        console.log(id)
         if(req.body.position){
             req.body.position= parseInt(req.body.position)
         }

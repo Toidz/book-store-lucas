@@ -17,7 +17,6 @@ module.exports.list = async (req,res)=>{
     })
     const regex = new RegExp(slug,"i")
     find.slug = regex
-    console.log(slug)
   }
 
   const totalBook = await Book.countDocuments(find)

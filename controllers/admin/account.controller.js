@@ -65,7 +65,6 @@ module.exports.register = (req,res)=>{
 }
 module.exports.registerPost = async (req,res)=>{
     const {fullName,email,password,status} = req.body;
-    console.log(fullName)
     const existAccount= await AccountAdmin.findOne({
         email:email
     })
@@ -91,7 +90,6 @@ module.exports.registerPost = async (req,res)=>{
     const data = await AccountAdmin.findOne({
         email:email
     })
-    console.log(data)
     res.json({
         code:"success",
         message:"Đăng ký tài khoản thành công!"

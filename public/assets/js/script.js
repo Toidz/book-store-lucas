@@ -249,7 +249,7 @@ if(registerForm) {
         email: email,
         password: password
       };
-      fetch(`/account/register`,{
+      fetch(`/account/otp-register`,{
         method:"POST",
         headers:{
           "Content-Type":"application/json"
@@ -262,13 +262,51 @@ if(registerForm) {
           alert(data.message)
         }
         else{
-          window.location.href= `/account/login`
+          window.location.href=`/account/verify-otp?email=${email}`
         }
       })
     })
   ;
 }
 // End Register Form
+
+// OTP register
+const otpRegister = document.querySelector("#otp-register");
+if(otpRegister) {
+  const validation = new JustValidate('#otp-register');
+  validation
+    .addField('#otp', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập mã OTP!',
+      },
+    ])
+    .onSuccess((event) => {
+      const otp = event.target.otp.value;
+      const ulrParams = new URLSearchParams(window.location.search)
+      const email = ulrParams.get("email")
+      const dataFinal = {
+        otp:otp,
+        email:email
+      }
+      fetch(`/account/verify-otp`,{
+        method:"POST",
+        headers:{
+          "Content-type":"application/json"
+        },
+        body: JSON.stringify(dataFinal)
+      })
+      .then(res => res.json())
+      .then(data=>{
+        if(data.code=="error")
+          alert(data.message)
+        else
+          window.location.href=`/account/login`
+      })
+    })
+  ;
+}
+// End OTP Password Form
 
 // Forgot Password Form
 const forgotPasswordForm = document.querySelector("#forgot-password-form");

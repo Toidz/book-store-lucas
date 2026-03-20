@@ -112,7 +112,6 @@ module.exports.accountAdminDeletePatch = async (req,res) =>{
 module.exports.accountAdminChangePatch = async (req,res) =>{
     try {
         const {status,ids} = req.body
-        console.log(1)
         switch(status){
             case "active": case "initial":
                 await AccoutnAdmin.updateMany({
@@ -287,7 +286,6 @@ module.exports.roleList = async (req,res) =>{
         const slug= slugify(keyword.trim())
         const regex = new RegExp(slug,"i")
         find.slug=regex
-        console.log(slug)
     }
     const roleList = await Role.find(find)
     res.render("admin/pages/setting-role-list",{

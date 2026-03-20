@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generateHelper = require("../../helpers/generate.helper");
 const mailerHelper = require("../../helpers/mailer.helper")
+const Otp = require("../../models/otp-register.model")
 module.exports.login = (req,res)=>{
     res.render("client/pages/login",{
         pageTitle:"Đăng nhập"
@@ -56,9 +57,8 @@ module.exports.register = (req,res)=>{
         pageTitle:"Đăng ký"
     })
 }
-module.exports.registerPost = async (req,res)=>{
-    const {fullName,email,password} = req.body;
-    console.log(req.body)
+module.exports.otpRegister = async (req,res)=>{
+    const {email,fullName,password} = req.body;
     const existAccount= await AccountClient.findOne({
         email:email
     })
@@ -69,21 +69,76 @@ module.exports.registerPost = async (req,res)=>{
         })
         return;
     }
+    const exitsEmailOtpPassword = await Otp.findOne({
+        email:email
+    })
+    if(exitsEmailOtpPassword)
+    {
+        res.json({
+            code:"error",
+            message:"Otp đã được gửi, vui lòng đợi 5 phút sau để gửi lại!"
+        })
+        return;
+    }
+    const otp = generateHelper.generateRandomNumber(6);
+    const dataFinal = new Otp({
+        email:email,
+        fullName:fullName,
+        password:password,
+        otp:otp,
+        expireAt: Date.now()+ 5*60*1000
+    })
+    await dataFinal.save();
+
+    const subject = "Mã opt đăng ký tài khoản"
+    const content = `Mã otp của bạn là <b>${otp}</b>, vui lòng không chia sẻ cho bất kỳ ai!`
+    mailerHelper.sendMail(email,subject,content)
+
+    res.json({
+        code:"success",
+        message:"Đã gửi mã OTP qua email"
+    })
+}
+module.exports.verifyOtp = (req,res)=>{
+    res.render("client/pages/verify-otp",{
+        pageTitle:"Nhập mã otp"
+    })
+}
+module.exports.verifyOtpPost = async (req,res)=>{
+    const {email,otp} = req.body;
+    const existAccount= await AccountClient.findOne({
+        email:email
+    })
+    if(existAccount){
+        res.json({
+            code:"error",
+            message:"Email đã tồn tại trong hệ thống!"
+        })
+        return;
+    }
+    const exitsEmailOtpPassword = await Otp.findOne({
+        email:email,
+        otp:otp
+    })
+    if(!exitsEmailOtpPassword)
+    {
+        res.json({
+            code:"error",
+            message:"Otp đã hết hiệu lực, vui lòng đăng ký lại!"
+        })
+        return;
+    }
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password,salt);
+    const hash = await bcrypt.hash(exitsEmailOtpPassword.password,salt);
 
     const newAccount = new AccountClient({
-        fullName:fullName,
+        fullName:exitsEmailOtpPassword.fullName,
         email:email,
         password:hash
     })
 
     await newAccount.save();
 
-    const data = await AccountClient.findOne({
-        email:email
-    })
-    console.log(data)
     res.json({
         code:"success",
         message:"Đăng ký tài khoản thành công!"
@@ -128,7 +183,7 @@ module.exports.forgotPasswordPost = async (req,res) =>{
     await dataFinal.save();
 
     const subject = "Mã opt lấy lại mật khẩu"
-    const content = `Mã otp của bạn là <b>${otp}</b>, vui lòng không chia sẻ cho bất kỳ ai!`
+    const content = `Mã otp của bạn là <span style="color:#28a745; font-weight:bold;">${otp}</span>, vui lòng không chia sẻ cho bất kỳ ai!`
     mailerHelper.sendMail(email,subject,content)
 
     res.json({

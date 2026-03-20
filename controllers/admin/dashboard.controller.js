@@ -1,4 +1,5 @@
 const AccountAdmin = require("../../models/account-admin.model")
+const AccountClient = require("../../models/account-client.model")
 const Order = require("../../models/order.model")
 const variable = require("../../config/variable")
 const moment = require("moment")
@@ -70,11 +71,11 @@ module.exports.dashboard =  async (req,res)=>{
         totalBook+=item.numberBook
     }
 
+    //paid
     const listBook = await Book.find({
         deleted:false,
         numberSale:{$gt:0}
     })
-
     const allOrder = await Order.find({
         deleted:false, 
         payStatus:"paid"
@@ -93,7 +94,10 @@ module.exports.dashboard =  async (req,res)=>{
             }
         }
     }
-  
+    //client
+    const totalClient = await AccountClient.countDocuments({
+        deleted:false
+    })
     const topBook = listBook.sort((a, b) => b.sold - a.sold).slice(0, 5);
     res.render("admin/pages/dashboard",{
         pageTitle:"Trang tổng quan",
@@ -104,7 +108,8 @@ module.exports.dashboard =  async (req,res)=>{
         many:many,
         soldOut:soldOut,
         topBook:topBook,
-        totalBook:totalBook
+        totalBook:totalBook,
+        totalClient:totalClient
     })
 }
 module.exports.revenueChart =  async (req,res)=>{

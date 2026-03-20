@@ -1,0 +1,22 @@
+extends ../layout/account.pug
+block main
+  .form-account
+    h2.inner-title Nhập mã OTP để đăng ký
+    p.inner-desc Vui lòng nhập mã OTP để đăng ký
+    form.inner-form#otp-register
+      .inner-group
+        label(
+          class="inner-label"
+          for="otp"
+        ) Mã OTP
+        input(
+          type="text"
+          name="otp"
+          id="otp"
+          placeholder="Ví dụ: 123456"
+          class="inner-control"
+        )
+      button(class="inner-button") Gửi mã OTP
+    .inner-more
+      span Otp hết hiệu lực?
+      a(href=`/account/register`) Đăng ký 

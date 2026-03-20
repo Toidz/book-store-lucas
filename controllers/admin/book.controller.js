@@ -284,7 +284,6 @@ module.exports.changePatch = async (req,res) =>{
                 deleted:false
             })
             for(const item of bookList){
-                console.log(item.priceBook)
                 await Book.updateOne({
                     _id:item.id
                 },{
@@ -298,7 +297,6 @@ module.exports.changePatch = async (req,res) =>{
             code:"success"
         })
     } catch (error) {
-        console.log(error.message)
         res.json({
             code:"error",
             message:"Cập nhật thất bại!"
