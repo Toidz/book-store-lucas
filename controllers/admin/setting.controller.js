@@ -186,6 +186,7 @@ module.exports.accountAdminList = async (req,res) =>{
         })
         if(roleName) item.roleName = roleName.name
     }
+
     res.render("admin/pages/setting-account-admin-list",{
         pageTitle:"Tài khoản quản trị",
         accountList:accountList,
