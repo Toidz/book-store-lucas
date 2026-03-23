@@ -12,8 +12,8 @@ mixin product-item(item)
           alt=item.name 
           src=item.avatar
           )
-    - if(item.numberBook==0)
-      .inner-soldOut Hết hàng
+        - if(item.numberBook==0)
+          .inner-soldOut Hết hàng
     .inner-content
       .inner-desc-item
         | Mã sách:

@@ -768,25 +768,23 @@ input, button, textarea {
   margin-bottom: -5px;
   position: relative;
 }
-
-/* Lớp phủ xám */
 .inner-image.sold-out::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(128, 128, 128, 0.5);
+  background: rgba(214, 211, 211, 0.5);
   z-index: 2;
   border-radius: 10px;
 }
 .inner-image.sold-out{
-  background-color:gray;
-  opacity: 0.8;
+   background-color: rgba(251, 245, 245, 0.5);
   border-radius: 10px;
 }
 .inner-soldOut{
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: rgba(255, 0, 0, 0.9);
   color: #fff;
   padding: 6px 10px;
