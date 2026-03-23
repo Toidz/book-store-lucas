@@ -11,51 +11,28 @@ block main
             .inner-images-main
               .swiper.swiper-box-images-main
                 .swiper-wrapper
-                  .swiper-slide
-                    .inner-image
-                      img(
-                        alt="" 
-                        src=book.avatar1
-                        )
-                  .swiper-slide
-                    .inner-image
-                      img(
-                        alt="" 
-                        src=book.avatar2
-                        )
-                  .swiper-slide
-                    .inner-image
-                      img(
-                        alt="" 
-                        src=book.avatar3
-                        )
+                  each item in book.images
+                    .swiper-slide
+                      .inner-image
+                        img(
+                          alt=book.name
+                          src=item
+                          )
             .inner-images-thumb
               .swiper.swiper-box-images-thumb
                 .swiper-wrapper
-                  .swiper-slide
-                    .inner-image
-                      img(
-                        alt="" 
-                        src=book.avatar1
-                        )
-                  .swiper-slide
-                    .inner-image
-                      img(
-                        alt="" 
-                        src=book.avatar2
-                        )
-                  .swiper-slide
-                    .inner-image
-                      img(
-                        alt="" 
-                        src=book.avatar3)
+                  each item in book.images
+                    .swiper-slide
+                      .inner-image
+                        img(
+                          alt=book.name
+                          src=item
+                          )
           .box-tour-info
             .inner-title Mô tả sách
             .inner-content !{book.information}       
             .inner-read-more
               button.button-outline Xem tất cả
-          .box-tour-info
-            .inner 
         .inner-right
           .box-tour-detail(book-detail)
             .inner-title-main Thông tin sách
@@ -63,7 +40,7 @@ block main
               .inner-image
                 img(
                   alt="" 
-                  src=book.avatar1
+                  src=book.avatar
                   )
               .inner-info
                 .inner-title(style ="font-size:24px") #{book.name}

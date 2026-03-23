@@ -31,7 +31,7 @@ module.exports.create = async (req,res)=>{
             }
 
             item.name = book.name
-            item.avatar = book.avatar1
+            item.avatar = book.avatar
             item.priceBook = book.priceBook
             item.slug = book.slug
             req.body.id_user=item.id_user

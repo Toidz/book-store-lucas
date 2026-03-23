@@ -82,7 +82,8 @@ block main
               th(class="inner-center") Vị trí
               th Tạo bởi
               th Cập nhật bởi
-              th Hành động
+              - if(permissions.includes("book-edit"))
+                th Hành động
           tbody
             each item in bookList
               tr
@@ -90,7 +91,7 @@ block main
                   input(type="checkbox" class="inner-check" button-item=item.id)
                 td #{item.name}
                 td
-                  img(src=item.avatar1 class="inner-avatar")
+                  img(src=item.avatar class="inner-avatar")
                 td #{item.author}
                 td #{item.produce}
                 td

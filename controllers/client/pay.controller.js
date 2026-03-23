@@ -49,7 +49,7 @@ module.exports.pay = async (req,res)=>{
     item.produce = book.produce;
     item.priceBook = book.priceBook;
     item.slug = book.slug;
-    item.avatar = book.avatar1;
+    item.avatar = book.avatar;
     item.stock = book.numberBook;
    
     if(book.idEvent){

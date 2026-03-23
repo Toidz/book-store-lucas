@@ -23,17 +23,13 @@ block main
             label(class="inner-label" for="position") Vị trí
             input(type="number" id="position" name="position")
           .inner-group.inner-two-col
-            label(class="inner-label" for="avatar1") Ảnh 1
+            label(class="inner-label" for="avatar") Ảnh đại diện
             div(class="inner-upload-image")
-              input(type="file" id="avatar1" accept="image/*" filepond-image name="avatar1")
+              input(type="file" id="avatar" accept="image/*" filepond-image name="avatar")
           .inner-group.inner-two-col
-            label(class="inner-label" for="avatar2") Ảnh 2
-            div(class="inner-upload-image")
-              input(type="file" id="avatar2" accept="image/*" filepond-image name="avatar2")
-          .inner-group.inner-two-col
-            label(class="inner-label" for="avatar3") Ảnh 3
-            div(class="inner-upload-image")
-              input(type="file" id="avatar3" accept="image/*" filepond-image name="avatar3")
+            label(class="inner-label" for="images") Danh sách ảnh
+            div(class="inner-upload-image-multi")
+              input(type="file" multiple data-allow-reorder="true" id="images" accept="image/*" filepond-image-multi name="images")
           .inner-group
             label(class="inner-label" for="priceBook") Giá bán
             input(type="number" name="priceBook" id="priceBook")

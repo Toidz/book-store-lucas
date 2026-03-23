@@ -10,9 +10,8 @@ const schema = new mongoose.Schema(
         produce: String,
         author:String,
         position: Number,
-        avatar1: String,
-        avatar2: String,
-        avatar3: String,
+        avatar: String,
+        images:Array,
         priceBook: Number,
         priceSale:Number,
         numberBook: Number,
@@ -24,6 +23,11 @@ const schema = new mongoose.Schema(
         slug: {   
             type: String, 
             slug: "name",
+            unique: true
+        },
+        slugAuthor: {   
+            type: String, 
+            slug: "author",
             unique: true
         },
         deleted:{

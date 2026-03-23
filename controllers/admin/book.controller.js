@@ -126,7 +126,10 @@ module.exports.list = async (req,res) =>{
             locale: 'vi'
         })
         const regex = new RegExp(slug,"i")
-        find.slug= regex
+        find.$or = [
+            { slug: regex },
+            { slugAuthor: regex }
+        ];
     }
     const limit =6
     const totalBook = await Book.countDocuments(find)
@@ -159,13 +162,13 @@ module.exports.list = async (req,res) =>{
             const createdByName = await AccountAdmin.findOne({
                 _id: item.createdBy
             })
-            item.createdBy = createdByName.fullName
+            if(createdByName)item.createdBy = createdByName.fullName?createdByName.fullName:""
         }
         if(item.updatedBy){
             const updatedByName = await AccountAdmin.findOne({
                 _id: item.updatedBy
             })
-            item.updatedBy = updatedByName.fullName
+            if(updatedByName) item.updatedBy = updatedByName.fullName?updatedByName.fullName:""
         }
         item.createdAtFormat = moment(item.createdAt).format("HH:mm - DD/MM/YYYY")
         item.updatedAtFormat = moment(item.updatedAt).format("HH:mm - DD/MM/YYYY")
@@ -214,23 +217,15 @@ module.exports.createPost = async (req,res) =>{
         const position = await Book.countDocuments({})
         req.body.position = position +1
     }
-    if(req.files&&req.files.avatar1){
-        req.body.avatar1 =  req.files.avatar1[0].path
+    if(req.files && req.files.avatar) {
+        req.body.avatar = req.files.avatar[0].path;
+    } else {
+        delete req.body.avatar;
     }
-    else{
-        delete req.body.avatar1
-    }
-    if(req.files&&req.files.avatar2){
-        req.body.avatar2 =  req.files.avatar2[0].path
-    }
-    else{
-        delete req.body.avatar2
-    }
-    if(req.files&&req.files.avatar3){
-        req.body.avatar3 =  req.files.avatar3[0].path
-    }
-    else{
-        delete req.body.avatar3
+    if(req.files && req.files.images && req.files.images.length > 0) {
+        req.body.images = req.files.images.map(file => file.path);
+    } else {
+        delete req.body.images;
     }
     req.body.priceBook = req.body.priceBook? parseInt(req.body.priceBook): 0
     req.body.priceSale = req.body.priceBook? parseInt(req.body.priceBook): 0
@@ -238,7 +233,8 @@ module.exports.createPost = async (req,res) =>{
     req.body.createdBy = req.account.id
     req.body.updatedBy = req.account.id
     const exitsBook = await Book.findOne({
-        name: req.body.name
+        name: req.body.name,
+        deleted:false
     })
     if(exitsBook){
         res.json({
@@ -338,23 +334,15 @@ module.exports.editPatch = async (req,res) =>{
             req.body.position = totalCount +1
         }
 
-        if(req.files&&req.files.avatar1){
-            req.body.avatar1 =  req.files.avatar1[0].path
+        if(req.files && req.files.avatar) {
+            req.body.avatar = req.files.avatar[0].path;
+        } else {
+            delete req.body.avatar;
         }
-        else{
-            delete req.body.avatar1
-        }
-        if(req.files&&req.files.avatar2){
-            req.body.avatar2 =  req.files.avatar2[0].path
-        }
-        else{
-            delete req.body.avatar2
-        }
-        if(req.files&&req.files.avatar3){
-            req.body.avatar3 =  req.files.avatar3[0].path
-        }
-        else{
-            delete req.body.avatar3
+        if(req.files && req.files.images && req.files.images.length > 0) {
+            req.body.images = req.files.images.map(file => file.path);
+        } else {
+            delete req.body.images;
         }
      
         req.body.priceBook = req.body.priceBook? parseInt(req.body.priceBook): 0
@@ -434,13 +422,13 @@ module.exports.trash = async (req,res) =>{
                 const creater = await AccountAdmin.findOne({
                 _id:item.createdBy
                 })
-                item.createrName = creater.fullName
+                if(creater)item.createrName = creater.fullName?creater.fullName:""
             }
             if(item.updatedBy){
                 const updater = await AccountAdmin.findOne({
                     _id:item.updatedBy
                 })
-                item.updaterName = updater.fullName
+                if(updater)item.updaterName = updater.fullName?updater.fullName:""
             }
             item.formatCreated = moment(item.createdAt).format("HH:MM - DD/MM/YYYY")
             item.formatUpdated = moment(item.updatedAt).format("HH:MM - DD/MM/YYYY")

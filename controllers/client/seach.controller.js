@@ -16,7 +16,10 @@ module.exports.list = async (req,res)=>{
       locale: 'vi'
     })
     const regex = new RegExp(slug,"i")
-    find.slug = regex
+     find.$or = [
+      { slug: regex },
+      { slugAuthor: regex }
+    ];
   }
 
   const totalBook = await Book.countDocuments(find)

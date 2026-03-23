@@ -131,20 +131,41 @@ module.exports.deletePatch = async (req,res)=>{
         })
         if(orderFind){
             for (const item of orderFind.cart) {
-
                 const bookDetail = await Book.findOne({
                     _id:item.id_book,
-                    deleted:false
+                    deleted:false,
+                    $or: [
+                        { numberSale: 0 },
+                        { numberSale: { $exists: false } }
+                    ]
                 })
 
-                await Book.updateOne({
-                    _id:item.id_book,
-                    deleted:false
-                },{
-                    numberBook:bookDetail.numberBook+parseInt(item.quantity),
-                    numberSale:bookDetail.numberSale-parseInt(item.quantity)
-                })
-                
+                if(bookDetail){
+                    await Book.updateOne({
+                        _id:item.id_book,
+                        deleted:false
+                    },{
+                        numberBook:parseInt(bookDetail.numberBook)+parseInt(item.quantity)
+                    })
+                }
+                else{
+                    const bookDetail1 = await Book.findOne({
+                        _id:item.id_book,
+                        deleted:false,
+                        numberSale:{$gt:0}
+                    })
+
+                    if(bookDetail1){
+                        await Book.updateOne({
+                            _id:item.id_book,
+                            deleted:false
+                        },{
+                            numberBook:parseInt(bookDetail1.numberBook)+parseInt(item.quantity),
+                            numberSale:parseInt(bookDetail1.numberSale)-parseInt(item.quantity)
+                        })
+                    }    
+                }
+                 
             }
         }
         await Order.updateOne({

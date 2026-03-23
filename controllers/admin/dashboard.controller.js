@@ -5,6 +5,7 @@ const variable = require("../../config/variable")
 const moment = require("moment")
 const Category = require("../../models/category.model")
 const Book = require("../../models/book.model")
+const { default: slugify } = require("slugify")
 module.exports.dashboard =  async (req,res)=>{
     const dashboard ={
         account:0,
@@ -98,7 +99,7 @@ module.exports.dashboard =  async (req,res)=>{
     const totalClient = await AccountClient.countDocuments({
         deleted:false
     })
-    const topBook = listBook.sort((a, b) => b.sold - a.sold).slice(0, 5);
+    const topBook = listBook.sort((a, b) => b.sold - a.sold).slice(0, 5);  
     res.render("admin/pages/dashboard",{
         pageTitle:"Trang tổng quan",
         dashboard:dashboard,

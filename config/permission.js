@@ -4,6 +4,10 @@ module.exports.permission = [
         value:"dashboard-view"
     },
     {
+        lable:"Xem thống kê",
+        value:"statistics-view"
+    },
+    {
         lable:"Xem danh mục",
         value:"category-view"
     },
@@ -72,19 +76,19 @@ module.exports.permission = [
         value:"info-view"
     },
     {
-        lable:"Xem tài khoản quản trị",
+        lable:"Xem tài khoản nội bộ",
         value:"account-view"
     },
     {
-        lable:"Thêm tài khoản quản trị",
+        lable:"Thêm tài khoản nội bộ",
         value:"account-create"
     },
     {
-        lable:"Sửa tài khoản quản trị",
+        lable:"Sửa tài khoản nội bộ",
         value:"account-edit"
     },
     {
-        lable:"Xóa tài khoản quản trị",
+        lable:"Xóa tài khoản nội bộ",
         value:"account-delete"
     },
     {

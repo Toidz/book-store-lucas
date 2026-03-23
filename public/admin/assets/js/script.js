@@ -119,6 +119,37 @@ if(listFilepondImage.length > 0) {
 }
 // End Filepond Image
 
+// Filepond Image Multi
+const listFilepondImageMulti = document.querySelectorAll("[filepond-image-multi]");
+let filePondMulti = {};
+if(listFilepondImageMulti.length > 0) {
+  listFilepondImageMulti.forEach(filepondImage => {
+    FilePond.registerPlugin(FilePondPluginImagePreview);
+    FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+    let files = null;
+    const elementListImageDefault = filepondImage.closest("[list-image-default]");
+    if(elementListImageDefault) {
+      let listImageDefault = elementListImageDefault.getAttribute("list-image-default");
+      if(listImageDefault) {
+        listImageDefault = JSON.parse(listImageDefault);
+        files = [];
+        listImageDefault.forEach(image => {
+          files.push({
+            source: image, // Đường dẫn ảnh
+          });
+        })
+      }
+    }
+
+    filePondMulti[filepondImage.name] = FilePond.create(filepondImage, {
+      labelIdle: '+',
+      files: files,
+    });
+  });
+}
+// End Filepond Image Multi
+
 // Category Create Form
 const categoryCreateForm = document.querySelector("#category-create-form");
 if(categoryCreateForm) {
@@ -327,21 +358,10 @@ if(bookCreateForm) {
       const author = event.target.author.value;
       const category = event.target.category.value;
       const position = event.target.position.value;
-      const avatars1 = filePond.avatar1.getFiles();
-      const avatars2 = filePond.avatar2.getFiles();
-      const avatars3 = filePond.avatar3.getFiles();
-
-      let avatar1 = null;
-      if(avatars1.length > 0) {
-        avatar1 = avatars1[0].file;
-      }
-      let avatar2= null;
-      if(avatars2.length > 0) {
-        avatar2 = avatars2[0].file;
-      }
-      let avatar3 = null;
-      if(avatars3.length > 0) {
-        avatar3 = avatars3[0].file;
+      const avatars = filePond.avatar.getFiles();
+      let avatar = null;
+      if(avatars.length > 0) {
+        avatar = avatars[0].file;
       }
       const priceBook = event.target.priceBook.value;
       const numberBook = event.target.numberBook.value;
@@ -353,12 +373,15 @@ if(bookCreateForm) {
       formData.append("author",author)
       formData.append("category",category)
       formData.append("position",position)
-      formData.append("avatar1",avatar1)
-      formData.append("avatar2",avatar2)
-      formData.append("avatar3",avatar3)
+      formData.append("avatar",avatar)
       formData.append("priceBook",priceBook)
       formData.append("numberBook",numberBook)
       formData.append("information",information)
+      if(filePondMulti.images.getFiles().length > 0) {
+        filePondMulti.images.getFiles().forEach(item => {
+          formData.append("images", item.file);
+        })
+      }
       fetch(`/${pathAdmin}/book/create`,{
         method:"POST",
         body: formData
@@ -422,46 +445,21 @@ if(bookeditForm) {
     .onSuccess((event) => {
       const valueName = document.querySelector("[valueName]")
       const current = valueName.getAttribute("valueName")
-      console.log(current)
       const id = event.target.id.value
       const name = event.target.name.value;
       const produce = event.target.produce.value;
       const author = event.target.author.value;
       const category = event.target.category.value;
       const position = event.target.position.value;
-      const avatars1 = filePond.avatar1.getFiles();
-      const avatars2 = filePond.avatar2.getFiles();
-      const avatars3 = filePond.avatar3.getFiles();
-      let avatar1 = null;
-      if(avatars1.length > 0) {
-        avatar1 = avatars1[0].file;
-        const elementImageDefault = event.target.avatar1.closest("[image-default]");
+      const avatars = filePond.avatar.getFiles();
+      let avatar = null;
+      if(avatars.length > 0) {
+        avatar = avatars[0].file;
+        const elementImageDefault = event.target.avatar.closest("[image-default]");
         if(elementImageDefault){
           const imageDefault = elementImageDefault.getAttribute("image-default");
-          if(imageDefault.includes(avatar1.name)) {
-            avatar1=null
-          }
-        }
-      }
-      let avatar2 = null;
-      if(avatars2.length > 0) {
-        avatar2 = avatars2[0].file;
-        const elementImageDefault = event.target.avatar2.closest("[image-default]");
-        if(elementImageDefault){
-          const imageDefault = elementImageDefault.getAttribute("image-default");
-          if(imageDefault.includes(avatar2.name)) {
-            avatar2=null
-          }
-        }
-      }
-      let avatar3 = null;
-      if(avatars3.length > 0) {
-        avatar3 = avatars3[0].file;
-        const elementImageDefault = event.target.avatar3.closest("[image-default]");
-        if(elementImageDefault){
-          const imageDefault = elementImageDefault.getAttribute("image-default");
-          if(imageDefault.includes(avatar3.name)) {
-            avatar3=null
+          if(imageDefault.includes(avatar.name)) {
+            avatar=null
           }
         }
       }
@@ -475,13 +473,16 @@ if(bookeditForm) {
       formData.append("author",author)
       formData.append("produce",produce)
       formData.append("position",position)
-      formData.append("avatar1",avatar1);
-      formData.append("avatar2",avatar2);
-      formData.append("avatar3",avatar3);
+      formData.append("avatar",avatar);
       formData.append("priceBook",priceBook)
       formData.append("numberBook",numberBook)
       formData.append("information",information)
       formData.append("current",current)
+      if(filePondMulti.images.getFiles().length > 0) {
+        filePondMulti.images.getFiles().forEach(item => {
+          formData.append("images", item.file);
+        })
+      }
       fetch(`/${pathAdmin}/book/edit/${id}`,{
         method:"PATCH",
         body: formData
