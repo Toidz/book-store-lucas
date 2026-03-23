@@ -12,7 +12,7 @@ module.exports.home = async (req,res) => {
     category: {$in:arrayVn},
     deleted:false,
   })
-  .limit(4)
+  .limit(5)
   .sort({
     position:"desc"
   })
@@ -23,7 +23,7 @@ module.exports.home = async (req,res) => {
     category: {$in:arrayNn},
     deleted:false
   })
-  .limit(4)
+  .limit(5)
   .sort({
     position:"desc"
   })
@@ -41,13 +41,13 @@ module.exports.home = async (req,res) => {
   const bestBook = await Book.find({
     deleted:false
   })
-  .limit(6)
+  .limit(10)
   .sort({
     numberSale:"desc"
   })
   const newBook = await Book.find({
     deleted:false
-  }).sort({createdAt:-1}).limit(6)
+  }).sort({createdAt:-1}).limit(10)
   for(item of bookVn){
     if(item.idEvent){
       const event = await Event.findOne({
@@ -112,7 +112,7 @@ module.exports.home = async (req,res) => {
     const historyBook = await Book.find({
       deleted:false,
       category:{$in:existAccount.history}
-    }).limit(6)
+    }).limit(10)
 
     for(item of historyBook){
       if(item.idEvent){

@@ -6,12 +6,14 @@ mixin product-item(item)
     - if(item.decorate=="hot")
       .inner-deco 
         img(src="/assets/images/bestSale.png" style="width:100px")
-    .inner-image
+    .inner-image(class=item.numberBook == 0 ? "sold-out" : "")
       a(href=`/book/detail/${item.slug}`)
         img(
-          alt="" 
+          alt=item.name 
           src=item.avatar
           )
+    - if(item.numberBook==0)
+      .inner-soldOut Hết hàng
     .inner-content
       .inner-desc-item
         | Mã sách:
