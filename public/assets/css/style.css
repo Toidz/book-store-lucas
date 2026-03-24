@@ -829,7 +829,7 @@ input, button, textarea {
 }
 
 .product-item .inner-content .inner-title a:hover {
-  color: var(--color-primary);
+  color: var(--color-second);
 }
 
 .product-item .inner-content .inner-prices {

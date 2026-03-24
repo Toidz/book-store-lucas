@@ -59,6 +59,7 @@ module.exports.register = (req,res)=>{
 }
 module.exports.otpRegister = async (req,res)=>{
     const {email,fullName,password} = req.body;
+
     const existAccount= await AccountClient.findOne({
         email:email
     })
@@ -89,8 +90,7 @@ module.exports.otpRegister = async (req,res)=>{
         expireAt: Date.now()+ 5*60*1000
     })
     await dataFinal.save();
-
-    const subject = "Mã opt đăng ký tài khoản"
+    const subject = "Mã opt đăng ký tài khoản website LucasBook"
     const content = `Mã otp của bạn là <b>${otp}</b>, vui lòng không chia sẻ cho bất kỳ ai!`
     mailerHelper.sendMail(email,subject,content)
 
@@ -99,7 +99,12 @@ module.exports.otpRegister = async (req,res)=>{
         message:"Đã gửi mã OTP qua email"
     })
 }
-module.exports.verifyOtp = (req,res)=>{
+module.exports.verifyOtp = async (req,res)=>{
+    const email = req.query.email
+    const existOtp = await Otp.findOne({
+        email:email
+    })
+    if(!existOtp) return res.redirect("/account/register");
     res.render("client/pages/verify-otp",{
         pageTitle:"Nhập mã otp"
     })
@@ -124,7 +129,7 @@ module.exports.verifyOtpPost = async (req,res)=>{
     {
         res.json({
             code:"error",
-            message:"Otp đã hết hiệu lực, vui lòng đăng ký lại!"
+            message:"Mã Otp sai, vui lòng nhập lại!"
         })
         return;
     }
@@ -136,9 +141,7 @@ module.exports.verifyOtpPost = async (req,res)=>{
         email:email,
         password:hash
     })
-
     await newAccount.save();
-
     res.json({
         code:"success",
         message:"Đăng ký tài khoản thành công!"

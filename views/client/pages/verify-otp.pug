@@ -2,7 +2,7 @@ extends ../layout/account.pug
 block main
   .form-account
     h2.inner-title Nhập mã OTP để đăng ký
-    p.inner-desc Vui lòng nhập mã OTP để đăng ký
+    p.inner-desc Mã otp đã gửi về email của bạn
     form.inner-form#otp-register
       .inner-group
         label(
@@ -13,10 +13,10 @@ block main
           type="text"
           name="otp"
           id="otp"
-          placeholder="Ví dụ: 123456"
+          placeholder="Nhập mã otp của bạn"
           class="inner-control"
         )
-      button(class="inner-button") Gửi mã OTP
+      button(class="inner-button") Xác nhận mã OTP
     .inner-more
       span Otp hết hiệu lực?
       a(href=`/account/register`) Đăng ký 

@@ -1171,9 +1171,12 @@ if(deleteCurrentAddress){
 
 //get city district ward
 document.addEventListener("DOMContentLoaded", () => {
+  if (typeof $ === "undefined") return; 
+  if (!$("#city").length || !$("#district").length || !$("#ward").length) return;
   const citySelect = $("#city");
   const districtSelect = $("#district");
   const wardSelect = $("#ward");
+  
   const savedCity = citySelect.attr("saveCity");
   const savedDistrict = districtSelect.attr("saveDistrict");
   const savedWard = wardSelect.attr("saveWard");
