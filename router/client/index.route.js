@@ -19,6 +19,7 @@ const payRouter = require(("./pay.route"))
 const orderHistoryRouter = require("./order-history.route")
 const chatRouter = require("./chat.route")
 const saleRouter = require("./sale.route")
+const websiteInfoMiddleware = require("../../middlewares/admin/setting-info.middleware");
 router.use(infoMiddleware.info)
 router.use(categoryMiddleware.category)
 router.use("/book",bookRouter);
@@ -31,7 +32,7 @@ router.use("/order",authMiddleWareClient.verifyToken,orderRouter);
 router.use("/new",newRouter);
 router.use("/contact-client",contactClientRouter);
 router.use("/policy-service",policyServiceRouter);
-router.use("/account",accountRouter);
+router.use("/account",websiteInfoMiddleware,accountRouter);
 router.use("/info-user",authMiddleWareClient.verifyToken,infoUserRouter);
 router.use("/order-history",authMiddleWareClient.verifyToken,orderHistoryRouter);
 router.use("/api/chat", chatRouter);

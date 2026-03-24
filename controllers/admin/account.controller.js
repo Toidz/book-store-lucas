@@ -58,48 +58,48 @@ module.exports.loginPost = async (req,res)=>{
         message:"Đăng nhập thành công!"
     })
 }
-module.exports.register = (req,res)=>{
-    res.render("admin/pages/register",{
-        pageTitle:"Đăng ký"
-    })
-}
-module.exports.registerPost = async (req,res)=>{
-    const {fullName,email,password,status} = req.body;
-    const existAccount= await AccountAdmin.findOne({
-        email:email
-    })
-    if(existAccount){
-        res.json({
-            code:"error",
-            message:"Email đã tồn tại trong hệ thống!"
-        })
-        return;
-    }
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password,salt);
+// module.exports.register = (req,res)=>{
+//     res.render("admin/pages/register",{
+//         pageTitle:"Đăng ký"
+//     })
+// }
+// module.exports.registerPost = async (req,res)=>{
+//     const {fullName,email,password,status} = req.body;
+//     const existAccount= await AccountAdmin.findOne({
+//         email:email
+//     })
+//     if(existAccount){
+//         res.json({
+//             code:"error",
+//             message:"Email đã tồn tại trong hệ thống!"
+//         })
+//         return;
+//     }
+//     const salt = await bcrypt.genSalt(10);
+//     const hash = await bcrypt.hash(password,salt);
 
-    const newAccount = new AccountAdmin({
-        fullName:fullName,
-        email:email,
-        password:hash,
-        status:"initial"
-    })
+//     const newAccount = new AccountAdmin({
+//         fullName:fullName,
+//         email:email,
+//         password:hash,
+//         status:"initial"
+//     })
 
-    await newAccount.save();
+//     await newAccount.save();
 
-    const data = await AccountAdmin.findOne({
-        email:email
-    })
-    res.json({
-        code:"success",
-        message:"Đăng ký tài khoản thành công!"
-    })
-}
-module.exports.registerInitial = (req,res)=>{
-    res.render("admin/pages/register-initial",{
-        pageTitle:"Tài khoản đã được khởi tạo"
-    })
-}
+//     const data = await AccountAdmin.findOne({
+//         email:email
+//     })
+//     res.json({
+//         code:"success",
+//         message:"Đăng ký tài khoản thành công!"
+//     })
+// }
+// module.exports.registerInitial = (req,res)=>{
+//     res.render("admin/pages/register-initial",{
+//         pageTitle:"Tài khoản đã được khởi tạo"
+//     })
+// }
 
 module.exports.forgotPassword = (req,res)=>{
     res.render("admin/pages/forgot-password",{
@@ -147,7 +147,12 @@ module.exports.forgotPasswordPost = async (req,res) =>{
         message:"Đã gửi mã OTP qua email"
     })
 }
-module.exports.otpPassword = (req,res)=>{
+module.exports.otpPassword = async (req,res)=>{
+    const email = req.query.email
+    const existOtp = await ForgotPassword.findOne({
+        email:email
+    })
+    if(!existOtp) return res.redirect("/account/forgot-password");
     res.render("admin/pages/otp-password",{
         pageTitle:"Nhập mã OTP"
     })

@@ -1,5 +1,5 @@
 const AccountClient = require("../../models/account-client.model")
-const ForgotPassword = require("../../models/forgotPassword.model")
+const ForgotPasswordClient = require("../../models/forgotPasswordClient.model")
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const generateHelper = require("../../helpers/generate.helper");
@@ -165,7 +165,7 @@ module.exports.forgotPasswordPost = async (req,res) =>{
         })
         return;
     }
-    const exitsEmailForgotpassword = await ForgotPassword.findOne({
+    const exitsEmailForgotpassword = await ForgotPasswordClient.findOne({
         email:email
     })
     if(exitsEmailForgotpassword)
@@ -178,7 +178,7 @@ module.exports.forgotPasswordPost = async (req,res) =>{
     }
 
     const otp = generateHelper.generateRandomNumber(6);
-    const dataFinal = new ForgotPassword({
+    const dataFinal = new ForgotPasswordClient({
         email:email,
         otp:otp,
         expireAt: Date.now()+ 5*60*1000
@@ -194,14 +194,19 @@ module.exports.forgotPasswordPost = async (req,res) =>{
         message:"Đã gửi mã OTP qua email"
     })
 }
-module.exports.otpPassword = (req,res)=>{
+module.exports.otpPassword = async (req,res)=>{
+    const email = req.query.email
+    const existOtp = await ForgotPasswordClient.findOne({
+        email:email
+    })
+    if(!existOtp) return res.redirect("/account/forgot-password");
     res.render("client/pages/otp-password",{
         pageTitle:"Nhập mã OTP"
     })
 }
 module.exports.otpPasswordPost = async (req,res)=>{
     const {email,otp} = req.body;
-    const existOtp = await ForgotPassword.findOne({
+    const existOtp = await ForgotPasswordClient.findOne({
         email:email,
         otp:otp
     })
