@@ -3193,11 +3193,11 @@ input, button, textarea {
 }
 .inner-fill-address .inner-box{
   position:absolute;
-  top: 25%;
+  top: 20%;
   left: 50%;
   transform: translate(-50%, -50%);
   width:500px;
-  height:530px;
+  height:auto;
   background-color:white;
   z-index:100;
   border-radius:8px;
@@ -3257,7 +3257,7 @@ input, button, textarea {
 }
 .inner-fill-address .just-validate-error-label {
   position: absolute;
-  top: 43px;
+  top: 47px;
   left: 0px;
   font-size: 12px;
   color: #ff8989 !important;
@@ -3353,7 +3353,7 @@ input, button, textarea {
 }
 .inner-fill-address2 .just-validate-error-label {
   position: absolute;
-  top: 43px;
+  top: 50px;
   left: 0px;
   font-size: 12px;
   color: #ff8989 !important;
@@ -3599,7 +3599,7 @@ input, button, textarea {
   left: 50%;
   transform: translate(-50%, -50%);
   width:500px;
-  height:520px;
+  height:auto;
   background-color:white;
   z-index:100;
   border-radius:8px;
@@ -3614,7 +3614,7 @@ input, button, textarea {
 .inner-add-new-address  .inner-box .inner-fill{
   display:flex;
   flex-direction:column;
-  gap:20px;
+  gap:30px;
 }
 .inner-add-new-address  .inner-box .inner-item-info{
   display:flex;
@@ -3661,9 +3661,9 @@ input, button, textarea {
 
 .inner-add-new-address .just-validate-error-label {
   position: absolute;
-  top: 43px;
+  top: 53px;
   left: 0px;
-  font-size: 12px;
+  font-size: 10px;
   color: #ff8989 !important;
   z-index:100;
 }
