@@ -1684,15 +1684,26 @@ const aipDeleteItemCarts = document.querySelectorAll("[aip-delete-item-cart]")
 if(aipDeleteItemCarts){
   aipDeleteItemCarts.forEach(aipDeleteItemCart=>{
     aipDeleteItemCart.addEventListener("click",()=>{
-      console.log(11)
       const api = aipDeleteItemCart.getAttribute("aip-delete-item-cart")
-      fetch(api,{
-        })
-        .then(res=>res.json())
-        .then(data=>{
-          window.location.reload()
-        })
-      })
+      Swal.fire({
+        title: "Bạn có chắc chắn muốn xóa sản phẩm này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Không",
+      }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(api,{
+          })
+          .then(res=>res.json())
+          .then(data=>{
+            window.location.reload()
+          })
+        }
+    })
+    })
   })
 }
 //End aip-delete-item-cart
