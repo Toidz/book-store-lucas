@@ -173,11 +173,10 @@ module.exports.zalopayPost = async (req,res)=>{
         else {
 
         let dataJson = JSON.parse(dataStr, config.key2);
-        const [orderId,phone] = dataJson.app_user.split("-");
+        const [orderId] = dataJson.app_user.split("-");
  
         await Order.updateOne({
             _id: orderId,
-            phone: phone,
             deleted: false
         },{
             payStatus: "paid"
