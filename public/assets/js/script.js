@@ -817,17 +817,21 @@ if (numberDetail) {
         number = valueStock;
       }
       value = number.toString();
+      event.target.value = value;
     }
-    event.target.value = value;
+
   });
   numberDetail.addEventListener("change", () => {
     const number = document.querySelector("[number]");
-    number.innerHTML = numberDetail.value;
-
+    let quantity = Number(numberDetail.value);
+    if (isNaN(quantity) || quantity <= 0) {
+      quantity = 1; 
+    }
+    number.innerHTML = quantity;
     const priceBook = document.querySelector("[priceBook]");
     const totalPrice = document.querySelector("[totalPrice]");
     totalPrice.innerHTML = (
-      parseInt(numberDetail.value) * parseInt(priceBook.getAttribute("priceBook"))
+      parseInt(quantity) * parseInt(priceBook.getAttribute("priceBook"))
     ).toLocaleString("vi-VN");
   });
 }
@@ -840,7 +844,11 @@ if(bookDetail){
     const input = bookDetail.querySelector("[number-detail]")
     const id_user = document.querySelector("[id_user]")
     const valueIdUser = id_user.getAttribute("id_user")
-    const numberBook = input.value
+    let quantity = Number(input.value);
+    if (isNaN(quantity) || quantity <= 0) {
+      quantity = 1; 
+    }
+    const numberBook = quantity
     const dataFinal ={
       id_book:idBook,
       numberBook,
@@ -1598,7 +1606,11 @@ if (itemInfoDetails ) {
     });
     numberChange.addEventListener("change", () => {
       const numberQuantity = itemInfoDetail.querySelector("[number-quantity]");
-      numberQuantity.innerHTML = numberChange.value;
+      let quantity = Number(numberChange.value);
+      if (isNaN(quantity) || quantity <= 0) {
+        quantity = 1; 
+      }
+      numberQuantity.innerHTML = quantity;
       const getIdBook = itemInfoDetail.querySelector("[get_id_book]")
       const idBook = getIdBook.getAttribute("get_id_book");
       const getIdUser = itemInfoDetail.querySelector("[get_id_user]")
@@ -1609,7 +1621,7 @@ if (itemInfoDetails ) {
           "Content-type":"application/json"
         },
         body:JSON.stringify({
-          quantityNew:numberChange.value,
+          quantityNew:quantity,
           idBook:idBook,
           idUser:idUser
         })

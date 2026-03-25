@@ -31,7 +31,7 @@ module.exports.home = async (req,res) => {
   const newList = await New.find({
     deleted:false
   })
-  .limit(5)
+  .limit(10)
   .sort({
     position:"desc"
   })

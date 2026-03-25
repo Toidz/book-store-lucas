@@ -129,27 +129,15 @@ block main
         data-aos-duration="800" 
         data-aos="fade-up"
         )
-        each item,index in newList
-          - if(index!=1)  
-            .blog-item
-              a(href=`/new/${item.slug}`)
-                .inner-image
-                  img(
-                    alt=item.name
-                    src=item.avatar
-                    )
-                .inner-content
-                  .inner-date #{item.createdAtFormat}
-                  h3.inner-title #{item.name}
-          - if(index==1)      
-            .blog-item-2
-              a(href=`/new/${item.slug}`)
-                .inner-image
-                  img(
-                    alt=item.name
-                    src=item.avatar
-                    )
-                .inner-content
-                  .inner-date #{item.createdAtFormat}
-                  h3.inner-title #{item.name}
+        each item,index in newList 
+          .blog-item
+            a(href=`/new/${item.slug}`)
+              .inner-image
+                img(
+                  alt=item.name
+                  src=item.avatar
+                  )
+              .inner-content
+                .inner-date #{item.createdAtFormat}
+                h3.inner-title #{item.name}
   // End Section 8
