@@ -28,7 +28,7 @@ router.use("/cart",authMiddleWareClient.verifyToken,cartRouter);
 router.use("/pay",authMiddleWareClient.verifyToken,payRouter);
 router.use("/contact",contactRouter);
 router.use("/search",searchRouter);
-router.use("/order",authMiddleWareClient.verifyToken,orderRouter);
+router.use("/order",orderRouter);
 router.use("/new",newRouter);
 router.use("/contact-client",contactClientRouter);
 router.use("/policy-service",policyServiceRouter);

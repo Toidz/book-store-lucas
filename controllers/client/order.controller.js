@@ -66,12 +66,8 @@ module.exports.create = async (req,res)=>{
 module.exports.success = async (req,res)=>{
     try {
         const orderId = req.query.orderId
-        const id_user = req.account.id
         const find ={
             deleted:false
-        }
-        if(id_user){
-            find.id_user = id_user
         }
         if(orderId){
             find._id=orderId
@@ -131,7 +127,7 @@ module.exports.zalopay = async (req,res)=>{
         const order = {
             app_id: config.app_id,
             app_trans_id: `${moment().format('YYMMDD')}_${transID}`, 
-            app_user: `${orderDetail.id}-${orderDetail.phone}`,
+            app_user: `${orderDetail.id}`,
             app_time: Date.now(), 
             item: JSON.stringify(items),
             embed_data: JSON.stringify(embed_data),
@@ -159,7 +155,6 @@ module.exports.zalopayPost = async (req,res)=>{
     key2:  process.env.ZALOPAYKEY2
     };
     let result = {};
-
     try {
         let dataStr = req.body.data;
         let reqMac = req.body.mac;
@@ -173,8 +168,7 @@ module.exports.zalopayPost = async (req,res)=>{
         else {
 
         let dataJson = JSON.parse(dataStr, config.key2);
-        const [orderId] = dataJson.app_user.split("-");
- 
+        const orderId = dataJson.app_user;
         await Order.updateOne({
             _id: orderId,
             deleted: false
