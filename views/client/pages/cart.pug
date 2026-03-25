@@ -10,64 +10,73 @@ block main
           a.inner-back(href="/")
             | Quay lại mua hàng
             i.fa-solid.fa-angle-right
-        .inner-tour-list
-          each item in listItem
-            .inner-tour-item(item-info-detail)
-              .inner-actions
-                button.inner-delete(aip-delete-item-cart=`/cart/delete?id_book=${item.id_book}&id_cart=${item.id}`)
-                  i.fa-solid.fa-xmark
-                input.inner-check(
-                  check-item-cart
-                  quantity = item.quantity
-                  priceBook = item.priceLast?item.priceLast:item.priceBook
-                  checked=item.checkItem? true : false
-                  type="checkbox"
-                  )
-              .inner-product
-                .inner-image
-                  a(href=`/book/detail/${item.slug}`)
-                    img(
-                      src=`${item.avatar}`
-                      alt=`${item.name}`
-                      )
-                .inner-content
-                  .inner-title
-                    a(href=`/book/detail/${item.slug}`) #{item.name}
-                  .inner-meta
-                    .inner-meta-item
-                      | Mã sách:
-                      b  #{item.bookCode}
-                    .inner-meta-item
-                      | Tên tác giả:
-                      b  #{item.author}
-                    .inner-meta-item
-                      | Nhà xuất bản:
-                      b  #{item.produce}
-              .inner-quantity
-                .inner-list
-                  .inner-item
-                    .inner-item-label Số lượng mua:
-                    .inner-item-input
-                      input(
-                        type="number" 
-                        min="1" 
-                        value=`${item.quantity}`
-                        number-change
-                        stock-book-cart=item.stock
-                        get_id_book=item.id_book
-                        get_id_user=item.id_user
+        - if(listItem&&listItem.length>0)
+          .inner-tour-list
+            each item in listItem
+              .inner-tour-item(item-info-detail)
+                .inner-actions
+                  button.inner-delete(aip-delete-item-cart=`/cart/delete?id_book=${item.id_book}&id_cart=${item.id}`)
+                    i.fa-solid.fa-xmark
+                  input.inner-check(
+                    check-item-cart
+                    quantity = item.quantity
+                    priceBook = item.priceLast?item.priceLast:item.priceBook
+                    checked=item.checkItem? true : false
+                    type="checkbox"
+                    )
+                .inner-product
+                  .inner-image
+                    a(href=`/book/detail/${item.slug}`)
+                      img(
+                        src=`${item.avatar}`
+                        alt=`${item.name}`
                         )
-                    .inner-item-price
-                      span(number-quantity) #{item.quantity}
-                      span x
-                      span.inner-highlight(priceBook=item.priceLast?item.priceLast:item.priceBook) #{(item.priceLast?item.priceLast:item.priceBook).toLocaleString("vi-VN")}
-        .inner-list-price
-          .inner-item
-            .inner-label Tổng tiền:
-            .inner-price-highlight 
-              span(totalPrice) 0
-              span đ
-        .inner-button-pay-cart 
-          a#btn-pay Tiến hành đặt hàng
+                  .inner-content
+                    .inner-title
+                      a(href=`/book/detail/${item.slug}`) #{item.name}
+                    .inner-meta
+                      .inner-meta-item
+                        | Mã sách:
+                        b  #{item.bookCode}
+                      .inner-meta-item
+                        | Tên tác giả:
+                        b  #{item.author}
+                      .inner-meta-item
+                        | Nhà xuất bản:
+                        b  #{item.produce}
+                .inner-quantity
+                  .inner-list
+                    .inner-item
+                      .inner-item-label Số lượng mua:
+                      .inner-item-input
+                        input(
+                          type="number" 
+                          min="1" 
+                          value=`${item.quantity}`
+                          number-change
+                          stock-book-cart=item.stock
+                          get_id_book=item.id_book
+                          get_id_user=item.id_user
+                          )
+                      .inner-item-price
+                        span(number-quantity) #{item.quantity}
+                        span x
+                        span.inner-highlight(priceBook=item.priceLast?item.priceLast:item.priceBook) #{(item.priceLast?item.priceLast:item.priceBook).toLocaleString("vi-VN")}
+          .inner-list-price
+            .inner-item
+              .inner-label Tổng tiền:
+              .inner-price-highlight 
+                span(totalPrice) 0
+                span đ
+          .inner-button-pay-cart 
+            a#btn-pay Tiến hành đặt hàng
+        - else 
+          .inner-empty
+            .inner-logo 
+              img(src="/assets/images/emptycart.svg")
+            .inner-text 
+              span Chưa có sản phẩm trong giỏ hàng của bạn!
+            .inner-link   
+              a(href="/") Mua sắm ngay
   // End Section 11
   

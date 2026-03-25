@@ -3903,3 +3903,33 @@ input, button, textarea {
 .btn-home:hover {
   background: #e63c3f;
 }
+
+//empty cart
+.inner-empty{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  justify-content: center;
+}
+.inner-empty .inner-logo{
+  text-align:center
+}
+.inner-empty .inner-text{
+  text-align:center;
+  margin-top:10px;
+  color:gray;
+  font-size:14px;
+}
+.inner-empty .inner-link{
+  text-align:center;
+   margin-top:40px;
+}
+.inner-empty .inner-link a{
+  padding:12px 30px;
+  color:white;
+  background-color:var(--color-primary);
+  border-radius:8px;
+}
+.inner-empty .inner-link a:hover{
+  background-color:var(--color-second);
+}
