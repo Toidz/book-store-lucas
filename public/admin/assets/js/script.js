@@ -409,7 +409,7 @@ if(bookeditForm) {
     .addField('#name', [
       {
         rule: 'required',
-        errorMessage: 'Vui lòng nhập tên book!'
+        errorMessage: 'Vui lòng nhập tên sách!'
       }
     ])
     .addField('#produce', [

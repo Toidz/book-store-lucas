@@ -14,7 +14,7 @@ const slugify = (str) => {
     .replace(/\s+/g, "-");
 };
 const stopWords = [
-  "toi","tim","tim kiem","muon","mua","sach","cho","minh","ve","co","cua"
+  "toi","tim","tim kiem","muon","mua","sach","cho","minh","ve","co","cua","tac","gia","the","loai","danh","muc"
 ];
 const cleanMessage = (msg) => {
   const words = normalizeText(msg).split(" ");
@@ -55,7 +55,7 @@ const extractPriceFilter = (message) => {
         deleted:false
       })
       .sort({ numberSale:-1 })
-      .limit(5);
+      .limit(8);
       return res.json({
         message:"Top sách bán chạy",
         books
@@ -66,7 +66,7 @@ const extractPriceFilter = (message) => {
         deleted:false
       })
       .sort({ createdAt:-1 })
-      .limit(5);
+      .limit(8);
       return res.json({
         message:"Sách mới nhất",
         books
@@ -75,7 +75,7 @@ const extractPriceFilter = (message) => {
     const bookBySlug = await Book.find({
       slug: { $regex: slug, $options:"i" },
       deleted:false
-    }).limit(5);
+    }).limit(8);
     if (bookBySlug.length > 0) {
       return res.json({
         message:"Mình tìm thấy sách bạn cần",
@@ -86,7 +86,7 @@ const extractPriceFilter = (message) => {
     const authorBooks = await Book.find({
       authorSlug: { $regex: slugAu, $options:"i" },
       deleted:false
-    }).limit(5);
+    }).limit(8);
     if (authorBooks.length > 0) {
       return res.json({
         message:"Sách của tác giả bạn tìm",
@@ -117,7 +117,7 @@ const extractPriceFilter = (message) => {
       if (priceFilter) {
         query.priceBook = priceFilter;
       }
-      const books = await Book.find(query).limit(5);
+      const books = await Book.find(query).limit(8);
       return res.json({
         message:`Mình tìm thấy ${books.length} sách phù hợp`,
         books
@@ -127,7 +127,7 @@ const extractPriceFilter = (message) => {
       deleted:false
     })
     .sort({ numberSale:-1 })
-    .limit(5);
+    .limit(8);
     return res.json({
       message:"Bạn có thể tham khảo các sách bán chạy",
       books:suggest

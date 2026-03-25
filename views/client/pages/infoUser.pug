@@ -4,8 +4,8 @@ block main
     .container
       .inner-wrap
         .inner-content 
-          h2 Thông tin tài khoản
-          p Tên tài khoản: #{existAccount.fullName}
+          h2 Thông tin cá nhân
+          p Họ và tên: #{existAccount.fullName}
           p Số điện thoại: #{existAccount.phone}
           p Email: #{existAccount.email}
           p Địa chỉ hiện tại: #{address}
@@ -14,7 +14,7 @@ block main
   .inner-fill-address2
     form#inner-fill-user
       .inner-box2 
-        .inner-title Cập nhật địa chỉ
+        .inner-title Cập nhật thông tin cá nhân
         .inner-fill 
           .inner-item-info-email
             label(for="id") id

@@ -38,7 +38,6 @@ module.exports.getInfoUser = async (req,res)=>{
 }
 module.exports.postInfoUser = async (req,res)=>{
     const {fullName,phone,id,city,district,ward,street} = req.body;
-    
     const existAccount = await AccountClient.findOne({
         _id:id
     })
@@ -53,7 +52,7 @@ module.exports.postInfoUser = async (req,res)=>{
         _id:id,
         deleted:false
     },{
-        name:fullName,
+        fullName:fullName,
         phone:phone,
         city:city,
         district:district,

@@ -1052,8 +1052,18 @@ if(innerFillAddress1){
     .addField('#fullName', [
       {
         rule: 'required',
-        errorMessage: 'Vui lòng nhập tên của bạn!',
-      }
+        errorMessage: 'Vui lòng nhập họ tên!'
+      },
+      {
+        rule: 'minLength',
+        value: 5,
+        errorMessage: 'Họ tên phải có ít nhất 5 ký tự!',
+      },
+      {
+        rule: 'maxLength',
+        value: 50,
+        errorMessage: 'Họ tên không được vượt quá 50 ký tự!',
+      },
     ])
     .addField('#phone', [
       {
@@ -1273,7 +1283,7 @@ if (boxChat) {
         const chatBot = document.createElement("div");
         chatBot.className = "inner-chat-bot";
         let rep = `
-          <strong>${data.message}</strong><br/><br/>
+          <strong>${data.message}!</strong><br/>
           <b>Các sản phẩm đề xuất:</b><br/>
           `;
 
@@ -1330,8 +1340,18 @@ if(innerFillAddress){
     .addField('#fullName', [
       {
         rule: 'required',
-        errorMessage: 'Vui lòng nhập tên của bạn!',
-      }
+        errorMessage: 'Vui lòng nhập họ tên!'
+      },
+      {
+        rule: 'minLength',
+        value: 5,
+        errorMessage: 'Họ tên phải có ít nhất 5 ký tự!',
+      },
+      {
+        rule: 'maxLength',
+        value: 50,
+        errorMessage: 'Họ tên không được vượt quá 50 ký tự!',
+      },
     ])
     .addField('#phone', [
       {
@@ -1419,8 +1439,18 @@ if(innerAddNewAddress){
     .addField('#fullName', [
       {
         rule: 'required',
-        errorMessage: 'Vui lòng nhập tên của bạn!',
-      }
+        errorMessage: 'Vui lòng nhập họ tên!'
+      },
+      {
+        rule: 'minLength',
+        value: 5,
+        errorMessage: 'Họ tên phải có ít nhất 5 ký tự!',
+      },
+      {
+        rule: 'maxLength',
+        value: 50,
+        errorMessage: 'Họ tên không được vượt quá 50 ký tự!',
+      },
     ])
     .addField('#phone', [
       {

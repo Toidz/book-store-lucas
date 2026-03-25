@@ -3515,7 +3515,7 @@ input, button, textarea {
 
 .inner-chat-user {
   align-self: flex-end;
-  background: var(--color-second);
+  background: gray;
   color: white;
   padding: 12px 18px;
   border-radius: 10px;
