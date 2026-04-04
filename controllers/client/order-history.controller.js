@@ -17,13 +17,28 @@ module.exports.list = async (req,res)=>{
         ];
     }
 
-    const listOrder = await Order.find(dataFind)
+    const totalOrder = await Order.countDocuments(dataFind)
+    const limit =4
+    const totalPage = Math.ceil(totalOrder/limit)
+    let page =1
+    if(req.query.page>0){
+        page = req.query.page
+    }
+    if(req.query.page>totalPage){
+        page=totalPage
+    }
+    const skip = (page-1)*limit
+    const listOrder = await Order.find(dataFind) 
+    .skip(skip)
+    .limit(limit)
     for (const item of listOrder) {
         item.cartLength = item.cart.length;
     }
     res.render("client/pages/order-history",{
-        pageTitle:"Trang lịch sử đơn hàng",
-        listOrder:listOrder
+        pageTitle:"Lịch sử đặt hàng",
+        listOrder:listOrder,
+        totalOrder:totalOrder,
+        totalPage:totalPage
     })
 }
 module.exports.detail = async (req,res)=>{
@@ -53,7 +68,7 @@ module.exports.detail = async (req,res)=>{
     
         order.createdAtFormat = moment(order.createdAt).format("HH:mm - DD/MM/YYYY");
         res.render("client/pages/order-success",{
-            pageTitle:"Thông tin đơn hàng",
+            pageTitle:"Chi tiết đơn hàng",
             order:order,
             fee:fee
         })

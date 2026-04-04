@@ -9,10 +9,12 @@ block main
           <i class="fa-solid fa-filter"></i> Bộ lọc
         .inner-item
           select(order-status)
-            option(value="") Trạng thái
+            option(value="") Trạng thái đơn hàng
             option(value="initial") Khởi tạo
-            option(value="ship") Đang giao 
-            option(value="done") Đã giao 
+            option(value="package") Đóng gói đơn hàng
+            option(value="sent") Đã gửi hàng cho đơn vị vận chuyển
+            option(value="ship") Đang giao hàng 
+            option(value="done") Đã giao hàng
         .inner-item.inner-date
           input(type="date" order-startDate)
           span -
@@ -49,7 +51,7 @@ block main
               th(style="width:170px") Thông tin khách
               th Danh sách sản phẩm
               th(style="width:210px") Thanh toán
-              th(style="width:140px") Trạng thái
+              th(style="width:160px") Trạng thái
               th(class="inner-center") Ngày đặt
               th Hành động
           tbody
@@ -73,13 +75,17 @@ block main
                   div Tổng tiền: #{item.priceTotal.toLocaleString("vi-VN")}đ
                   div PTTT: #{item.nameMethod}
                   div TTTT: #{item.nameStatusPay}
-                td
+                td(style="text-align:center")
                   - if(item.status == "initial")
                     .badge.badge-red Khởi tạo
+                  - if(item.status == "package")
+                    .badge.badge-blue Đóng gói đơn hàng
+                  - if(item.status == "sent")
+                    .badge.badge-violet Đã gửi hàng cho đơn vị vận chuyển
                   - if(item.status == "ship")
-                    .badge.badge-orange Đang giao
+                    .badge.badge-orange Đang giao hàng
                   - if(item.status == "done")
-                    .badge.badge-green Đã giao 
+                    .badge.badge-green Đã giao hàng
                 td(class="inner-center")
                   div #{item.time}
                   div #{item.day}

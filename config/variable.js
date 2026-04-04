@@ -24,15 +24,23 @@ module.exports.payStatus =[
 
 module.exports.status =[
     {
-        lable:"Khởi tạo",
+        lable:"Khởi tạo đơn hàng",
         value:"initial"
     },
     {
-        lable:"Đang giao",
+        lable:"Đóng gói đơn hàng",
+        value:"package"
+    },
+      {
+        lable:"Đã gửi hàng cho đơn vị vận chuyển",
+        value:"sent"
+    },
+    {
+        lable:"Đang giao hàng",
         value:"ship"
     },
     {
-        lable:"Đã giao",
+        lable:"Đã giao hàng",
         value:"done"
     },
 ]

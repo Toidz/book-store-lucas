@@ -813,6 +813,14 @@ a {
   background-color: rgba(239, 55, 38, 0.2);
   color: #EF3826;
 }
+.badge-blue {
+  background-color: rgba(43, 45, 212, 0.2);
+  color: #2652ef;
+}
+.badge-violet {
+  background-color: rgba(116, 12, 154, 0.2);
+  color: #EF3826;
+}
 /* End Badge */
 
 /* Section 4 */

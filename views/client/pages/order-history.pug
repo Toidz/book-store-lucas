@@ -7,27 +7,31 @@ block main
                 h2 Lịch sử đặt hàng
                 .inner-info(style="margin-bottom:20px")
                     .inner-find-order 
-                        .inner-input 
-                            input(type="text" placeholder="Nhập mã đơn hàng của bạn")
-                        .inner-button
-                            button Tìm kiếm
+                        input(type="text" placeholder="Nhập mã đơn hàng của bạn")
+                        button Tìm kiếm
                     .inner-list
-                        each item in listOrder
-                            .inner-item 
-                                .inner-wrap 
-                                    a(href=`/book/detail/${item.cart[0].slug}`).inner-image 
-                                        img(src=item.cart[0].avatar)
-                                    .inner-info 
-                                        a(href=`/book/detail/${item.cart[0].slug}`).inner-name #{item.cart[0].name}
-                                        .inner-quantity 
-                                            .inner-quantity-item Số lượng x #{item.cart[0].quantity}
-                                        .inner-price 
-                                            .inner-price-item Giá tiền: #{item.cart[0].priceLast.toLocaleString("vi-VN")}đ
-                                        .inner-price-total
-                                            .inner-price-sub Tổng số tiền (#{item.cartLength} sản phẩm): 
-                                            .inner-price-main #{item.priceTotal.toLocaleString("vi-VN")}đ
-                                        .inner-more 
-                                            a(href=`/order-history/detail?orderId=${item.id}`) Xem chi tiết
+                        - if(listOrder.length>0)
+                            each item in listOrder
+                                .inner-item 
+                                    .inner-wrap 
+                                        a(href=`/book/detail/${item.cart[0].slug}`).inner-image 
+                                            img(src=item.cart[0].avatar)
+                                        .inner-info 
+                                            .inner-code(style="color:red;font-size:16px") Mã đơn hàng: #{item.orderCode}
+                                            a(href=`/book/detail/${item.cart[0].slug}`)
+                                                each it in item.cart
+                                                    .inner-name #{it.name} x #{it.quantity}
+                                            .inner-price-total
+                                                .inner-price-sub Tổng số tiền: 
+                                                .inner-price-main #{item.priceTotal.toLocaleString("vi-VN")}đ
+                                            .inner-more 
+                                                a(href=`/order-history/detail?orderId=${item.id}`) Xem chi tiết
+                        - else
+                            div(style="padding-top:30px; color:red") Không tìm thấy đơn hàng! 
+            .box-pagination(box-pagination style="margin-bottom:20px")
+                button(page=1).active 1
+                - for(let i=2;i<=totalPage;i++)
+                    button(page=i) #{i}
                                         
 
                             

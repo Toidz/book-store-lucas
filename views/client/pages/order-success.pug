@@ -1,6 +1,17 @@
 extends ../layout/default.pug
 block main
+  - const steps = ["Khởi tạo đơn hàng", "Đóng gói đơn hàng","Đã gửi hàng cho đơn vị vận chuyển", "Đang giao hàng", "Đã giao hàng"];
+  - const activeStep = steps.indexOf(order.statusName) 
   .container
+    .section-11(style="padding-top: 20px;")
+      .inner-wrap
+        .inner-head
+          .inner-title Trạng thái đơn hàng
+        .inner-timeline(style="display:flex")
+          each step, index in steps
+            .timeline-item(class=index <= activeStep ? 'active' : '')
+              .inner-cicle #{index + 1}
+              .inner-name= step
     .section-11(style="padding-top: 20px;")
       .inner-wrap
         .inner-head

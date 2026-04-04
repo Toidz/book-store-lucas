@@ -42,10 +42,14 @@ block main
           select(id="status" name="status")
             option(value="initial"
               selected = orderCurrent.status=="initial"?true :false) Khởi tạo
+            option(value="package"
+              selected = orderCurrent.status=="package"?true :false) Đóng gói đơn hàng
+            option(value="sent"
+              selected = orderCurrent.status=="sent"?true :false) Đã gửi hàng cho đơn vị vận chuyển
             option(value="ship"
-              selected = orderCurrent.status=="ship"?true :false) Đang giao
+              selected = orderCurrent.status=="ship"?true :false) Đang giao hàng
             option(value="done"
-              selected = orderCurrent.status=="done"?true :false) Đã giao
+              selected = orderCurrent.status=="done"?true :false) Đã giao hàng
         .inner-group
           label(class="inner-label") Danh sách sản phẩm
           .inner-order-list
