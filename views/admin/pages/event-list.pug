@@ -3,24 +3,6 @@ include ../mixins/options.pug
 block main
   h1.box-title Quản lý sự kiện
   - if(permissions.includes("event-view"))
-    //- Section 4
-    //- .section-4
-    //-   .inner-wrap
-    //-     .inner-item.inner-label
-    //-       <i class="fa-solid fa-filter"></i> Bộ lọc
-    //-     .inner-item
-    //-       select(event-creater)
-    //-         option(value="") Người tạo
-    //-         //- each item in accountList
-    //-         //-   option(value=item.id) #{item.fullName}
-    //-     .inner-item.inner-date
-    //-       input(type="date" start-date)
-    //-       span -
-    //-       input(type="date" end-date)
-    //-     .inner-item.inner-reset(button-reset)
-    //-       <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
-    //- //- End Section 4
-
     //- Section 5
     .section-5
       .inner-wrap
@@ -69,14 +51,18 @@ block main
                     - if(permissions.includes("event-delete"))
                       button(
                         class="inner-delete" button-delete-event=`/${pathAdmin}/event/delete/${item.id}`) <i class="fa-regular fa-trash-can"></i>
+            - if (eventList.length==0)
+              tr
+                td(colspan="12" class="inner-center" style="padding:20px") Không có sự kiện nào thỏa mãn! 
     //- End Section 6
 
     //- Section 7
-    .section-7
-      span(class="inner-label" total=totalPage) Hiển thị #{totalPage>0? skip+1 : skip} - #{skip+eventList.length} của #{totalevent}
-      select(class="inner-pagination" event-page)
-        - for(let i=1;i<=totalPage;i++)
-          option(value=i) Trang #{i}
+    - if (eventList.length>0)
+      .section-7
+        span(class="inner-label" total=totalPage) Hiển thị #{totalPage>0? skip+1 : skip} - #{skip+eventList.length} của #{totalevent}
+        select(class="inner-pagination" event-page)
+          - for(let i=1;i<=totalPage;i++)
+            option(value=i) Trang #{i}
     //- End Section 7
   - else
     script.

@@ -72,16 +72,16 @@ block main
             tr
               th(class="inner-center")
                 input(type="checkbox" class="inner-check" button-all)
-              th(style="width:200px") Tên sách
-              th Ảnh đại diện
+              th(style="width:180px") Tên sách
+              th(style="width:160px") Ảnh đại diện
               th(style="width:130px") Tên tác giả
               th(style="width:130px") Nhà xuất bản
               th(style="width:100px") Giá
               th(style="width:200px") Sự kiện giảm giá
-              th(style="width:130px") Số lượng
-              th(class="inner-center") Vị trí
-              th Tạo bởi
-              th Cập nhật bởi
+              th() Số lượng
+              th() Vị trí
+              th(class="width:130px") Tạo bởi
+              th(class="width:130px") Cập nhật bởi
               - if(permissions.includes("book-edit"))
                 th Hành động
           tbody
@@ -120,14 +120,18 @@ block main
                     - if(permissions.includes("book-delete"))
                       button(
                         class="inner-delete" button-delete-book=`/${pathAdmin}/book/delete/${item.id}`) <i class="fa-regular fa-trash-can"></i>
+            - if (bookList.length==0)
+              tr
+                td(colspan="12" class="inner-center" style="padding:20px") Không có sách nào thỏa mãn! 
     //- End Section 6
 
     //- Section 7
-    .section-7
-      span(class="inner-label" total=totalPage) Hiển thị #{totalPage>0? skip+1 : skip} - #{skip+bookList.length}  của #{totalBook}
-      select(class="inner-pagination" book-page)
-        - for(let i=1;i<=totalPage;i++)
-          option(value=i) Trang #{i}
+    - if (bookList.length>0)
+      .section-7
+        span(class="inner-label" total=totalPage) Hiển thị #{totalPage>0? skip+1 : skip} - #{skip+bookList.length}  của #{totalBook}
+        select(class="inner-pagination" book-page)
+          - for(let i=1;i<=totalPage;i++)
+            option(value=i) Trang #{i}
     //- End Section 7
   - else
     script.

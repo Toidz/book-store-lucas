@@ -15,11 +15,9 @@ nav.sider
     - if(permissions.includes("new-view"))
       li
         a(href=`/${pathAdmin}/new/list`) <i class="fa-solid fa-blog"></i> Quản lý bài viêt
-    li
-      a(href=`/${pathAdmin}/event/list`) <i class="fa-regular fa-calendar-check"></i> Quản lý sự kiện
-    //- - if(permissions.includes("user-view"))
-    //-   li
-    //-     a(href=`/${pathAdmin}/user`) <i class="fa-solid fa-user"></i> Quản lý người dùng
+    - if(permissions.includes("event-view")) 
+      li
+        a(href=`/${pathAdmin}/event/list`) <i class="fa-regular fa-calendar-check"></i> Quản lý sự kiện
     - if(permissions.includes("contact-view"))
       li
         a(href=`/${pathAdmin}/contact`) <i class="fa-solid fa-user-group"></i> Thông tin liên hệ

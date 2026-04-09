@@ -1,22 +1,22 @@
 extends ../layouts/default.pug
 
 block main
-  h1.box-title Chỉnh sửa tài khoản quản trị
+  h1.box-title Chỉnh sửa tài khoản nội bộ
   - if(permissions.includes("account-edit"))
     .section-8
       form#setting-account-admin-edit-form
         .inner-group(style="display:none")
           label(class="inner-label" for="id") Họ tên
-          input(type="text" id="id" name="id" value=accountCurrent.id)
+          input(type="text" id="id" name="id" value=accountCurrent.id?accountCurrent.id:"")
         .inner-group
           label(class="inner-label" for="fullName") Họ tên
-          input(type="text" id="fullName" name="fullName" value=accountCurrent.fullName)
+          input(type="text" id="fullName" name="fullName" value=accountCurrent.fullName?accountCurrent.fullName:"")
         .inner-group
           label(class="inner-label" for="email") Email
-          input(type="email" id="email" name="email" value=accountCurrent.email)
+          input(type="email" id="email" name="email" value=accountCurrent.email?accountCurrent.email:"" )
         .inner-group
           label(class="inner-label" for="phone") Số điện thoại
-          input(type="text" id="phone" name="phone" value=accountCurrent.phone)
+          input(type="text" id="phone" name="phone" value=accountCurrent.phone?accountCurrent.phone:"")
         .inner-group
           label(class="inner-label" for="role") Nhóm quyền
           select(id="role" name="role")
@@ -27,7 +27,7 @@ block main
                 ) #{item.name}
         .inner-group
           label(class="inner-label" for="positionCompany") Chức vụ
-          input(type="text" id="positionCompany" name="positionCompany" value=accountCurrent.positionCompany)
+          input(type="text" id="positionCompany" name="positionCompany" value=accountCurrent.positionCompany?accountCurrent.positionCompany:"")
         .inner-group
           label(class="inner-label" for="status") Trạng thái
           select(id="status" name="status")

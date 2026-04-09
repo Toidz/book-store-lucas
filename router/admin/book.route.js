@@ -26,6 +26,7 @@ router.patch(
         { name: 'avatar', maxCount: 1 },
         { name: 'images', maxCount: 10 }
     ]),
+    bookValidate.bookPatch,
     bookController.editPatch) 
 
 router.patch("/delete/:id",bookController.deletePatch)

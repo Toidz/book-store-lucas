@@ -40,6 +40,22 @@ module.exports.permission = [
         value:"book-delete"
     },
     {
+        lable:"Xem khách hàng",
+        value:"user-view"
+    },
+    {
+        lable:"Tạo khách hàng",
+        value:"user-create"
+    },
+    {
+        lable:"Sửa khách hàng",
+        value:"user-edit"
+    },
+    {
+        lable:"Xóa khách hàng",
+        value:"user-delete"
+    },
+    {
         lable:"Thêm sự kiện cho sách",
         value:"book-event"
     },

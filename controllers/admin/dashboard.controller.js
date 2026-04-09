@@ -5,7 +5,6 @@ const variable = require("../../config/variable")
 const moment = require("moment")
 const Category = require("../../models/category.model")
 const Book = require("../../models/book.model")
-const { default: slugify } = require("slugify")
 module.exports.dashboard =  async (req,res)=>{
     const dashboard ={
         account:0,

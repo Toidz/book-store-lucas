@@ -4,15 +4,7 @@ block main
   - if(permissions.includes("role-view"))
     //- Section 5
     .section-5
-      .inner-wrap
-        - if(permissions.includes("role-delete"))
-          .inner-change-status(filter-role)
-            .inner-item
-              select
-                option(value="") -- Hành động --
-                option(value="delete") Xóa
-            .inner-item
-              button Áp dụng
+      .inner-wrap 
         .inner-search
           <i class="fa-solid fa-magnifying-glass"></i>
           input(type="text" placeholder="Tìm kiếm" search-role)
@@ -47,6 +39,9 @@ block main
                         class="inner-edit") <i class="fa-regular fa-pen-to-square"></i>
                     - if(permissions.includes("role-delete"))
                       button(class="inner-delete" apiroledelete=`/${pathAdmin}/setting/role/delete/${item.id}`) <i class="fa-regular fa-trash-can"></i>
+            - if (roleList.length==0)
+              tr
+                td(colspan="12" class="inner-center" style="padding:20px") Không có nhóm quyền nào thỏa mãn!
     //- End Section 6
   - else
     script.

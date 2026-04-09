@@ -1,7 +1,7 @@
 extends ../layouts/default.pug
 
 block main
-  h1.box-title Tài khoản quản trị
+  h1.box-title Tài khoản nội bộ
   - if(permissions.includes("account-edit"))
     //- Section 4
     .section-4
@@ -21,7 +21,7 @@ block main
           select(filter-account-role)
             option(value="") Nhóm quyền
             each item in roleList
-              option(value=item.id) #{item.name}
+              option(value=item.id) #{item.name?item.name:""}
         .inner-item.inner-reset(filter-account-delete)
           <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
     //- End Section 4
@@ -70,13 +70,13 @@ block main
               tr
                 td(class="inner-center")
                   input(type="checkbox" class="inner-check" checkItem=item.id)
-                td #{item.fullName}
+                td #{item.fullName?item.fullName:""}
                 td(class="inner-center")
-                  img(src=item.avatar class="inner-avatar")
-                td #{item.email}
-                td #{item.phone}
-                td #{item.roleName}
-                td #{item.positionCompany}
+                  img(src=item.avatar?item.avatar:"" class="inner-avatar")
+                td #{item.email?item.email:""}
+                td #{item.phone?item.phone:""}
+                td #{item.roleName?item.roleName:""}
+                td #{item.positionCompany?item.positionCompany:""}
                 td
                   - if(item.status=="active")
                     .badge.badge-green Hoạt động
@@ -92,14 +92,18 @@ block main
                       button(class="inner-delete" button-delete-account
                         api-delete-account = `/${pathAdmin}/setting/account-admin/delete/${item.id}`
                       ) <i class="fa-regular fa-trash-can"></i>
+            - if (accountList.length==0)
+              tr
+                td(colspan="12" class="inner-center" style="padding:20px") Không có tài khoản nội bộ nào thỏa mãn!
     //- End Section 6
 
     //- Section 7
-    .section-7
-      span(class="inner-label") Hiển thị #{totalAccount>0? skip+1 : skip} - #{skip+accountList.length}  của #{totalAccount}
-      select(class="inner-pagination" account-page)
-        - for(let i=1;i<=totalPage;i++)
-          option(value=i) Trang #{i}
+    - if (accountList.length>0)
+      .section-7
+        span(class="inner-label") Hiển thị #{totalAccount>0? skip+1 : skip} - #{skip+accountList.length}  của #{totalAccount}
+        select(class="inner-pagination" account-page)
+          - for(let i=1;i<=totalPage;i++)
+            option(value=i) Trang #{i}
     //- End Section 7
   - else
     script.

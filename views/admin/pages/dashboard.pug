@@ -50,8 +50,9 @@ block main
         .inner-inventory 
           each item in categoryList 
             span(inventory-id=item.id) #{item.name}
-        .inner-inventory-chart(style="overflow-x:auto")
-          canvas#inventoryChart(style="height:270px")
+        .inner-inventory-chart(style="width: 100%; overflow-x: auto;")
+          .inner-c(style="min-width: 800px; height: 300px;")
+            canvas#inventoryChart(style="height:270px")
       .section-top-list
         .section-2
           .inner-head
@@ -121,10 +122,14 @@ block main
                 td
                   - if(item.status == "initial")
                     .badge.badge-red Khởi tạo
+                  - if(item.status == "package")
+                    .badge.badge-blue Đóng gói đơn hàng
+                  - if(item.status == "sent")
+                    .badge.badge-violet Đã gửi hàng cho đơn vị vận chuyển
                   - if(item.status == "ship")
-                    .badge.badge-orange Đang giao
+                    .badge.badge-orange Đang giao hàng
                   - if(item.status == "done")
-                    .badge.badge-green Đã giao 
+                    .badge.badge-green Đã giao hàng
                 td.inner-text-right
                   .inner-text #{item.formatTime}
                   .inner-text #{item.formatDay}

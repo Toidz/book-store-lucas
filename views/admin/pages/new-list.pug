@@ -78,14 +78,18 @@ block main
                     - if(permissions.includes("new-delete"))
                       button(
                         class="inner-delete" button-delete-new=`/${pathAdmin}/new/delete/${item.id}`) <i class="fa-regular fa-trash-can"></i>
+            - if (newList.length==0)
+              tr
+                td(colspan="12" class="inner-center" style="padding:20px") Không có bài viết nào thỏa mãn!
     //- End Section 6
 
     //- Section 7
-    .section-7
-      span(class="inner-label" total=totalPage) Hiển thị #{totalPage>0? skip+1 : skip} - #{skip+newList.length}  của #{totalNew}
-      select(class="inner-pagination" new-page)
-        - for(let i=1;i<=totalPage;i++)
-          option(value=i) Trang #{i}
+    - if (newList.length>0)
+      .section-7
+        span(class="inner-label" total=totalPage) Hiển thị #{totalPage>0? skip+1 : skip} - #{skip+newList.length}  của #{totalNew}
+        select(class="inner-pagination" new-page)
+          - for(let i=1;i<=totalPage;i++)
+            option(value=i) Trang #{i}
     //- End Section 7
   - else
     script.

@@ -1,0 +1,68 @@
+extends ../layouts/default.pug
+
+block main
+  h1.box-title Tài khoản khách hàng
+  - if(permissions.includes("user-view"))
+    //- Section 5
+    .section-5
+      .inner-wrap
+        .inner-search
+          <i class="fa-solid fa-magnifying-glass"></i>
+          input(type="text" placeholder="Tìm kiếm" searchAccount)
+    //- End Section 5
+
+    //- Section 6
+    .section-6
+      .table-2
+        table
+          thead
+            tr
+              th Họ tên
+              th Email
+              th Số điện thoại
+              th Địa chỉ
+              th(class="inner-center") Ngày tạo
+              th Hành động
+          tbody
+            each item in accountClientList
+              tr
+                td #{item.fullName?item.fullName:""}
+                td #{item.email?item.email:""}
+                td #{item.phone?item.phone:""}
+                td #{`${item.street?item.street:""} ${item.ward?item.ward:""} ${item.district?item.district:""} ${item.city?item.city:""}`}
+                td(class="inner-center") #{item.formatCreatedAt?item.formatCreatedAt:""}
+                td
+                  .inner-buttons
+                    - if(permissions.includes("user-edit"))
+                      a(
+                        href=`/${pathAdmin}/setting/account-client/edit/${item.id}`
+                        class="inner-edit") <i class="fa-regular fa-pen-to-square"></i>
+                    - if(permissions.includes("user-delete"))
+                      button(class="inner-delete" button-delete-account
+                        api-delete-account=`/${pathAdmin}/setting/account-client/delete/${item.id}`
+                      ) <i class="fa-regular fa-trash-can"></i>
+            - if (accountClientList.length==0)
+              tr
+                td(colspan="6" class="inner-center" style="padding:20px") Không có tài khoản người dùng nào thỏa mãn!
+    //- End Section 6
+
+    //- Section 7
+    - if (accountClientList.length>0)
+      .section-7
+        span(class="inner-label") Hiển thị #{totalAccountClient>0? skip+1 : skip} - #{skip+accountClientList.length} của #{totalAccountClient}
+        select(class="inner-pagination" account-page)
+          - for(let i=1;i<=totalPage;i++)
+            option(value=i) Trang #{i}
+    //- End Section 7
+  - else
+    script.
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi truy cập!',
+        text: 'Bạn không có đủ thẩm quyền vào trang này!',
+        timer: 3000,
+        showConfirmButton: false,
+        willClose: () => {
+          window.location.href = `/${pathAdmin}/dashboard`;
+        }
+      });

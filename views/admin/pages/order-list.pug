@@ -96,14 +96,18 @@ block main
                         <i class="fa-regular fa-pen-to-square"></i>
                     - if (permissions.includes("order-delete"))
                       button(class="inner-delete" order-delete=`/${pathAdmin}/order/delete/${item.orderCode}`) <i class="fa-regular fa-trash-can"></i>
+            - if (orderList.length==0)
+              tr
+                td(colspan="12" class="inner-center" style="padding:20px") Không có đơn hàng nào thỏa mãn!
     //- End Section 6
 
     //- Section 7
-    .section-7
-      span(class="inner-label" total=pagination.totalPage) Hiển thị #{pagination.totalPage>0? pagination.skip+1 : pagination.skip} - #{pagination.skip+orderList.length} của #{pagination.totalOrder}
-      select(class="inner-pagination" order-pagination)
-        - for(let i=1;i<=pagination.totalPage;i++)
-          option(value=i) Trang #{i}
+    - if (orderList.length>0)
+      .section-7
+        span(class="inner-label" total=pagination.totalPage) Hiển thị #{pagination.totalPage>0? pagination.skip+1 : pagination.skip} - #{pagination.skip+orderList.length} của #{pagination.totalOrder}
+        select(class="inner-pagination" order-pagination)
+          - for(let i=1;i<=pagination.totalPage;i++)
+            option(value=i) Trang #{i}
     //- End Section 7
   - else
     script.

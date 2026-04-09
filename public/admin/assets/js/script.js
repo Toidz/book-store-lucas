@@ -213,7 +213,6 @@ if(categoryEditForm) {
     .onSuccess((event) => {
       const valueName = document.querySelector("[valueName]")
       const current = valueName.getAttribute("valueName")
-      console.log(current)
       const id = event.target.id.value;
       const name = event.target.name.value;
       const parent = event.target.parent.value;
@@ -995,6 +994,92 @@ if(settingAccountAdminEditForm) {
 }
 // End Setting Account Admin edit Form
 
+// Setting Account Client edit Form
+const settingAccountClientEditForm = document.querySelector("#setting-account-client-edit-form");
+if(settingAccountClientEditForm) {
+  const validation = new JustValidate('#setting-account-client-edit-form');
+
+  validation
+    .addField('#fullName', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập họ tên!'
+      },
+      {
+        rule: 'minLength',
+        value: 5,
+        errorMessage: 'Họ tên phải có ít nhất 5 ký tự!',
+      },
+      {
+        rule: 'maxLength',
+        value: 50,
+        errorMessage: 'Họ tên không được vượt quá 50 ký tự!',
+      },
+    ])
+    .addField('#email', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập email!'
+      },
+      {
+        rule: 'email',
+        errorMessage: 'Email không đúng định dạng!',
+      },
+    ])
+    .addField('#phone', [
+      {
+        rule: 'required',
+        errorMessage: 'Vui lòng nhập số điện thoại!'
+      },
+      {
+        rule: 'customRegexp',
+        value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
+        errorMessage: 'Số điện thoại không đúng định dạng!'
+      },
+    ])
+    .onSuccess((event) => {
+      const id = event.target.id.value;
+      const fullName = event.target.fullName.value;
+      const email = event.target.email.value;
+      const phone = event.target.phone.value;
+      const city = event.target.city.value;
+      const district = event.target.district.value;
+      const ward = event.target.ward.value;
+      const street = event.target.street.value;
+      const password = event.target.password.value;
+
+      const dataFinal = {
+        fullName,
+        email,
+        phone,
+        city,
+        district,
+        ward,
+        street
+      };
+      if(password) dataFinal.password = password;
+
+      fetch(`/${pathAdmin}/setting/account-client/edit/${id}`,{
+        method:"PATCH",
+        headers:{
+          "Content-type":"application/json"
+        },
+        body:JSON.stringify(dataFinal)
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        if(data.code =="error"){
+          alert(data.message)
+        }
+        else{
+          window.location.href= `/${pathAdmin}/setting/account-client/list`
+        }
+      })
+    })
+  ;
+}
+// End Setting Account Client edit Form
+
 
 //----------Filter account
 //Filter account status
@@ -1179,13 +1264,23 @@ if(changeStatusAccount){
 //End change-status account
 //End----------Filter category
 
-//button Delete category
+//button Delete account
 const buttonDeleteAccount = document.querySelectorAll("[button-delete-account]")
 if(buttonDeleteAccount.length >0)
 {
   buttonDeleteAccount.forEach(button => {
     button.addEventListener("click",()=>{
       const apiDelete = button.getAttribute("api-delete-account")
+      Swal.fire({
+        title: "Bạn có chắc chắn muốn xóa tài khoản này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Không",
+      }).then((result) => {
+      if (result.isConfirmed) {
       fetch(apiDelete,{
         method:"PATCH"
       })
@@ -1196,6 +1291,8 @@ if(buttonDeleteAccount.length >0)
         else
           window.location.reload();
       })
+    }})
+
     })
   });
 }
@@ -1304,23 +1401,36 @@ if(settingRoleeditForm) {
 // End Setting Role Edit Form
 
 //setting role delete
-const buttonDeleteRole = document.querySelector("[apiroledelete]")
-if(buttonDeleteRole){
-  buttonDeleteRole.addEventListener("click",()=>{
-    const api = buttonDeleteRole.getAttribute("apiroledelete")
-    fetch(api,{
-      method:"PATCH"
+const buttonDeleteRoles = document.querySelectorAll("[apiroledelete]")
+if(buttonDeleteRoles){
+  buttonDeleteRoles.forEach(buttonDeleteRole => {
+    buttonDeleteRole.addEventListener("click",()=>{
+      const api = buttonDeleteRole.getAttribute("apiroledelete")
+      Swal.fire({
+        title: "Bạn có chắc chắn muốn xóa quyền này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Không",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(api,{
+            method:"PATCH"
+          })
+          .then(res=>res.json())
+          .then(data=>{
+            if(data.code=="error"){
+              alert(data.message)
+            }
+            else{
+              window.location.reload()
+            }
+          })
+      }})
     })
-    .then(res=>res.json())
-    .then(data=>{
-      if(data.code=="error"){
-        alert(data.message)
-      }
-      else{
-        window.location.reload()
-      }
-    })
-  })
+  });
 }
 //END setting role delete
 
@@ -2176,18 +2286,29 @@ if(buttonDeletenews){
   buttonDeletenews.forEach(buttonDeletenew => {
     buttonDeletenew.addEventListener("click",()=>{
     const api= buttonDeletenew.getAttribute("button-delete-new")
-    fetch(api,{
-      method:"PATCH"
-    })
-    .then(res=>res.json())
-    .then(data=>{
-      if(data.code=="error"){
-        alert(data.message)
-      }
-      else{
-        window.location.reload()
-      }
-    })
+    Swal.fire({
+      title: "Bạn có chắc chắn muốn xóa bài viết này không?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Không",
+    }).then((result) => {
+      if (result.isConfirmed) {
+      fetch(api,{
+        method:"PATCH"
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        if(data.code=="error"){
+          alert(data.message)
+        }
+        else{
+          window.location.reload()
+        }
+      })
+    }})
     })
   });
 }
@@ -2775,18 +2896,29 @@ if(buttonDeleteEvents){
   buttonDeleteEvents.forEach(buttonDeleteEvent => {
     buttonDeleteEvent.addEventListener("click",()=>{
     const api= buttonDeleteEvent.getAttribute("button-delete-event")
-    fetch(api,{
-      method:"PATCH"
-    })
-    .then(res=>res.json())
-    .then(data=>{
-      if(data.code=="error"){
-        alert(data.message)
-      }
-      else{
-        window.location.reload()
-      }
-    })
+    Swal.fire({
+      title: "Bạn có chắc chắn muốn xóa sự kiện này không?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Không",
+    }).then((result) => {
+      if (result.isConfirmed) {
+      fetch(api,{
+        method:"PATCH"
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        if(data.code=="error"){
+          alert(data.message)
+        }
+        else{
+          window.location.reload()
+        }
+      })
+    }})
     })
   });
 }
@@ -2940,7 +3072,8 @@ const drawInventoryChart = (data) => {
       }]
     },
     options: {
-      responsive: false, 
+      responsive: true,
+      maintainAspectRatio: false,  
       plugins: {
         legend: { position: 'bottom' }
       },

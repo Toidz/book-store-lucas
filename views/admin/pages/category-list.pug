@@ -82,14 +82,18 @@ block main
                         button-delete 
                         api-delete-cate = `/${pathAdmin}/category/delete/${item.id}`
                       ) <i class="fa-regular fa-trash-can"></i>
+            - if (categoryList.length==0)
+              tr
+                td(colspan="12" class="inner-center" style="padding:20px") Không có danh mục nào thỏa mãn! 
     //- End Section 6
 
     //- Section 7
-    .section-7
-      span(class="inner-label" total=pagination.totalPage) Hiển thị #{pagination.totalPage>0? pagination.skip+1 : pagination.skip} - #{pagination.skip+categoryList.length} của #{pagination.totalCategory}
-      select(class="inner-pagination")
-        -  for(let i=1;i<=pagination.totalPage;i++)
-            option(value=i) Trang #{i}
+    - if (categoryList.length>0)
+      .section-7
+        span(class="inner-label" total=pagination.totalPage) Hiển thị #{pagination.totalPage>0? pagination.skip+1 : pagination.skip} - #{pagination.skip+categoryList.length} của #{pagination.totalCategory}
+        select(class="inner-pagination")
+          -  for(let i=1;i<=pagination.totalPage;i++)
+              option(value=i) Trang #{i}
     //- End Section 7
   - else
     script.

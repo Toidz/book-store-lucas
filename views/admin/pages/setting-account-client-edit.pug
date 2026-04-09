@@ -1,0 +1,50 @@
+extends ../layouts/default.pug
+
+block main
+  h1.box-title Chỉnh sửa tài khoản khách hàng
+  - if(permissions.includes("user-edit"))
+    .section-8
+      form#setting-account-client-edit-form
+        .inner-group(style="display:none")
+          label(class="inner-label" for="id") ID
+          input(type="text" id="id" name="id" value=accountCurrent.id?accountCurrent.id:"")
+        .inner-group
+          label(class="inner-label" for="fullName") Họ tên
+          input(type="text" id="fullName" name="fullName" value=accountCurrent.fullName?accountCurrent.fullName:"")
+        .inner-group
+          label(class="inner-label" for="email") Email
+          input(type="email" id="email" name="email" value=accountCurrent.email?accountCurrent.email:"")
+        .inner-group
+          label(class="inner-label" for="phone") Số điện thoại
+          input(type="text" id="phone" name="phone" value=accountCurrent.phone?accountCurrent.phone:"")
+        .inner-group
+          label(class="inner-label" for="city") Tỉnh/Thành phố
+          input(type="text" id="city" name="city" value=accountCurrent.city?accountCurrent.city:"")
+        .inner-group
+          label(class="inner-label" for="district") Quận/Huyện
+          input(type="text" id="district" name="district" value=accountCurrent.district?accountCurrent.district:"")
+        .inner-group
+          label(class="inner-label" for="ward") Phường/Xã
+          input(type="text" id="ward" name="ward" value=accountCurrent.ward?accountCurrent.ward:"")
+        .inner-group
+          label(class="inner-label" for="street") Số nhà, tên đường
+          input(type="text" id="street" name="street" value=accountCurrent.street?accountCurrent.street:"")
+        .inner-group
+          label(class="inner-label" for="password") Mật khẩu mới
+          input(type="text" id="password" name="password")
+        .inner-button.inner-two-col
+          button Cập nhật
+      .inner-back
+        a(href=`/${pathAdmin}/setting/account-client/list`) Quay lại danh sách
+  - else
+    script.
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi truy cập!',
+        text: 'Bạn không có đủ thẩm quyền vào trang này!',
+        timer: 3000,
+        showConfirmButton: false,
+        willClose: () => {
+          window.location.href = `/${pathAdmin}/dashboard`;
+        }
+      });
