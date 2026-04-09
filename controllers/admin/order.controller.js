@@ -2,6 +2,48 @@ const Order = require("../../models/order.model")
 const Book = require("../../models/book.model")
 const variable = require("../../config/variable")
 const moment = require("moment")
+const ExcelJS = require("exceljs")
+
+const buildOrderFilter = (query) => {
+    const find = {
+        deleted:false
+    }
+    if(query.status){
+        find.status = query.status
+    }
+    const filterDate ={}
+    if(query.startDate){
+        filterDate.$gte = moment(query.startDate).startOf("date").toDate()
+    }
+    if(query.endDate){
+        filterDate.$lte = moment(query.endDate).endOf("date").toDate()
+    }
+    if(Object.keys(filterDate).length>0){
+        find.createdAt = filterDate
+    }
+    if(query.method){
+        find.method = query.method
+    }
+    if(query.statusPay){
+        find.payStatus = query.statusPay
+    }
+    if(query.keyword){
+        const regex = new RegExp(query.keyword,"i")
+        find.orderCode = regex
+    }
+    return find
+}
+
+const mapOrderDisplayFields = (orderList) => {
+    orderList.forEach(order => {
+       order.valueMethod = variable.method.find(item => item.value==order.method)
+       order.valueStatusPay = variable.payStatus.find(item => item.value==order.payStatus)
+       order.nameMethod=order.valueMethod? order.valueMethod.lable :""
+       order.nameStatusPay =order.valueStatusPay? order.valueStatusPay.lable :""
+       order.time = moment(order.createdAt).format("HH:mm")
+       order.day = moment(order.createdAt).format("DD/MM/YYYY")
+    });
+}
 module.exports.edit = async (req,res)=>{
     const orderCode = req.params.code
     const orderCurrent = await Order.findOne({
@@ -57,33 +99,8 @@ module.exports.editPatch = async (req,res)=>{
     }
 }
 module.exports.list = async (req,res)=>{
-    const find = {
-        deleted:false
-    }
-    if(req.query.status){
-        find.status = req.query.status
-    }
-    const filterDate ={}
-    if(req.query.startDate){
-        filterDate.$gte = moment(req.query.startDate).startOf("date").toDate()
-    }
-    if(req.query.endDate){
-        filterDate.$lte = moment(req.query.endDate).endOf("date").toDate()
-    }
-    if(Object.keys(filterDate).length>0){
-        find.createdAt = filterDate
-    }
-    if(req.query.method){
-        find.method = req.query.method
-    }
-    if(req.query.statusPay){
-        find.payStatus = req.query.statusPay
-    }
-    if(req.query.keyword){
-        const regex = new RegExp(req.query.keyword,"i")
-        find.orderCode = regex
-    }
-     const totalOrder = await Order.countDocuments(find)
+    const find = buildOrderFilter(req.query)
+    const totalOrder = await Order.countDocuments(find)
     const limit = 4
     const totalPage= Math.ceil(totalOrder/limit)
     let page =1
@@ -106,20 +123,67 @@ module.exports.list = async (req,res)=>{
     })
     .limit(limit)
     .skip(skip)
-    orderList.forEach(order => {
-       order.valueMethod = variable.method.find(item => item.value==order.method)
-       order.valueStatusPay = variable.payStatus.find(item => item.value==order.payStatus)
-       order.nameMethod=order.valueMethod? order.valueMethod.lable :""
-       order.nameStatusPay =order.valueStatusPay? order.valueStatusPay.lable :""
-       order.time = moment(order.createdAt).format("HH:mm")
-       order.day = moment(order.createdAt).format("DD/MM/YYYY")
-    });
+    mapOrderDisplayFields(orderList)
 
     res.render("admin/pages/order-list",{
         pageTitle:"Quản lý đơn hàng",
         orderList:orderList,
-        pagination:pagination
+        pagination:pagination,
+        queryCurrent:req.query
     })
+}
+
+module.exports.exportExcel = async (req,res)=>{
+    try {
+        const find = buildOrderFilter(req.query)
+        const orderList = await Order.find(find).sort({
+            createdAt:"desc"
+        })
+        mapOrderDisplayFields(orderList)
+
+        const workbook = new ExcelJS.Workbook()
+        const worksheet = workbook.addWorksheet("Don_hang")
+        worksheet.columns = [
+            { header: "Mã đơn", key: "orderCode", width: 20 },
+            { header: "Họ tên", key: "fullName", width: 25 },
+            { header: "Số điện thoại", key: "phone", width: 18 },
+            { header: "Địa chỉ nhận hàng", key: "note", width: 45 },
+            { header: "Phương thức thanh toán", key: "method", width: 22 },
+            { header: "Trạng thái thanh toán", key: "payStatus", width: 20 },
+            { header: "Trạng thái đơn hàng", key: "status", width: 22 },
+            { header: "Sản phẩm", key: "products", width: 60 },
+            { header: "Tổng tiền (VND)", key: "priceTotal", width: 20 },
+            { header: "Ngày đặt", key: "createdAt", width: 20 },
+        ]
+
+        orderList.forEach(order => {
+            const products = (order.cart || []).map(item => `${item.name} x${item.quantity}`).join("; ")
+            worksheet.addRow({
+                orderCode: order.orderCode || "",
+                fullName: order.fullName || "",
+                phone: order.phone || "",
+                note: order.note || "",
+                method: order.nameMethod || "",
+                payStatus: order.nameStatusPay || "",
+                status: order.status || "",
+                products: products,
+                priceTotal: order.priceTotal || 0,
+                createdAt: moment(order.createdAt).format("DD/MM/YYYY HH:mm"),
+            })
+        })
+
+        worksheet.getRow(1).font = { bold: true }
+        worksheet.views = [{ state: "frozen", ySplit: 1 }]
+
+        const fileName = `don-hang-${moment().format("YYYYMMDD-HHmmss")}.xlsx`
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`)
+        await workbook.xlsx.write(res)
+        res.end()
+    } catch (error) {
+        req.flash("error","Xuất file Excel thất bại!")
+        res.redirect("list")
+    }
 }
 module.exports.deletePatch = async (req,res)=>{
     try {
