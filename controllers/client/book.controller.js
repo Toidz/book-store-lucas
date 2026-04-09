@@ -7,6 +7,7 @@ const Event = require("../../models/event.model")
 const Order = require("../../models/order.model")
 const Comment = require("../../models/comment.model")
 const moment = require("moment")
+const profanityHelper = require("../../helpers/profanity.helper")
 module.exports.book = async (req, res) => {
   try {
     const slugCurrent = req.params.slug
@@ -248,6 +249,12 @@ module.exports.commentPost = async (req,res) =>{
         message:"Nội dung bình luận không được để trống!"
       });
     }
+    if(profanityHelper.containsProfanity(content)){
+      return res.json({
+        code:"error",
+        message:"Bình luận chứa từ ngữ không phù hợp, vui lòng chỉnh sửa lại!"
+      });
+    }
 
     const token = req.cookies.tokenUser;
     if(!token){
@@ -335,6 +342,12 @@ module.exports.commentEditPatch = async (req,res) =>{
         message:"Nội dung bình luận không được để trống!"
       });
     }
+    if(profanityHelper.containsProfanity(content)){
+      return res.json({
+        code:"error",
+        message:"Bình luận chứa từ ngữ không phù hợp, vui lòng chỉnh sửa lại!"
+      });
+    }
 
     const token = req.cookies.tokenUser;
     if(!token){
@@ -386,6 +399,65 @@ module.exports.commentEditPatch = async (req,res) =>{
     return res.json({
       code:"error",
       message:"Sửa bình luận thất bại!"
+    });
+  }
+}
+
+module.exports.commentDeletePatch = async (req,res) =>{
+  try {
+    const { idComment } = req.params;
+
+    const token = req.cookies.tokenUser;
+    if(!token){
+      return res.json({
+        code:"error",
+        message:"Vui lòng đăng nhập!"
+      });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_CLIENT);
+    const existAccount = await AccountClient.findOne({
+      email: decoded.email
+    });
+    if(!existAccount){
+      return res.json({
+        code:"error",
+        message:"Tài khoản không hợp lệ!"
+      });
+    }
+
+    const commentCurrent = await Comment.findOne({
+      _id:idComment,
+      id_user: existAccount.id,
+      deleted:false
+    });
+    if(!commentCurrent){
+      return res.json({
+        code:"error",
+        message:"Không tìm thấy bình luận!"
+      });
+    }
+    if(commentCurrent.status == "approved"){
+      return res.json({
+        code:"error",
+        message:"Bình luận đã duyệt không thể xóa!"
+      });
+    }
+
+    await Comment.updateOne({
+      _id:idComment
+    },{
+      deleted:true,
+      deletedAt:Date.now()
+    });
+
+    return res.json({
+      code:"success",
+      message:"Xóa bình luận thành công!"
+    });
+  } catch (error) {
+    return res.json({
+      code:"error",
+      message:"Xóa bình luận thất bại!"
     });
   }
 }

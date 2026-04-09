@@ -894,6 +894,42 @@ if(bookDetail){
 
 //End detail - book
 
+// Comment profanity filter
+const COMMENT_BAD_WORDS = [
+  "dm",
+  "dmm",
+  "dit",
+  "dit me",
+  "ditme",
+  "cl",
+  "cc",
+  "cac",
+  "cho chet",
+  "vkl",
+  "vl",
+  "lon",
+  "oc cho",
+  "ngu",
+  "khon nan",
+];
+
+const normalizeCommentText = (text = "") => {
+  return text
+    .toLowerCase()
+    .replace(/đ/g, "d")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
+const containsBadWordComment = (text = "") => {
+  const normalized = normalizeCommentText(text);
+  return COMMENT_BAD_WORDS.some(word => normalized.includes(word));
+};
+// End Comment profanity filter
+
 // Book comment
 const bookCommentForm = document.querySelector("#book-comment-form");
 if(bookCommentForm){
@@ -913,6 +949,16 @@ if(bookCommentForm){
     .onSuccess((event)=>{
       const idBook = bookCommentForm.getAttribute("id-book");
       const content = event.target.commentContent.value;
+      if(containsBadWordComment(content)){
+        Swal.fire({
+          icon: "error",
+          title: "Thất bại!",
+          text: "Bình luận chứa từ ngữ không phù hợp, vui lòng chỉnh sửa lại!",
+          timer: 3000,
+          showConfirmButton: false
+        });
+        return;
+      }
       fetch(`/book/comment/${idBook}`,{
         method:"POST",
         headers:{
@@ -1916,6 +1962,14 @@ if(buttonEditCommentList.length > 0){
         });
         return;
       }
+      if(containsBadWordComment(content)){
+        Swal.fire({
+          icon:"error",
+          title:"Thất bại!",
+          text:"Bình luận chứa từ ngữ không phù hợp, vui lòng chỉnh sửa lại!"
+        });
+        return;
+      }
 
       fetch(`/book/comment/edit/${idComment}`,{
         method:"PATCH",
@@ -1951,4 +2005,50 @@ if(buttonEditCommentList.length > 0){
   });
 }
 // End Edit my comment
+
+// Delete my comment
+const buttonDeleteCommentList = document.querySelectorAll("[button-delete-comment]");
+if(buttonDeleteCommentList.length > 0){
+  buttonDeleteCommentList.forEach(button => {
+    button.addEventListener("click",()=>{
+      const idComment = button.getAttribute("button-delete-comment");
+      Swal.fire({
+        title: "Bạn có chắc chắn muốn xóa bình luận này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Không",
+      }).then((result) => {
+        if (!result.isConfirmed) return;
+        fetch(`/book/comment/delete/${idComment}`,{
+          method:"PATCH"
+        })
+        .then(res=>res.json())
+        .then(data=>{
+          if(data.code=="error"){
+            Swal.fire({
+              icon:"error",
+              title:"Thất bại!",
+              text:data.message
+            });
+          }
+          else{
+            Swal.fire({
+              icon:"success",
+              title:"Thành công!",
+              text:data.message,
+              timer:2000,
+              showConfirmButton:false
+            }).then(()=>{
+              window.location.reload();
+            });
+          }
+        })
+      });
+    });
+  });
+}
+// End Delete my comment
 

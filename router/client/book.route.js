@@ -6,4 +6,5 @@ router.get("/:slug",bookController.book);
 router.get("/detail/:slug",bookController.detail);
 router.post("/comment/:idBook",bookController.commentPost);
 router.patch("/comment/edit/:idComment",bookController.commentEditPatch);
+router.patch("/comment/delete/:idComment",bookController.commentDeletePatch);
 module.exports = router;
