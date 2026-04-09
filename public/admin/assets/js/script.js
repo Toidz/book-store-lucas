@@ -2924,6 +2924,119 @@ if(buttonDeleteEvents){
 }
 //End button delete event
 
+// Comment status filter
+const filterCommentStatus = document.querySelector("[filter-comment-status]");
+if(filterCommentStatus){
+  const url = new URL(window.location.href);
+  filterCommentStatus.addEventListener("change",()=>{
+    const value = filterCommentStatus.value;
+    if(value){
+      url.searchParams.set("status", value);
+    }
+    else{
+      url.searchParams.delete("status");
+    }
+    window.location.href = url.href;
+  });
+  const currentValue = url.searchParams.get("status");
+  if(currentValue) filterCommentStatus.value = currentValue;
+}
+// End Comment status filter
+
+// Comment search
+const searchComment = document.querySelector("[search-comment]");
+if(searchComment){
+  const url = new URL(window.location.href);
+  searchComment.addEventListener("keyup",(event)=>{
+    if(event.code=="Enter"){
+      const value = searchComment.value.trim();
+      if(value){
+        url.searchParams.set("keyword", value);
+      }
+      else{
+        url.searchParams.delete("keyword");
+      }
+      window.location.href = url.href;
+    }
+  });
+  const currentValue = url.searchParams.get("keyword");
+  if(currentValue) searchComment.value = currentValue;
+}
+// End Comment search
+
+// Comment pagination
+const commentPage = document.querySelector("[comment-page]");
+if(commentPage){
+  const url = new URL(window.location.href);
+  commentPage.addEventListener("change",()=>{
+    const value = commentPage.value;
+    if(value){
+      url.searchParams.set("page", value);
+    }
+    else{
+      url.searchParams.delete("page");
+    }
+    window.location.href = url.href;
+  });
+  const currentValue = url.searchParams.get("page");
+  if(currentValue) commentPage.value = currentValue;
+}
+// End Comment pagination
+
+// Comment approve
+const buttonApproveComment = document.querySelector("[api-approve-comment]");
+if(buttonApproveComment){
+  buttonApproveComment.addEventListener("click",()=>{
+      const api = buttonApproveComment.getAttribute("api-approve-comment");
+      fetch(api,{
+        method:"PATCH"
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        if(data.code=="error"){
+          alert(data.message);
+        }
+        else{
+          window.location.reload();
+        }
+      });
+    });
+}
+// End Comment approve
+
+// Comment delete
+const buttonDeleteComment = document.querySelector("[button-delete-comment]");
+if(buttonDeleteComment){
+  buttonDeleteComment.addEventListener("click",()=>{
+      const api = buttonDeleteComment.getAttribute("button-delete-comment");
+      Swal.fire({
+        title: "Bạn có chắc chắn muốn xóa bình luận này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Đồng ý",
+        cancelButtonText: "Không",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(api,{
+            method:"PATCH"
+          })
+          .then(res=>res.json())
+          .then(data=>{
+            if(data.code=="error"){
+              alert(data.message);
+            }
+            else{
+              window.location.reload();
+            }
+          });
+        }
+      });
+    });
+}
+// End Comment delete
+
 // Biểu đồ doanh thu
 const revenueChart = document.querySelector("#revenue-chart");
 let revenueChartInstance = null;

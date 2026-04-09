@@ -347,7 +347,7 @@ input, button, textarea {
   right:0;
   z-index:30;
   width:240px;
-  height:130px;
+  height:170px;
   background-color:white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   border-radius:8px;
@@ -2331,6 +2331,9 @@ input, button, textarea {
   height: 100px;
   overflow: hidden;
 }
+.box-tour-info .inner-comment {
+  height: auto
+}
 
 .box-tour-info.active .inner-content {
   height: auto;
@@ -2833,7 +2836,6 @@ input, button, textarea {
 }
 
 .section-12 .inner-wrap {
-  max-width: 902px;
   margin: 0 auto;
   background-color: #fff;
   box-shadow: 0px 3.05px 3.81px 0px #00000026;
@@ -2983,16 +2985,17 @@ input, button, textarea {
 .section-12 .inner-wrap-info .inner-info-name{
   display:flex;
   gap:10px;
+  align-items: center;
 }
 .section-12 .inner-wrap-info .inner-name{
   font-size:15px;
   font-weight:500;
 }
 .section-12 .inner-wrap-info .inner-phone{
-  font-size:13px;
-  font-weight:300;
+  font-size:15px;
+  font-weight:500;
   color:gray;
-  margin-top:3px;
+  margin-top: 6px;
 }
 .section-12 .inner-wrap-info .inner-street{
   font-size:13px;
@@ -3085,7 +3088,7 @@ input, button, textarea {
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-item:center;
+  justify-content:center;
   gap:10px;
   margin-bottom:30px;
 }
@@ -4016,4 +4019,50 @@ input, button, textarea {
   .timeline-item::after {
     top:20px;
   }
+}
+
+.table-2 {
+  overflow-x: auto;
+}
+
+.table-2 table {
+  background-color: #fff;
+  border: 1px solid #B9B9B9;
+  border-radius: 14px;
+  overflow: hidden;
+  width: 100%;
+  min-width: 1000px;
+}
+
+.table-2 table thead tr th {
+  border-bottom: 1px solid #D5D5D5;
+  background-color: #FCFDFD;
+  padding: 14px;
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--color-text);
+  text-align: left;
+}
+
+.table-2 table .inner-center {
+  text-align: center;
+}
+
+.table-2 table .inner-check {
+  width: 20px;
+  height: 20px;
+}
+
+.table-2 table tbody tr td {
+  border-bottom: 1px solid #D5D5D5;
+  background-color: #fff;
+  padding: 8px 14px;
+  font-weight: 600;
+  font-size: 14px;
+  color: black;
+  text-align: left;
+}
+
+.table-2 table tbody tr:last-child td {
+  border-bottom: 0;
 }

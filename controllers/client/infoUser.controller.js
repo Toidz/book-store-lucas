@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken")
 const addressConfig = require("../../config/address")
 const AccountClient = require("../../models/account-client.model")
 const AddressClient = require("../../models/address.model")
+const Comment = require("../../models/comment.model")
+const Book = require("../../models/book.model")
+const moment = require("moment")
 module.exports.getInfoUser = async (req,res)=>{
     try {
         const city=[]
@@ -90,5 +93,28 @@ module.exports.postInfoUser = async (req,res)=>{
     req.flash("success","Cập nhật thông tin thành công!")
     res.json({
         code:"success"
+    })
+}
+
+module.exports.myComments = async (req,res)=>{
+    const find = {
+        id_user: req.account.id,
+        deleted:false
+    }
+    const commentList = await Comment.find(find).sort({
+        createdAt:"desc"
+    })
+    for(const item of commentList){
+        const book = await Book.findOne({
+            _id:item.id_book
+        })
+        item.bookName = book ? book.name : "Sách đã xóa"
+        item.bookSlug = book ? book.slug : ""
+        item.formatCreatedAt = moment(item.createdAt).format("HH:mm - DD/MM/YYYY")
+        item.statusLabel = item.status == "approved" ? "Đã duyệt" : "Chờ duyệt"
+    }
+    res.render("client/pages/my-comments",{
+        pageTitle:"Bình luận của tôi",
+        commentList:commentList
     })
 }

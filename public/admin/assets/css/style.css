@@ -823,6 +823,56 @@ a {
 }
 /* End Badge */
 
+/* Comment status */
+.comment-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.comment-status-approved {
+  background-color: rgba(0, 182, 155, 0.2);
+  color: #00B69B;
+}
+
+.comment-status-pending {
+  background-color: rgba(239, 55, 38, 0.2);
+  color: #EF3826;
+}
+/* End Comment status */
+
+/* Comment list page */
+.section-comment-list-filter .inner-filter-status {
+  display: inline-flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #E2E2E2;
+  border-radius: 14px;
+  padding: 0 12px;
+  min-height: 42px;
+}
+
+.section-comment-list-filter .inner-filter-status select {
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.table-2 table tbody tr td .comment-status {
+  white-space: nowrap;
+}
+/* End Comment list page */
+
 /* Section 4 */
 .section-4 {
   margin-bottom: 15px;

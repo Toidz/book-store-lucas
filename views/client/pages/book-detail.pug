@@ -30,9 +30,32 @@ block main
                           )
           .box-tour-info
             .inner-title Mô tả sách
-            .inner-content !{book.information}       
+            .inner-content !{book.information}
             .inner-read-more
               button.button-outline Xem tất cả
+          .box-tour-info
+            .inner-title Bình luận
+            .inner-comment
+              - if(commentList.length > 0)
+                each item in commentList
+                  .inner-comment-item(style="background-color:#F8F8F8; border-radius:10px; margin-bottom:12px; padding:12px;")
+                    .inner-comment-head(style="font-weight:600; margin-bottom:4px; font-size:12px") #{item.fullName}
+                    .inner-comment-time(style="font-size:12px; color:#666; margin-bottom:6px;") #{item.formatCreatedAt}
+                    .inner-comment-content #{item.content}
+              - else
+                .inner-comment-empty Chưa có bình luận nào :(( ~~~~ Hãy mua sách để bình luận ^^
+            - if(id_user && canComment)
+              form#book-comment-form(style="margin-top:12px;" id-book=book.id)
+                textarea(
+                  id="commentContent"
+                  name="commentContent"
+                  rows="4"
+                  placeholder="Nhập bình luận của bạn..."
+                  style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; outline:none"
+                )
+                button.button-outline(type="submit" style="margin-top:10px;") Gửi bình luận
+            - else if(id_user && !canComment)
+              .inner-comment-note(style="margin-top:10px; color:#999;") #{canCommentMessage}
         .inner-right
           .box-tour-detail(book-detail)
             .inner-title-main Thông tin sách

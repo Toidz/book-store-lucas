@@ -18,6 +18,9 @@ nav.sider
     - if(permissions.includes("event-view")) 
       li
         a(href=`/${pathAdmin}/event/list`) <i class="fa-regular fa-calendar-check"></i> Quản lý sự kiện
+    - if(permissions.includes("comment-view"))
+      li
+        a(href=`/${pathAdmin}/comment/list`) <i class="fa-solid fa-comments"></i> Quản lý bình luận
     - if(permissions.includes("contact-view"))
       li
         a(href=`/${pathAdmin}/contact`) <i class="fa-solid fa-user-group"></i> Thông tin liên hệ

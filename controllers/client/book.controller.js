@@ -4,6 +4,8 @@ const Category = require("../../models/category.model")
 const categoryHelper = require("../../helpers/category.helper")
 const AccountClient = require("../../models/account-client.model")
 const Event = require("../../models/event.model")
+const Order = require("../../models/order.model")
+const Comment = require("../../models/comment.model")
 const moment = require("moment")
 module.exports.book = async (req, res) => {
   try {
@@ -151,6 +153,8 @@ module.exports.detail = async (req,res) =>{
       name:book.name
     })
     let id_user = "";
+    let canComment = false;
+    let canCommentMessage = "Bạn chưa đủ điều kiện để bình luận sách này.";
     const token = req.cookies.tokenUser;
      if (token) {
       try {
@@ -158,6 +162,36 @@ module.exports.detail = async (req,res) =>{
         const existAccount = await AccountClient.findOne({ email: decoded.email });
         if (existAccount) {
           id_user = existAccount.id;
+          const orderList = await Order.find({
+            id_user: id_user,
+            deleted: false,
+            status: "done"
+          });
+          const existComment = await Comment.findOne({
+            id_book: book.id,
+            id_user: id_user,
+            deleted: false
+          });
+          if(existComment){
+            canComment = false;
+            canCommentMessage = "Bạn đã bình luận sách này rồi.";
+          }
+          const now = new Date();
+          if(!existComment){
+            for (const order of orderList) {
+              const hasBook = (order.cart || []).some(item => item.id_book == book.id);
+              if(!hasBook) continue;
+              const doneAt = moment(order.updatedAt).toDate();
+              const expiredAt = moment(order.updatedAt).add(7, "days").toDate();
+              if(now >= doneAt && now <= expiredAt){
+                canComment = true;
+                break;
+              }
+            }
+            if(!canComment){
+              canCommentMessage = "Bạn chỉ được bình luận trong vòng 7 ngày kể từ khi đơn hàng chuyển sang đã giao.";
+            }
+          }
         }
       } catch (error) {
       }
@@ -173,15 +207,185 @@ module.exports.detail = async (req,res) =>{
       book.priceLast = parseInt(book.priceBook)-parseInt(book.priceBook)*parseInt(book.discount)/100 
     }
     
+    const commentList = await Comment.find({
+      id_book: book.id,
+      deleted: false,
+      status: "approved"
+    }).sort({
+      createdAt: "desc"
+    });
+    for(const comment of commentList){
+      const accountComment = await AccountClient.findOne({
+        _id: comment.id_user
+      });
+      comment.fullName = accountComment ? accountComment.fullName : "Khách hàng";
+      comment.formatCreatedAt = moment(comment.createdAt).format("HH:mm - DD/MM/YYYY");
+    }
+    
     res.render("client/pages/book-detail",{
       pageTitle:"Chi tiết sách",
       category:category,
       bread:bread,
       book:book,
-      id_user:id_user
+      id_user:id_user,
+      canComment:canComment,
+      canCommentMessage:canCommentMessage,
+      commentList:commentList
     });
   }
   else{
     res.redirect("/")
+  }
+}
+
+module.exports.commentPost = async (req,res) =>{
+  try {
+    const { idBook } = req.params;
+    const { content } = req.body;
+    if(!content || !content.trim()){
+      return res.json({
+        code:"error",
+        message:"Nội dung bình luận không được để trống!"
+      });
+    }
+
+    const token = req.cookies.tokenUser;
+    if(!token){
+      return res.json({
+        code:"error",
+        message:"Vui lòng đăng nhập để bình luận!"
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_CLIENT);
+    const existAccount = await AccountClient.findOne({
+      email: decoded.email
+    });
+    if(!existAccount){
+      return res.json({
+        code:"error",
+        message:"Tài khoản không hợp lệ!"
+      });
+    }
+
+    const orderList = await Order.find({
+      id_user: existAccount.id,
+      deleted: false,
+      status: "done"
+    });
+    const existComment = await Comment.findOne({
+      id_book: idBook,
+      id_user: existAccount.id,
+      deleted: false
+    });
+    if(existComment){
+      return res.json({
+        code:"error",
+        message:"Bạn đã bình luận sách này rồi!"
+      });
+    }
+    let allowComment = false;
+    let idOrder = "";
+    const now = new Date();
+    for (const order of orderList) {
+      const hasBook = (order.cart || []).some(item => item.id_book == idBook);
+      if(!hasBook) continue;
+      const doneAt = moment(order.updatedAt).toDate();
+      const expiredAt = moment(order.updatedAt).add(7, "days").toDate();
+      if(now >= doneAt && now <= expiredAt){
+        allowComment = true;
+        idOrder = order.id;
+        break;
+      }
+    }
+    if(!allowComment){
+      return res.json({
+        code:"error",
+        message:"Bạn chỉ được bình luận trong vòng 7 ngày kể từ khi đơn hàng chuyển sang đã giao!"
+      });
+    }
+
+    const dataFinal = new Comment({
+      id_book: idBook,
+      id_user: existAccount.id,
+      id_order: idOrder,
+      content: content.trim(),
+      status: "pending"
+    });
+    await dataFinal.save();
+    return res.json({
+      code:"success",
+      message:"Đã gửi bình luận, vui lòng chờ duyệt."
+    });
+  } catch (error) {
+    return res.json({
+      code:"error",
+      message:"Gửi bình luận thất bại!"
+    });
+  }
+}
+
+module.exports.commentEditPatch = async (req,res) =>{
+  try {
+    const { idComment } = req.params;
+    const { content } = req.body;
+    if(!content || !content.trim()){
+      return res.json({
+        code:"error",
+        message:"Nội dung bình luận không được để trống!"
+      });
+    }
+
+    const token = req.cookies.tokenUser;
+    if(!token){
+      return res.json({
+        code:"error",
+        message:"Vui lòng đăng nhập!"
+      });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_CLIENT);
+    const existAccount = await AccountClient.findOne({
+      email: decoded.email
+    });
+    if(!existAccount){
+      return res.json({
+        code:"error",
+        message:"Tài khoản không hợp lệ!"
+      });
+    }
+
+    const commentCurrent = await Comment.findOne({
+      _id:idComment,
+      id_user: existAccount.id,
+      deleted:false
+    });
+    if(!commentCurrent){
+      return res.json({
+        code:"error",
+        message:"Không tìm thấy bình luận!"
+      });
+    }
+    if(commentCurrent.status == "approved"){
+      return res.json({
+        code:"error",
+        message:"Bình luận đã duyệt không thể chỉnh sửa!"
+      });
+    }
+
+    await Comment.updateOne({
+      _id:idComment
+    },{
+      content: content.trim()
+    });
+
+    return res.json({
+      code:"success",
+      message:"Cập nhật bình luận thành công!"
+    });
+  } catch (error) {
+    return res.json({
+      code:"error",
+      message:"Sửa bình luận thất bại!"
+    });
   }
 }

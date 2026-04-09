@@ -108,6 +108,18 @@ module.exports.permission = [
         value:"account-delete"
     },
     {
+        lable:"Xem bình luận",
+        value:"comment-view"
+    },
+    {
+        lable:"Duyệt bình luận",
+        value:"comment-approve"
+    },
+    {
+        lable:"Xóa bình luận",
+        value:"comment-delete"
+    },
+    {
         lable:"Xem nhóm quyền",
         value:"role-view"
     },

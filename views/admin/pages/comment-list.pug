@@ -1,0 +1,82 @@
+extends ../layouts/default.pug
+block main
+  h1.box-title Quản lý bình luận
+  - if (permissions.includes("comment-view"))
+    //- Section 5
+    .section-5.section-comment-list-filter
+      .inner-wrap
+        .inner-search
+          <i class="fa-solid fa-magnifying-glass"></i>
+          input(type="text" placeholder="Tìm bình luận" search-comment)
+        .inner-item.inner-filter-status
+          select(filter-comment-status)
+            option(value="") Trạng thái
+            option(value="pending") Chưa duyệt
+            option(value="approved") Đã duyệt
+    //- End Section 5
+
+    //- Section 6
+    .section-6
+      .table-2
+        table
+          thead
+            tr
+              th Khách hàng
+              th Sách
+              th Bình luận
+              th Trạng thái
+              th Ngày tạo
+              th(class="inner-center") Hành động
+          tbody
+            each item in commentList
+              tr
+                td #{item.userName}
+                td #{item.bookName}
+                td #{item.content}
+                td
+                  - if(item.status=="approved")
+                    span.comment-status.comment-status-approved Đã duyệt
+                  - else
+                    span.comment-status.comment-status-pending Chưa duyệt
+                td #{item.formatTime}
+                td(class="inner-center")
+                  .inner-buttons
+                    - if(permissions.includes("comment-approve") && item.status!="approved")
+                      button(
+                        type="button"
+                        class="inner-edit"
+                        api-approve-comment=`/${pathAdmin}/comment/approve/${item.id}`
+                      )
+                        <i class="fa-solid fa-check"></i>
+                    - if(permissions.includes("comment-delete"))
+                      button(
+                        type="button"
+                        class="inner-delete"
+                        button-delete-comment=`/${pathAdmin}/comment/delete/${item.id}`
+                      )
+                        <i class="fa-regular fa-trash-can"></i>
+            - if(commentList.length == 0)
+              tr
+                td(colspan="6" class="inner-center" style="padding:20px") Không có bình luận nào!
+    //- End Section 6
+
+    //- Section 7
+    - if(commentList.length > 0)
+      .section-7
+        span(class="inner-label" total=pagination.totalPage) Hiển thị #{pagination.skip+1} - #{pagination.skip+commentList.length} của #{pagination.totalComment}
+        select(class="inner-pagination" comment-page)
+          - for(let i=1;i<=pagination.totalPage;i++)
+            option(value=i) Trang #{i}
+    //- End Section 7
+  - else
+    script.
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi truy cập!',
+        text: 'Bạn không có đủ thẩm quyền vào trang này!',
+        timer: 3000,
+        showConfirmButton: false,
+        willClose: () => {
+          window.location.href = `/${pathAdmin}/dashboard`;
+        }
+      });

@@ -1,0 +1,42 @@
+extends ../layout/default.pug
+
+block main
+  .section-11(style="margin: -20px 0 0 0;")
+    .container
+      .inner-wrap
+        h2(style="margin: 0 0 12px 0;") Bình luận của tôi
+        .section-6
+          .table-2
+            table
+              thead
+                tr(style="background-color:gray; text-align:left; border:none;")
+                  th(style="width:300px") Sách
+                  th(style="width:auto") Nội dung
+                  th(style="width:150px") Trạng thái
+                  th(style="width:200px") Ngày bình luận
+                  th(style="width:140px") Hành động
+              tbody
+                each item in commentList
+                  tr
+                    td
+                      a(href=`/book/detail/${item.bookSlug}` style="color:black") #{item.bookName}
+                    td #{item.content}
+                    td
+                      - if(item.status=="approved")
+                        span(style="color:#1ea84a; font-weight:600;") #{item.statusLabel}
+                      - else
+                        span(style="color:#d62828; font-weight:600;") #{item.statusLabel}
+                    td #{item.formatCreatedAt}
+                    td
+                      - if(item.status!="approved")
+                        button(
+                          type="button"
+                          button-edit-comment=item.id
+                          comment-content=item.content
+                          style="padding:6px 10px; border:1px solid #ddd; border-radius:6px; background:#fff; cursor:pointer;"
+                        ) Sửa
+                      - else 
+                        span Không thể sửa
+                - if(commentList.length == 0)
+                  tr
+                    td(colspan="5" style="text-align:center; padding:20px;") Bạn chưa có bình luận nào.

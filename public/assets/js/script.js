@@ -894,6 +894,59 @@ if(bookDetail){
 
 //End detail - book
 
+// Book comment
+const bookCommentForm = document.querySelector("#book-comment-form");
+if(bookCommentForm){
+  const validation = new JustValidate("#book-comment-form");
+  validation
+    .addField("#commentContent", [
+      {
+        rule: "required",
+        errorMessage: "Vui lòng nhập nội dung bình luận!",
+      },
+      {
+        rule: "minLength",
+        value: 5,
+        errorMessage: "Bình luận phải có ít nhất 5 ký tự!",
+      },
+    ])
+    .onSuccess((event)=>{
+      const idBook = bookCommentForm.getAttribute("id-book");
+      const content = event.target.commentContent.value;
+      fetch(`/book/comment/${idBook}`,{
+        method:"POST",
+        headers:{
+          "Content-type":"application/json"
+        },
+        body:JSON.stringify({content})
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        if(data.code=="error"){
+          Swal.fire({
+            icon: "error",
+            title: "Thất bại!",
+            text: data.message,
+            timer: 3000,
+            showConfirmButton: false
+          });
+        }
+        else{
+          Swal.fire({
+            icon: "success",
+            title: "Thành công!",
+            text: data.message,
+            timer: 2500,
+            showConfirmButton: false
+          }).then(()=>{
+            window.location.reload();
+          });
+        }
+      })
+    });
+}
+// End Book comment
+
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll('.inner-menu > ul > li > ul').forEach(ul => {
     if (ul.children.length > 5) {
@@ -1836,4 +1889,66 @@ if (innerFindOrder) {
 }
 
 //End inner-find-order 
+
+// Edit my comment
+const buttonEditCommentList = document.querySelectorAll("[button-edit-comment]");
+if(buttonEditCommentList.length > 0){
+  buttonEditCommentList.forEach(button => {
+    button.addEventListener("click", async ()=>{
+      const idComment = button.getAttribute("button-edit-comment");
+      const currentContent = button.getAttribute("comment-content") || "";
+      const { value: content } = await Swal.fire({
+        title: "Sửa bình luận",
+        input: "textarea",
+        inputValue: currentContent,
+        inputPlaceholder: "Nhập nội dung bình luận...",
+        showCancelButton: true,
+        confirmButtonText: "Lưu",
+        cancelButtonText: "Hủy",
+      });
+
+      if(typeof content === "undefined") return;
+      if(!content || !content.trim()){
+        Swal.fire({
+          icon:"error",
+          title:"Thất bại!",
+          text:"Nội dung bình luận không được để trống!"
+        });
+        return;
+      }
+
+      fetch(`/book/comment/edit/${idComment}`,{
+        method:"PATCH",
+        headers:{
+          "Content-type":"application/json"
+        },
+        body:JSON.stringify({
+          content: content.trim()
+        })
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        if(data.code=="error"){
+          Swal.fire({
+            icon:"error",
+            title:"Thất bại!",
+            text:data.message
+          });
+        }
+        else{
+          Swal.fire({
+            icon:"success",
+            title:"Thành công!",
+            text:data.message,
+            timer:2000,
+            showConfirmButton:false
+          }).then(()=>{
+            window.location.reload();
+          });
+        }
+      })
+    });
+  });
+}
+// End Edit my comment
 
