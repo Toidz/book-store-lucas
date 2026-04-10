@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function() {
   if (typeof AOS !== "undefined") {
     AOS.init({
@@ -1039,9 +1038,7 @@ if(innerUpdates.length>0){
     innerFillAddress.classList.toggle("active")
     const idCurrent = innerUpdate.getAttribute("inner-update-item")
     const updateCurrentAddress = document.querySelector("[update-current-address]")
-    const deleteCurrentAddress = document.querySelector("[delete-current-address]")
     updateCurrentAddress.setAttribute("id_current",idCurrent)
-    deleteCurrentAddress.setAttribute("id_current",idCurrent)
     fetch(`/pay/get-current-address?idCurrent=${idCurrent}`)
     .then(res=>res.json())
     .then(data=>{
@@ -1209,6 +1206,7 @@ if(innerFillAddress1){
     ])
     .onSuccess((e) => {
       const id_current = updateBtn.getAttribute("id_current"); 
+      console.log(id_current)
       const fullName = e.target.fullName.value;
       const phone = e.target.phone.value;
       const city =  e.target.city.value;
@@ -1256,7 +1254,8 @@ if(innerFillAddress1){
 const deleteCurrentAddress = document.querySelector("[delete-current-address]")
 if(deleteCurrentAddress){
   deleteCurrentAddress.addEventListener("click",()=>{
-    const id_current = deleteCurrentAddress.getAttribute("id_current")
+    const id_current = deleteCurrentAddress.getAttribute("delete-current-address")
+    console.log(id_current)
     const dataFinal ={
       id_current:id_current,
     }
@@ -1727,8 +1726,17 @@ if (itemInfoDetails ) {
       })
       .then(res=>res.json())
       .then(data=>{
-        if(data.code=="success"){
-          window.location.reload()
+        if(data.code=="success"){   
+          Swal.fire({
+            icon: 'success',
+            title: 'Thành công!',
+            text: 'Cập nhật thành công!',
+            timer: 2000,
+            showConfirmButton: false
+          });   
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
       })
     });
@@ -1757,8 +1765,28 @@ if (itemInfoDetails ) {
       })
         .then(res => res.json())
         .then(data => {
-          if (data.code === "success") {
-            window.location.reload()
+          if (data.code === "success") { 
+            if(checkItemCart.checked){
+              Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: 'Chọn sản phẩm thành công!',
+                timer: 2000,
+                showConfirmButton: false
+              });
+            }
+            else{
+              Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: 'Gỡ sản phẩm thành công!',
+                timer: 2000,
+                showConfirmButton: false
+              });
+            }
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
           }
         });
       })

@@ -29,7 +29,7 @@ module.exports.getInfoUser = async (req,res)=>{
         (existAccount.city ? ", " + existAccount.city : "");
    
         res.render("client/pages/infoUser",{
-            pageTitle:"Trang thông tin tài khoản",
+            pageTitle:"Trang thông tin cá nhân",
             existAccount:existAccount,
             city:city,
             address:address

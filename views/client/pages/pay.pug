@@ -5,7 +5,7 @@ block main
     .container
       .inner-wrap
         .inner-head
-          .inner-title Thanh toán
+          .inner-title Sản phẩm
           a.inner-back(href="/")
             | Quay lại mua hàng
             i.fa-solid.fa-angle-right
@@ -100,11 +100,13 @@ block main
             .inner-item-info 
               .inner-item-name
                 .inner-name #{item.name}
-                .inner-phone #{item.phone}
+                .inner-phone(style="font-size: 14px; margin-top:6px") #{item.phone}
               .inner-item-address 
                 .inner-street #{item.street}
                 .inner-city #{item.address}
-            .inner-update-list(inner-update-item=item.id) Sửa
+            .inner-up-de 
+              .inner-update-list(inner-update-item=item.id style="cursor: pointer; text-align: right; color:blue") Cập nhật
+              .inner-delete(delete-current-address=item.id style="cursor: pointer; font-size:14px; text-align: right; color:red; margin-top: 4px") Xóa
       .inner-add-address 
         span(inner-add-address) + Thêm địa chỉ mới
     .inner-info-overlay(inner-info-overlay)
@@ -139,7 +141,7 @@ block main
             input(type="text" id="street")
           .inner-button 
             .inner-address 
-              button(button-add-new-address) Lưu địa chỉ mới
+              button(button-add-new-address) Thêm địa chỉ
       .inner-add-address-overlay(inner-add-address-overlay)
   
   .inner-fill-address 
@@ -172,8 +174,6 @@ block main
             input(type="text" id="street")
           .inner-button 
             .inner-address 
-              button(update-current-address) Sửa địa chỉ
-            .inner-address
-              span(delete-current-address) Xóa địa chỉ
+              button(update-current-address) Cập nhật địa chỉ
       .inner-info-overlay(inner-info-overlay)
   // End Section 12

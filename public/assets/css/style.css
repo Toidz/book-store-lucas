@@ -4066,3 +4066,14 @@ input, button, textarea {
 .table-2 table tbody tr:last-child td {
   border-bottom: 0;
 }
+//un tang giam
+input[type="number"] {
+  appearance: textfield !important;
+  -moz-appearance: textfield !important;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}

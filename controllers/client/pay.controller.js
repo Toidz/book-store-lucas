@@ -71,7 +71,7 @@ module.exports.pay = async (req,res)=>{
     return res.redirect("/info-user"); 
   }
   res.render("client/pages/pay",{
-    pageTitle:"Trang thanh toán",
+    pageTitle:"Trang đặt hàng",
     listItem:listItem,
     city:city,
     listAddress:listAddress,
