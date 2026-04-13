@@ -798,6 +798,20 @@ if(findBook){
     }
   })
 }
+const findBookByClick = document.querySelector("[find-book-by-click]")
+if(findBookByClick){
+  const url = new URL("/search", window.location.origin);
+  findBookByClick.addEventListener("click",()=>{
+    const findBook = document.querySelector("[find-book]")
+    if(findBook.value){
+        url.searchParams.set("keyword",findBook.value)
+      }
+      else{
+        url.searchParams.delete("keyword")
+      }
+      window.location.href = url.href
+  })
+}
 //End find Book
 
 //detail - book
@@ -893,42 +907,6 @@ if(bookDetail){
 
 //End detail - book
 
-// Comment profanity filter
-const COMMENT_BAD_WORDS = [
-  "dm",
-  "dmm",
-  "dit",
-  "dit me",
-  "ditme",
-  "cl",
-  "cc",
-  "cac",
-  "cho chet",
-  "vkl",
-  "vl",
-  "lon",
-  "oc cho",
-  "ngu",
-  "khon nan",
-];
-
-const normalizeCommentText = (text = "") => {
-  return text
-    .toLowerCase()
-    .replace(/đ/g, "d")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-};
-
-const containsBadWordComment = (text = "") => {
-  const normalized = normalizeCommentText(text);
-  return COMMENT_BAD_WORDS.some(word => normalized.includes(word));
-};
-// End Comment profanity filter
-
 // Book comment
 const bookCommentForm = document.querySelector("#book-comment-form");
 if(bookCommentForm){
@@ -948,16 +926,6 @@ if(bookCommentForm){
     .onSuccess((event)=>{
       const idBook = bookCommentForm.getAttribute("id-book");
       const content = event.target.commentContent.value;
-      if(containsBadWordComment(content)){
-        Swal.fire({
-          icon: "error",
-          title: "Thất bại!",
-          text: "Bình luận chứa từ ngữ không phù hợp, vui lòng chỉnh sửa lại!",
-          timer: 3000,
-          showConfirmButton: false
-        });
-        return;
-      }
       fetch(`/book/comment/${idBook}`,{
         method:"POST",
         headers:{
@@ -1980,25 +1948,6 @@ if(buttonEditCommentList.length > 0){
         confirmButtonText: "Lưu",
         cancelButtonText: "Hủy",
       });
-
-      if(typeof content === "undefined") return;
-      if(!content || !content.trim()){
-        Swal.fire({
-          icon:"error",
-          title:"Thất bại!",
-          text:"Nội dung bình luận không được để trống!"
-        });
-        return;
-      }
-      if(containsBadWordComment(content)){
-        Swal.fire({
-          icon:"error",
-          title:"Thất bại!",
-          text:"Bình luận chứa từ ngữ không phù hợp, vui lòng chỉnh sửa lại!"
-        });
-        return;
-      }
-
       fetch(`/book/comment/edit/${idComment}`,{
         method:"PATCH",
         headers:{

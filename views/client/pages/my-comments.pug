@@ -35,11 +35,13 @@ block main
                           comment-content=item.content
                           style="padding:6px 10px; border:1px solid #ddd; border-radius:6px; background:#fff; cursor:pointer; margin-right:6px;"
                         ) Sửa
-                      button(
-                        type="button"
-                        button-delete-comment=item.id
-                        style="padding:6px 10px; border:1px solid #ef3826; border-radius:6px; background:#fff0ef; color:#ef3826; cursor:pointer;"
-                      ) Xóa
+                        button(
+                          type="button"
+                          button-delete-comment=item.id
+                          style="padding:6px 10px; border:1px solid #ef3826; border-radius:6px; background:#fff0ef; color:#ef3826; cursor:pointer;"
+                        ) Xóa
+                      - else
+                        span(style="color:#999;") Không thể
                 - if(commentList.length == 0)
                   tr
                     td(colspan="5" style="text-align:center; padding:20px;") Bạn chưa có bình luận nào.

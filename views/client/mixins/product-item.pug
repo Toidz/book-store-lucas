@@ -23,13 +23,13 @@ mixin product-item(item)
       .inner-prices
         - if(item.idEvent)
           .inner-price-new
-            div Giá: #{item.priceLast.toLocaleString('vi-VN')}đ 
-            span -#{item.discount}%
+            div Giá: #{item.priceLast?item.priceLast.toLocaleString('vi-VN'):0}đ 
+            span -#{item.discount?item.discount:0}%
           .inner-intial
-            span #{item.priceBook.toLocaleString('vi-VN')}đ
+            span #{item.priceBook?item.priceBook.toLocaleString('vi-VN'):0}đ
         - else
           .inner-price-new
-            div Giá: #{item.priceBook.toLocaleString('vi-VN')}đ
+            div Giá: #{item.priceBook?item.priceBook.toLocaleString('vi-VN'):0}đ
       .inner-stock
         .inner-label Số lượng còn:
         .inner-number #{item.numberBook}

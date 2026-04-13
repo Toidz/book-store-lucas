@@ -35,7 +35,7 @@ module.exports.list = async (req,res)=>{
         item.cartLength = item.cart.length;
     }
     res.render("client/pages/order-history",{
-        pageTitle:"Lịch sử đặt hàng",
+        pageTitle:"Lịch sử đơn hàng",
         listOrder:listOrder,
         totalOrder:totalOrder,
         totalPage:totalPage

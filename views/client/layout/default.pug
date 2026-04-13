@@ -80,7 +80,7 @@ html(lang="vi")
                                 placeholder="Bạn muốn tìm kiếm sách gì?" 
                                 type="text"
                                 find-book)
-                            i.fa-solid.fa-magnifying-glass
+                            i.fa-solid.fa-magnifying-glass(find-book-by-click)
                         .inner-bar(menu-default)
                             .inner-back
                                 i(back-home).fa-solid.fa-arrow-left
@@ -124,7 +124,7 @@ html(lang="vi")
                                     .inner-item
                                         a(href="/order-history") 
                                             img(src="/assets/images/item-order.png")
-                                            | Lịch sử đặt hàng
+                                            | Lịch sử đơn hàng
                                     .inner-item
                                         a(href="/info-user/comments") 
                                             img(src="/assets/images/message.png")
