@@ -84,7 +84,7 @@ block main
                       ) <i class="fa-regular fa-trash-can"></i>
             - if (categoryList.length==0)
               tr
-                td(colspan="12" class="inner-center" style="padding:20px") Không có danh mục nào thỏa mãn! 
+                td(colspan="12" class="inner-center" style="padding:20px") Không tìm thấy danh mục! 
     //- End Section 6
 
     //- Section 7
@@ -100,7 +100,7 @@ block main
       Swal.fire({
         icon: 'error',
         title: 'Lỗi truy cập!',
-        text: 'Bạn không có đủ thẩm quyền vào trang này!',
+        text: 'Bạn không có quyền vào trang này!',
         timer: 3000,
         showConfirmButton: false,
         willClose: () => {

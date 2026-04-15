@@ -41,14 +41,14 @@ block main
                       button(class="inner-delete" apiroledelete=`/${pathAdmin}/setting/role/delete/${item.id}`) <i class="fa-regular fa-trash-can"></i>
             - if (roleList.length==0)
               tr
-                td(colspan="12" class="inner-center" style="padding:20px") Không có nhóm quyền nào thỏa mãn!
+                td(colspan="12" class="inner-center" style="padding:20px") Không tìm thấy nhóm quyền!
     //- End Section 6
   - else
     script.
       Swal.fire({
         icon: 'error',
         title: 'Lỗi truy cập!',
-        text: 'Bạn không có đủ thẩm quyền vào trang này!',
+        text: 'Bạn không có quyền vào trang này!',
         timer: 3000,
         showConfirmButton: false,
         willClose: () => {

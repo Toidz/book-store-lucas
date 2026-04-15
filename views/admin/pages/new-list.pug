@@ -80,7 +80,7 @@ block main
                         class="inner-delete" button-delete-new=`/${pathAdmin}/new/delete/${item.id}`) <i class="fa-regular fa-trash-can"></i>
             - if (newList.length==0)
               tr
-                td(colspan="12" class="inner-center" style="padding:20px") Không có bài viết nào thỏa mãn!
+                td(colspan="12" class="inner-center" style="padding:20px") Không tìm thấy bài viết!
     //- End Section 6
 
     //- Section 7
@@ -96,7 +96,7 @@ block main
       Swal.fire({
         icon: 'error',
         title: 'Lỗi truy cập!',
-        text: 'Bạn không có đủ thẩm quyền vào trang này!',
+        text: 'Bạn không có quyền vào trang này!',
         timer: 3000,
         showConfirmButton: false,
         willClose: () => {
