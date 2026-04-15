@@ -1980,6 +1980,24 @@ if(filterPrice){
 }
 //end filter-price
 
+//filter-price
+const filterStock = document.querySelector("[filter-stock]")
+if(filterStock){
+  const url = new URL(window.location.href)
+  filterStock.addEventListener("change",()=>{
+    const stockValue = filterStock.value
+    if(stockValue){
+      url.searchParams.set("stock",stockValue)
+    }
+    else{
+      url.searchParams.delete("stock")
+    }
+    window.location.href = url.href
+  })
+  const currentStock = url.searchParams.get("stock")
+  if(currentStock) filterStock.value =currentStock
+}
+//end filter-price
 //button reset book
 const buttonResetbook = document.querySelector("[button-reset]")
 if(buttonResetbook){
@@ -2021,7 +2039,6 @@ if(changeStatus){
           ids:ids,
           id_event:select.value
         }
-        console.log(dataFinal)
         fetch(`/${pathAdmin}/book/changePatch`,{
           method:"PATCH",
           headers:{
@@ -2043,7 +2060,6 @@ if(changeStatus){
   }
 }
 //End change-status book
-
 //book search
 const url = new URL(window.location.href)
 const bookSearch = document.querySelector("[book-search]")

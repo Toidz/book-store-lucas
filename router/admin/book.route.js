@@ -35,4 +35,6 @@ router.get("/trash",bookController.trash);
 router.patch("/trash",bookController.trashMulti)
 router.patch("/restore/:id",bookController.restore)
 router.patch("/destroy/:id",bookController.destroy)
+router.get("/export-excel",bookController.exportExcel)
+
 module.exports = router;

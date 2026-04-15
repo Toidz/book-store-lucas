@@ -39,7 +39,7 @@ block main
         .inner-search
           <i class="fa-solid fa-magnifying-glass"></i>
           input(type="text" placeholder="Tìm kiếm" order-search)
-        .inner-button-create
+        .inner-button-excel
           - const exportParams = new URLSearchParams(queryCurrent || {}).toString();
           - const exportUrl = `/${pathAdmin}/order/export-excel${exportParams ? `?${exportParams}` : ""}`;
           a(href=exportUrl)

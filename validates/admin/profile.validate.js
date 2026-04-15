@@ -25,6 +25,12 @@ module.exports.editPatch = (req, res, next) => {
         "string.min": "Họ tên phải có ít nhất 5 ký tự!",
         "string.max": "Họ tên không được vượt quá 50 ký tự!",
       }),
+    email: Joi.string()
+      .required().email()
+      .messages({
+        "string.empty": "Vui lòng nhập email",
+        "string.email": "Email không hợp lệ!",
+      }),
     phone: Joi.string().allow(""),
     positionCompany: Joi.string().allow(""),
     avatar: Joi.string().allow(""),

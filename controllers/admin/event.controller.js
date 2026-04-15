@@ -34,7 +34,7 @@ module.exports.list= async (req,res)=>{
         item.endFormat = moment(item.endDate).format("DD/MM/YYYY")
     };
     res.render("admin/pages/event-list",{
-        pageTitle:"Quản lý sự kiện",
+        pageTitle:"Quản lý sự kiện giảm giá",
         eventList:eventList,
         totalevent:totalevent,
         totalPage:totalPage,
@@ -44,7 +44,7 @@ module.exports.list= async (req,res)=>{
 module.exports.create = async (req,res) =>{
 
     res.render("admin/pages/event-create",{
-        pageTitle:"Tạo sự kiện",
+        pageTitle:"Tạo sự kiện giảm giá",
     })
 }
 module.exports.createPost = async (req,res) =>{
@@ -78,7 +78,7 @@ module.exports.edit = async (req,res) =>{
             deleted:false
         })
         res.render("admin/pages/event-edit",{
-            pageTitle:"Chỉnh sửa sự kiện",
+            pageTitle:"Chỉnh sửa sự kiện giảm giá",
             currentEvent:currentEvent
         })
     } catch (error) {

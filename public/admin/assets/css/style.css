@@ -383,7 +383,7 @@ a {
 .sider {
   background-color: #fff;
   border-right: 1px solid #E0E0E0;
-  width: 240px;
+  width: 250px;
   height: calc(100vh - 70px);
   position: fixed;
   top: 70px;
@@ -1041,7 +1041,20 @@ a {
   display: inline-flex;
   align-items: center;
 }
-
+.section-5 .inner-button-excel button, .section-5 .inner-button-excel a {
+  background-color:blue;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border: 0;
+  height: 100%;
+  padding: 0 28px;
+  border-radius: 14px;
+  cursor: pointer;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+}
 @media (max-width: 991.98px) {
   .section-5 .inner-change-status .inner-item {
     padding: 10px 14px;

@@ -10,9 +10,7 @@ module.exports.bookPost =(req,res,next)=>{
         author:  Joi.string().allow(""),
         category:  Joi.string().allow(""),
         position:  Joi.string().allow(""),
-        avatar1:  Joi.string().allow(""),
-        avatar2:  Joi.string().allow(""),
-        avatar3:  Joi.string().allow(""),
+        avatar:  Joi.string().allow(""),
         priceBook: Joi.string().allow(""),
         numberBook: Joi.string().allow(""),
         information:  Joi.string().allow(""),
@@ -42,12 +40,11 @@ module.exports.bookPatch =(req,res,next)=>{
         author:  Joi.string().allow(""),
         category:  Joi.string().allow(""),
         position:  Joi.string().allow(""),
-        avatar1:  Joi.string().allow(""),
-        avatar2:  Joi.string().allow(""),
-        avatar3:  Joi.string().allow(""),
+        avatar:  Joi.string().allow(""),
         priceBook: Joi.string().allow(""),
         numberBook: Joi.string().allow(""),
         information:  Joi.string().allow(""),
+        current: Joi.string().allow("")
     })
     const {error} = schema.validate(req.body);
     if(error)

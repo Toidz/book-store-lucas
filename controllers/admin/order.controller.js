@@ -38,8 +38,10 @@ const mapOrderDisplayFields = (orderList) => {
     orderList.forEach(order => {
        order.valueMethod = variable.method.find(item => item.value==order.method)
        order.valueStatusPay = variable.payStatus.find(item => item.value==order.payStatus)
+       order.valueStatus = variable.status.find(item => item.value==order.status)
        order.nameMethod=order.valueMethod? order.valueMethod.lable :""
        order.nameStatusPay =order.valueStatusPay? order.valueStatusPay.lable :""
+       order.nameStatus =order.valueStatus? order.valueStatus.lable :""
        order.time = moment(order.createdAt).format("HH:mm")
        order.day = moment(order.createdAt).format("DD/MM/YYYY")
     });
@@ -138,7 +140,7 @@ module.exports.exportExcel = async (req,res)=>{
         const find = buildOrderFilter(req.query)
         const orderList = await Order.find(find).sort({
             createdAt:"desc"
-        })
+        }).lean()
         mapOrderDisplayFields(orderList)
 
         const workbook = new ExcelJS.Workbook()
@@ -165,7 +167,7 @@ module.exports.exportExcel = async (req,res)=>{
                 note: order.note || "",
                 method: order.nameMethod || "",
                 payStatus: order.nameStatusPay || "",
-                status: order.status || "",
+                status: order.nameStatus || "",
                 products: products,
                 priceTotal: order.priceTotal || 0,
                 createdAt: moment(order.createdAt).format("DD/MM/YYYY HH:mm"),

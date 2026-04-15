@@ -21,6 +21,7 @@ const eventSchema = Joi.object({
       "string.empty": "Vui lòng nhập tên sự kiện",
     }),
   discount: Joi.string().allow(""),
+  avatar: Joi.string().allow(""),
   startDate: Joi.date()
     .required()
     .messages({

@@ -37,7 +37,8 @@ module.exports.categoryPatch =(req,res,next)=>{
         position: Joi.string().allow(""),
         status: Joi.string().allow(""),
         avatar: Joi.string().allow(""),
-        description: Joi.string().allow("")
+        description: Joi.string().allow(""),
+        current: Joi.string().allow("")
     })
     const {error} = schema.validate(req.body);
     if(error)

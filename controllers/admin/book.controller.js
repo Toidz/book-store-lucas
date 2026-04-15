@@ -6,6 +6,7 @@ const moment = require("moment")
 const slugify = require("slugify")
 const generateHelper = require("../../helpers/generate.helper")
 const Event = require("../../models/event.model")
+const ExcelJS = require("exceljs")
 module.exports.list = async (req,res) =>{
     const find = {
         deleted:false
@@ -17,9 +18,12 @@ module.exports.list = async (req,res) =>{
         find.createdBy = req.query.id
     }
     if(req.query.stock){
-        if(req.query.stock==0) find.numberBook = 0
-        if(req.query.stock == 15) {
+        if(req.query.stock=="out") find.numberBook = 0
+        else if(req.query.stock == "few") {
             find.numberBook = { $lte: 15 , $gt:0}; 
+        }
+        else if(req.query.stock == "many") {
+            find.numberBook = { $gt: 15 }; 
         }
     }
     const startDate = req.query.startDate
@@ -142,14 +146,22 @@ module.exports.list = async (req,res) =>{
         page = totalPage
     }
     const skip = limit*(page-1)
-
-    const bookList = await Book.find(find
-    ).sort({
-        position:"desc"
-    })
-    .limit(limit)
-    .skip(skip)
-    
+    let bookList = []
+    if(req.query.stock=="top"){
+        bookList = await Book.find(find
+        ).sort({
+            numberSale:"desc"
+        })
+        .limit(limit)
+    }
+    else{
+        bookList = await Book.find(find
+        ).sort({
+            position:"desc"
+        })
+        .limit(limit)
+        .skip(skip)
+    }       
     const accountList = await AccountAdmin.find({
         status:"active"
     })
@@ -192,7 +204,8 @@ module.exports.list = async (req,res) =>{
         totalBook:totalBook,
         totalPage:totalPage,
         skip:skip,
-        eventList:eventList
+        eventList:eventList,
+        queryCurrent:req.query
     })
 }
 
@@ -511,4 +524,203 @@ module.exports.destroy = async(req,res)=>{
     })
     
    }
+}
+const buildBookFilter = async (query) => {
+    const find = {
+        deleted:false
+    }
+    if(query.id){
+        find.createdBy = query.id
+    }
+    const filterDate ={}
+    if(query.startDate){
+        filterDate.$gte = moment(query.startDate).startOf("date").toDate()
+    }
+    if(query.endDate){
+        filterDate.$lte = moment(query.endDate).endOf("date").toDate()
+    }
+    if(Object.keys(filterDate).length>0){
+        find.createdAt = filterDate
+    }
+    
+    if(query.keyword){
+        const regex = new RegExp(query.keyword,"i")
+        find.orderCode = regex
+    }
+    if(query.price){
+        const filterPrice = query.price
+        if(filterPrice){
+            const priceCurrent = {}
+            switch(parseInt(filterPrice)){
+            case 0:
+                priceCurrent.$lte = 50000
+                break
+            case 50:
+                priceCurrent.$gte = 50000
+                priceCurrent.$lte = 100000
+                break
+            case 100:
+                priceCurrent.$gte = 100000
+                priceCurrent.$lte = 200000
+                break
+            case 200:
+                priceCurrent.$gte = 200000
+                priceCurrent.$lte = 500000
+                break
+            case 500:
+                priceCurrent.$gte = 500000
+                priceCurrent.$lte = 1000000
+                break
+            case 1000:
+                priceCurrent.$gte = 1000000
+                break
+            }
+            if (Object.keys(priceCurrent).length > 0) {
+                find.priceBook = priceCurrent
+            } 
+        }
+    }
+    if(query.category){
+        const idss = await Category.find({
+            parent:""
+        })
+        const idssArray = []
+        idss.forEach(item => {
+            idssArray.push(item.id)
+        });
+        const ids = await Category.find({
+            parent: {$in:idssArray} 
+        })
+        const idsArray = []
+        ids.forEach(item => {
+            idsArray.push(item.id)
+        });
+
+        if(idssArray.includes(query.category)){
+            const listParent = await Category.find({
+                parent: query.category
+            })
+            const listParentArray = []
+            listParent.forEach(item => {
+                listParentArray.push(item.id)
+            });
+
+            const listChild = await Category.find({
+                parent: {$in:listParentArray}
+            })
+
+            const listChildArray = []
+            listChild.forEach(item => {
+                listChildArray.push(item.id)
+            });
+            find.category = {$in:listChildArray}
+        }
+        else if(idsArray.includes(query.category)){
+            const listChild = await Category.find({
+                parent: query.category
+            })
+
+            const listChildArray = []
+            listChild.forEach(item => {
+                listChildArray.push(item.id)
+            });
+            find.category = {$in:listChildArray}
+        }
+        else find.category= query.category
+    }
+    if(query.stock){
+        if(query.stock=="out") find.numberBook = 0
+        else if(query.stock == "few") {
+            find.numberBook = { $lte: 15 , $gt:0}; 
+        }
+        else if(query.stock == "many") {
+            find.numberBook = { $gt: 15 }; 
+        }
+    }
+    return find
+}
+const mapBookDisplayFields = async (bookList) => {
+    for (const book of bookList) {
+        book.time = moment(book.createdAt).format("HH:mm")
+        book.day = moment(book.createdAt).format("DD/MM/YYYY")
+
+        if (book.idEvent) {
+            const event = await Event.findOne({
+                _id: book.idEvent,
+                deleted: false
+            })
+            book.eventName = event ? event.name : ""
+        } else {
+            book.eventName = ""
+        }
+
+        if (book.category) {
+            const category = await Category.findOne({
+                _id: book.category,
+                deleted: false
+            })
+            book.categoryName = category ? category.name : ""
+        } else {
+            book.categoryName = ""
+        }
+    }
+}
+module.exports.exportExcel = async (req,res)=>{
+    // try {
+      console.log(req.query)
+        const find = await buildBookFilter(req.query)
+      
+        let bookList =[]
+        if(req.query.stock=="top"){
+            bookList = await Book.find(find
+            ).sort({ numberSale:"desc" }).limit(20)
+        }
+        else{
+            bookList = await Book.find(find).sort({
+            createdAt:"desc"}
+        )}
+        await mapBookDisplayFields(bookList)
+        const workbook = new ExcelJS.Workbook()
+        const worksheet = workbook.addWorksheet("Sach")
+        worksheet.columns = [
+            { header: "Mã sách", key: "bookCode", width: 25 },
+            { header: "Tên sách", key: "name", width: 25 },
+            { header: "Số lượng còn lại", key: "numberBook", width: 18 },
+            { header: "Số lượng đã bán", key: "numberSale", width: 22 },
+            { header: "Danh mục", key: "categoryName", width: 25 },
+            { header: "Tác giả", key: "author", width: 25 },
+            { header: "Nhà xuất bản", key: "produce", width: 25 },
+            { header: "Giá gốc (VND)", key: "priceBook", width: 20 },
+            { header: "Giá bán (VND)", key: "priceSale", width: 20 },
+            { header: "Sự kiện", key: "eventName", width: 25 },
+            { header: "Ngày tạo", key: "createdAt", width: 20 },
+        ]
+
+        bookList.forEach(book => {
+            worksheet.addRow({
+                bookCode: book.bookCode || "",
+                name: book.name || "",
+                numberBook: book.numberBook || 0,
+                numberSale: book.numberSale || 0,
+                categoryName: book.categoryName || "",
+                author: book.author || "",
+                produce: book.produce || "",
+                priceBook: book.priceBook || 0,
+                priceSale: book.priceSale || 0,
+                eventName: book.eventName || "",
+                createdAt: moment(book.createdAt).format("DD/MM/YYYY HH:mm"),
+            })
+        })
+        worksheet.getRow(1).font = { bold: true }
+        worksheet.views = [{ state: "frozen", ySplit: 1 }]
+
+        const fileName = `sach-${moment().format("YYYYMMDD-HHmmss")}.xlsx`
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`)
+        await workbook.xlsx.write(res)
+        res.end()
+    // } catch (error) {
+    //     req.flash("error","Xuất file Excel thất bại!")
+    //     res.redirect("list")
+    // }
 }
