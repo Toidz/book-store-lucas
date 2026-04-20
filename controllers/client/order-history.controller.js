@@ -1,5 +1,6 @@
 const Order = require("../../models/order.model")
 const variable = require("../../config/variable")
+const Book = require("../../models/book.model")
 const moment = require("moment")
 module.exports.list = async (req,res)=>{
     let keyword = "";
@@ -31,6 +32,9 @@ module.exports.list = async (req,res)=>{
     const listOrder = await Order.find(dataFind) 
     .skip(skip)
     .limit(limit)
+    .sort({
+        createdAt:"desc"
+    })
     for (const item of listOrder) {
         item.cartLength = item.cart.length;
     }
@@ -74,5 +78,56 @@ module.exports.detail = async (req,res)=>{
         })
     } catch (error) {
         res.render("client/pages/404-page")
+    }
+}
+module.exports.cancel = async (req,res)=>{
+    try {
+        const orderId = req.params.id
+        const orderFind = await Order.findOne({
+            _id:orderId,
+            deleted:false
+        })
+        if(orderFind && orderFind.status === "initial"){
+            for (const item of orderFind.cart) {
+                const bookDetail = await Book.findOne({
+                    _id:item.id_book,
+                    deleted:false
+                })
+                if(bookDetail){
+                    await Book.updateOne({
+                        _id:item.id_book,
+                        deleted:false
+                    },{
+                        numberBook:parseInt(bookDetail.numberBook)+parseInt(item.quantity)
+                    })
+                }         
+            }
+            await Order.updateOne({
+                _id:orderId,
+                deleted:false,
+                payStatus:"unpaid"
+            },{
+                    deleted:true,
+                    deletedAt:Date.now(),
+                    deletedBy:req.account.id
+            })
+        }
+        else{
+            res.json({
+                code:"error",
+                message:"Đơn hàng không thể hủy!"    
+            })
+            return;
+        }
+        
+        res.json({
+            code:"success",
+            message:"Hủy đơn hàng thành công!"
+        })
+    } catch (error) {
+        res.json({
+            code:"error",
+            message:"Hủy đơn hàng thất bại!"
+        })
     }
 }

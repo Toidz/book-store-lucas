@@ -195,17 +195,12 @@ module.exports.deletePatch = async (req,res)=>{
             orderCode:orderCode,
             deleted:false
         })
-        if(orderFind && orderFind.status !== "completed"){
+        if(orderFind && orderFind.status !== "done"){
             for (const item of orderFind.cart) {
                 const bookDetail = await Book.findOne({
                     _id:item.id_book,
                     deleted:false,
-                    $or: [
-                        { numberSale: 0 },
-                        { numberSale: { $exists: false } }
-                    ]
                 })
-
                 if(bookDetail){
                     await Book.updateOne({
                         _id:item.id_book,
@@ -213,25 +208,14 @@ module.exports.deletePatch = async (req,res)=>{
                     },{
                         numberBook:parseInt(bookDetail.numberBook)+parseInt(item.quantity)
                     })
-                }
+                } 
                 else{
-                    const bookDetail1 = await Book.findOne({
-                        _id:item.id_book,
-                        deleted:false,
-                        numberSale:{$gt:0}
+                    res.json({
+                        code:"error",
+                        message:"Không thể xóa đơn hàng lúc này!"
                     })
-
-                    if(bookDetail1){
-                        await Book.updateOne({
-                            _id:item.id_book,
-                            deleted:false
-                        },{
-                            numberBook:parseInt(bookDetail1.numberBook)+parseInt(item.quantity),
-                            numberSale:parseInt(bookDetail1.numberSale)-parseInt(item.quantity)
-                        })
-                    }    
+                    return;
                 }
-                 
             }
         }
         await Order.updateOne({

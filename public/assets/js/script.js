@@ -2029,3 +2029,46 @@ if(buttonDeleteCommentList.length > 0){
 }
 // End Delete my comment
 
+//cancel-order
+const cancelOrder = document.querySelector("[cancel-order]") 
+if(cancelOrder){
+  cancelOrder.addEventListener("click",()=>{
+    const api = cancelOrder.getAttribute("cancel-order");
+    Swal.fire({
+      title: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Không",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(api,{
+          method:"PATCH"
+        })
+        .then(res=>res.json())
+        .then(data=>{
+          if(data.code=="error"){
+            Swal.fire({
+              icon:"error",
+              title:"Thất bại!",
+              text:data.message
+            });
+          }
+          else{
+            Swal.fire({
+              icon:"success",
+              title:"Thành công!",
+              text:data.message,
+              timer:2000,
+              showConfirmButton:false
+            }).then(()=>{
+              window.location.href = "/order-history";
+            });
+          }
+        })
+      }
+    });
+  });
+}

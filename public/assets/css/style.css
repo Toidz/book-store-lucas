@@ -4083,3 +4083,16 @@ input[type="number"]::-webkit-inner-spin-button {
   font-size: 13px;
   color: red;
 } 
+.cancel-btn {
+  color: white;
+  background-color: var(--color-primary);
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  border: none;
+}
+
+.cancel-btn:hover {
+  background-color: var(--color-second);
+  cursor: pointer;
+}

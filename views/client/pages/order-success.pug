@@ -12,6 +12,9 @@ block main
             .timeline-item(class=index <= activeStep ? 'active' : '')
               .inner-cicle #{index + 1}
               .inner-name= step
+        .inner-cancel(style="margin-top: 50px; text-align: center;")
+          -if(order.status == "initial")
+            button.cancel-btn(cancel-order=`/order-history/cancel/${order._id}`) Hủy đơn hàng
     .section-11(style="padding-top: 20px;")
       .inner-wrap
         .inner-head
