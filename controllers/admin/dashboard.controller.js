@@ -22,7 +22,6 @@ module.exports.dashboard =  async (req,res)=>{
     if(order) dashboard.order= order.length
 
     const orderPay = await Order.find({
-        deleted:false,
         payStatus:"paid"
     })
     const totalPrice =  orderPay.reduce((sum,item)=>{

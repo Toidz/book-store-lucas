@@ -8,6 +8,11 @@ block main
         .inner-item.inner-label
           <i class="fa-solid fa-filter"></i> Bộ lọc
         .inner-item
+          select(order-method)
+            option(value="") Phương thức thanh toán
+            option(value="money") Tiền mặt
+            option(value="zalopay") Zalopay
+        .inner-item
           select(order-status)
             option(value="") Trạng thái đơn hàng
             option(value="initial") Khởi tạo
@@ -15,20 +20,15 @@ block main
             option(value="sent") Đã gửi hàng cho đơn vị vận chuyển
             option(value="ship") Đang giao hàng 
             option(value="done") Đã giao hàng
-        .inner-item.inner-date
-          input(type="date" order-startDate)
-          span -
-          input(type="date" order-endDate)
-        .inner-item
-          select(order-method)
-            option(value="") Phương thức thanh toán
-            option(value="money") Tiền mặt
-            option(value="zalopay") Zalopay
         .inner-item
           select(order-statusPay)
             option(value="") Trạng thái thanh toán
             option(value="paid") Đã thanh toán
             option(value="unpaid") Chưa thanh toán
+        .inner-item.inner-date
+          input(type="date" order-startDate)
+          span -
+          input(type="date" order-endDate)
         .inner-item.inner-reset(order-delete-filter)
           <i class="fa-solid fa-rotate-left"></i> Xóa bộ lọc
     //- End Section 4

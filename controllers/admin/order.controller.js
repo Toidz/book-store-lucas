@@ -195,7 +195,7 @@ module.exports.deletePatch = async (req,res)=>{
             orderCode:orderCode,
             deleted:false
         })
-        if(orderFind){
+        if(orderFind && orderFind.status !== "completed"){
             for (const item of orderFind.cart) {
                 const bookDetail = await Book.findOne({
                     _id:item.id_book,
