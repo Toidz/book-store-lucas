@@ -7,12 +7,6 @@ block main
       .section-1
         .inner-item
           .inner-icon
-            img(src="/admin/assets/images/section-1-icon-1.svg")
-          .inner-content
-            .inner-title Khách hàng
-            .inner-number #{totalClient?totalClient:0}
-        .inner-item
-          .inner-icon
             img(src="/admin/assets/images/section-1-icon-2.svg")
           .inner-content
             .inner-title Đơn hàng
@@ -33,15 +27,27 @@ block main
     - if(permissions.includes("statistics-view"))
       .section-2
         .inner-head
-          h2.inner-title Biểu đồ doanh thu
-          .inner-filter
-            input(
-              type="month"
-              name=""
-              chart
-            )
-        .inner-chart(style="overflow-x:auto;")
-          canvas(id="revenue-chart" style="height:250px")
+          h2.inner-title Bộ lọc theo ngày
+          .inner-filter(style="display: flex; gap: 15px; align-items: center; background: #f4f6f9; padding: 10px; border-radius: 8px;")
+            .filter-group(style="display: flex; align-items: center; gap: 8px;")
+              label(for="date-from" style="font-weight: 600; margin: 0; font-size: 14px;") Từ ngày:
+              input(
+                type="date"
+                id="date-from"
+                value=dateFromSelected
+                style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px;"
+              )
+            .filter-group(style="display: flex; align-items: center; gap: 8px;")
+              label(for="date-to" style="font-weight: 600; margin: 0; font-size: 14px;") Đến ngày:
+              input(
+                type="date"
+                id="date-to"
+                value=dateToSelected
+                style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px;"
+              )
+            button#btn-filter(style="padding: 6px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;") Áp dụng
+        .inner-chart(style="overflow-x:auto; margin-top: 20px;")
+          canvas(id="revenue-chart" style="height:250px; width: 100%;")
     //- End Section 2
     - if(permissions.includes("statistics-view"))
       .section-2
@@ -96,7 +102,7 @@ block main
               th(style="width:170px") Thông tin khách
               th Danh sách sản phẩm
               th(style="width:210px") Thanh toán 
-              th(style="width:140px") Trạng thái
+              th(style="width:200px") Trạng thái
               th.inner-text-right Ngày đặt
           tbody
             each item in orderNew
@@ -130,6 +136,8 @@ block main
                     .badge.badge-orange Đang giao hàng
                   - if(item.status == "done")
                     .badge.badge-green Đã giao hàng
+                  - if(item.status == "cancel")
+                    .badge.badge-gray Hủy đơn
                 td.inner-text-right
                   .inner-text #{item.formatTime}
                   .inner-text #{item.formatDay}

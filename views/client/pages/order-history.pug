@@ -9,6 +9,13 @@ block main
                     .inner-find-order 
                         input(type="text" placeholder="Nhập mã đơn hàng của bạn")
                         button Tìm kiếm
+                    .inner-status-filter(style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;")
+                        button(class=`btn-filter ${currentStatus == "" ? "active" : ""}` status-filter="") Tất cả
+                        button(class=`btn-filter ${currentStatus == "initial" ? "active" : ""}` status-filter="initial") Khởi tạo
+                        button(class=`btn-filter ${currentStatus == "package" ? "active" : ""}` status-filter="package") Đóng gói
+                        button(class=`btn-filter ${currentStatus == "sent" || currentStatus == "ship" ? "active" : ""}` status-filter="ship") Đang giao
+                        button(class=`btn-filter ${currentStatus == "done" ? "active" : ""}` status-filter="done") Đã giao
+                        button(class=`btn-filter ${currentStatus == "cancel" ? "active" : ""}` status-filter="cancel") Hủy đơn
                     .inner-list
                         - if(listOrder.length>0)
                             each item in listOrder
@@ -21,6 +28,7 @@ block main
                                             a(href=`/book/detail/${item.cart[0].slug}`)
                                                 each it in item.cart
                                                     .inner-name #{it.name} x #{it.quantity}
+                                            .inner-name Trạng thái: #{item.statusName}
                                             .inner-price-total
                                                 .inner-price-sub Tổng số tiền: 
                                                 .inner-price-main #{item.priceTotal.toLocaleString("vi-VN")}đ

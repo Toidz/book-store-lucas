@@ -85,6 +85,33 @@ module.exports.editPatch = async (req,res)=>{
                 })   
             }
         }
+        if(status === "cancel"){
+            const orderFind = await Order.findOne({
+                orderCode:orderCode,
+                deleted:false
+            })
+            for (const item of orderFind.cart) {
+                const bookDetail = await Book.findOne({
+                    _id:item.id_book,
+                    deleted:false,
+                })
+                if(bookDetail){
+                    await Book.updateOne({
+                        _id:item.id_book,
+                        deleted:false
+                    },{
+                        numberBook:parseInt(bookDetail.numberBook)+parseInt(item.quantity)
+                    })
+                } 
+                else{
+                    res.json({
+                        code:"error",
+                        message:"Không thể hủy đơn hàng lúc này!"
+                    })
+                    return;
+                }
+            }
+        }
         await Order.updateOne({
             orderCode:orderCode
         },req.body)
@@ -237,3 +264,52 @@ module.exports.deletePatch = async (req,res)=>{
         })
     }
 }
+module.exports.changeStatus = async (req, res) => {
+  try {
+    const { orderCode, status } = req.body;
+    const validStatuses = ["initial", "package", "sent", "ship", "done", "cancel"];
+    if (!validStatuses.includes(status)) {
+      return res.json({ code: "error", message: "Trạng thái không hợp lệ!" });
+    }
+    await Order.updateOne(
+      { orderCode: orderCode, deleted: false },
+      { $set: { status: status } }
+    );
+    if(orderCode && status === "cancel"){
+        const orderFind = await Order.findOne({
+            orderCode:orderCode,
+            deleted:false
+        })
+        for (const item of orderFind.cart) {
+            const bookDetail = await Book.findOne({
+                _id:item.id_book,
+                deleted:false,
+            })
+            if(bookDetail){
+                await Book.updateOne({
+                    _id:item.id_book,
+                    deleted:false
+                },{
+                    numberBook:parseInt(bookDetail.numberBook)+parseInt(item.quantity)
+                })
+            } 
+            else{
+                res.json({
+                    code:"error",
+                    message:"Không thể hủy đơn hàng lúc này!"
+                })
+                return;
+            }
+        }
+        
+    }
+    res.json({
+      code: "success",
+      message: "Cập nhật trạng thái đơn hàng thành công!"
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.json({ code: "error", message: "Có lỗi xảy ra trên server!" });
+  }
+};

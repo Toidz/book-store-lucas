@@ -25,7 +25,8 @@ block main
               selected = orderCurrent.method=="zalopay"?true :false) Zalopay
         .inner-group
           label(class="inner-label" for="paymentStatus") Trạng thái thanh toán
-          select(id="paymentStatus" name="paymentStatus")
+          select(id="paymentStatus" name="paymentStatus"
+            disabled=(orderCurrent.payStatus=="paid"))
             option(value="paid"
               selected = orderCurrent.payStatus=="paid"?true :false) Đã thanh toán
             option(value="unpaid"
@@ -39,17 +40,46 @@ block main
           )
         .inner-group
           label(class="inner-label" for="status") Trạng thái đơn hàng
-          select(id="status" name="status")
-            option(value="initial"
-              selected = orderCurrent.status=="initial"?true :false) Khởi tạo
-            option(value="package"
-              selected = orderCurrent.status=="package"?true :false) Đóng gói đơn hàng
-            option(value="sent"
-              selected = orderCurrent.status=="sent"?true :false) Đã gửi hàng cho đơn vị vận chuyển
-            option(value="ship"
-              selected = orderCurrent.status=="ship"?true :false) Đang giao hàng
-            option(value="done"
-              selected = orderCurrent.status=="done"?true :false) Đã giao hàng
+          select(
+            id="status" 
+            name="status" 
+            disabled=(orderCurrent.status == "done" || orderCurrent.status == "cancel")
+          )
+            option(
+              value="initial"
+              selected=(orderCurrent.status == "initial")
+              disabled=(orderCurrent.status != "initial")
+            ) Khởi tạo
+            
+            option(
+              value="package"
+              selected=(orderCurrent.status == "package")
+              disabled=(orderCurrent.status == "sent" || orderCurrent.status == "ship" || orderCurrent.status == "done" || orderCurrent.status == "cancel")
+            ) Đóng gói đơn hàng
+            
+            option(
+              value="sent"
+              selected=(orderCurrent.status == "sent")
+              disabled=(orderCurrent.status == "initial" || orderCurrent.status == "ship" || orderCurrent.status == "done" || orderCurrent.status == "cancel")
+            ) Đã gửi hàng cho đơn vị vận chuyển
+            
+            option(
+              value="ship"
+              selected=(orderCurrent.status == "ship")
+              disabled=(orderCurrent.status == "initial" || orderCurrent.status == "package" || orderCurrent.status == "done" || orderCurrent.status == "cancel")
+            ) Đang giao hàng
+            
+            option(
+              value="done"
+              selected=(orderCurrent.status == "done")
+              disabled=(orderCurrent.status == "initial" || orderCurrent.status == "package" || orderCurrent.status == "sent")
+            ) Đã giao hàng
+            
+            option(
+              value="cancel"
+              selected=(orderCurrent.status == "cancel")
+              disabled=(orderCurrent.status != "initial")
+            ) Hủy đơn
         .inner-group
           label(class="inner-label") Danh sách sản phẩm
           .inner-order-list

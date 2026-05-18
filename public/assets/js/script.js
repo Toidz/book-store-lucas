@@ -2072,3 +2072,24 @@ if(cancelOrder){
     });
   });
 }
+
+//filer-status-order
+document.addEventListener("DOMContentLoaded", () => {
+  const filterButtons = document.querySelectorAll("[status-filter]");
+  if (filterButtons.length > 0) {
+    let url = new URL(window.location.href);
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const status = button.getAttribute("status-filter");
+        if (status) {
+          url.searchParams.set("status", status);
+          url.searchParams.set("page", 1); 
+        } else {
+          url.searchParams.delete("status");
+          url.searchParams.set("page", 1);
+        }
+        window.location.href = url.href;
+      });
+    });
+  }
+});

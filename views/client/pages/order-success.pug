@@ -7,14 +7,17 @@ block main
       .inner-wrap
         .inner-head
           .inner-title Trạng thái đơn hàng
-        .inner-timeline(style="display:flex")
-          each step, index in steps
-            .timeline-item(class=index <= activeStep ? 'active' : '')
-              .inner-cicle #{index + 1}
-              .inner-name= step
-        .inner-cancel(style="margin-top: 50px; text-align: center;")
-          -if(order.status == "initial" && order.payStatus == "unpaid")
-            button.cancel-btn(cancel-order=`/order-history/cancel/${order._id}`) Hủy đơn hàng
+        -if(order.status != "cancel")
+          .inner-timeline(style="display:flex")
+            each step, index in steps
+              .timeline-item(class=index <= activeStep ? 'active' : '')
+                .inner-cicle #{index + 1}
+                .inner-name= step
+          .inner-cancel(style="margin-top: 50px; text-align: center;")
+            -if(order.status == "initial" && order.payStatus == "unpaid")
+              button.cancel-btn(cancel-order=`/order-history/cancel/${order._id}`) Hủy đơn hàng
+        -else 
+          span Bạn đã hủy đơn hàng này!
     .section-11(style="padding-top: 20px;")
       .inner-wrap
         .inner-head

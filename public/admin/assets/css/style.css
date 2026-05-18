@@ -604,7 +604,11 @@ a {
   font-weight: 600;
   font-size: 12px;
 }
-
+@media(max-width:768px){
+  .section-2 .inner-head .inner-filter {
+    flex-wrap: wrap;
+  }
+}
 .section-2 .inner-chart {
   height: 350px;
 }
@@ -821,8 +825,37 @@ a {
   background-color: rgba(116, 12, 154, 0.2);
   color: #EF3826;
 }
+.badge-gray {
+  background-color: rgba(73, 76, 78, 0.07);
+  color: #0a0201;
+}
 /* End Badge */
-
+//status select
+select{
+  outline: none;
+}
+select.status-select {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  border: 1px solid #ddd;
+  outline: none !important;
+  box-shadow: none !important; 
+  transition: border-color 0.15s ease;
+}
+select.status-select:focus,
+select.status-select:focus-visible,
+select.status-select:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: rgba(0, 0, 0, 0.15) !important; 
+}
+select.status-select:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  border-color: #ddd !important;
+}
 /* Comment status */
 .comment-status {
   display: inline-flex;
@@ -1268,7 +1301,6 @@ a {
   font-size: 14px;
   color: #606060;
 }
-
 .section-8 form .inner-group input,
 .section-8 form .inner-group select,
 .section-8 form .inner-group textarea {

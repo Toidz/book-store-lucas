@@ -4,6 +4,5 @@ router.get("/list",orderController.list);
 router.get("/export-excel",orderController.exportExcel);
 router.get("/edit/:code",orderController.edit);
 router.patch("/edit/:code",orderController.editPatch);
-router.patch("/delete/:code",orderController.deletePatch);
-
+router.patch("/change-status",orderController.changeStatus);
 module.exports = router;

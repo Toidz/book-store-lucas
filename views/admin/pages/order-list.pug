@@ -20,6 +20,7 @@ block main
             option(value="sent") Đã gửi hàng cho đơn vị vận chuyển
             option(value="ship") Đang giao hàng 
             option(value="done") Đã giao hàng
+            option(value="cancel") Hủy đơn
         .inner-item
           select(order-statusPay)
             option(value="") Trạng thái thanh toán
@@ -57,7 +58,7 @@ block main
               th(style="width:170px") Thông tin khách
               th Danh sách sản phẩm
               th(style="width:210px") Thanh toán
-              th(style="width:160px") Trạng thái
+              th(style="width:200px") Trạng thái
               th(class="inner-center") Ngày đặt
               th Hành động
           tbody
@@ -81,17 +82,47 @@ block main
                   div Tổng tiền: #{item.priceTotal.toLocaleString("vi-VN")}đ
                   div PTTT: #{item.nameMethod}
                   div TTTT: #{item.nameStatusPay}
-                td(style="text-align:center")
-                  - if(item.status == "initial")
-                    .badge.badge-red Khởi tạo
-                  - if(item.status == "package")
-                    .badge.badge-blue Đóng gói đơn hàng
-                  - if(item.status == "sent")
-                    .badge.badge-violet Đã gửi hàng cho đơn vị vận chuyển
-                  - if(item.status == "ship")
-                    .badge.badge-orange Đang giao hàng
-                  - if(item.status == "done")
-                    .badge.badge-green Đã giao hàng
+                td 
+                  select(
+                    class="form-control status-select" 
+                    order-code=item.orderCode
+                    disabled=(item.status == "done" || item.status == "cancel")
+                  )
+                    option(
+                      value="initial" 
+                      selected=(item.status == "initial")
+                      disabled=(item.status != "initial")
+                    ) Khởi tạo
+
+                    option(
+                      value="package" 
+                      selected=(item.status == "package")
+                      disabled=(item.status == "sent" || item.status == "ship" || item.status == "done" || item.status == "cancel")
+                    ) Đóng gói đơn hàng
+
+                    option(
+                      value="sent" 
+                      selected=(item.status == "sent")
+                      disabled=(item.status == "initial" || item.status == "ship" || item.status == "done" || item.status == "cancel")
+                    ) Đã gửi vận chuyển
+
+                    option(
+                      value="ship" 
+                      selected=(item.status == "ship")
+                      disabled=(item.status == "initial" || item.status == "package" || item.status == "done" || item.status == "cancel")
+                    ) Đang giao hàng
+
+                    option(
+                      value="done" 
+                      selected=(item.status == "done")
+                      disabled=(item.status == "initial" || item.status == "package" || item.status == "sent")
+                    ) Đã giao hàng
+
+                    option(
+                      value="cancel" 
+                      selected=(item.status == "cancel")
+                      disabled=(item.status != "initial") 
+                    ) Hủy đơn
                 td(class="inner-center")
                   div #{item.time}
                   div #{item.day}

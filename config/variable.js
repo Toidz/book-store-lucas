@@ -43,4 +43,8 @@ module.exports.status =[
         lable:"Đã giao hàng",
         value:"done"
     },
+    {
+        lable:"Hủy đơn",
+        value:"cancel"
+    },
 ]

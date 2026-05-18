@@ -1,3 +1,5 @@
+// Đăng ký plugin hiển thị nhãn dữ liệu trực tiếp
+Chart.register(ChartDataLabels);
 // Menu Mobile
 const buttonMenuMobile = document.querySelector(".header .inner-button-menu");
 if(buttonMenuMobile) {
@@ -2753,7 +2755,64 @@ if(orderSearch){
   }
 }
 //End filter order
-
+//order-update-status
+document.addEventListener("DOMContentLoaded", () => {
+  const statusSelects = document.querySelectorAll(".status-select");
+  if (statusSelects.length > 0) {
+    statusSelects.forEach(select => {
+      select.addEventListener("change", (e) => {
+        const orderCode = select.getAttribute("order-code");
+        const newStatus = select.value;
+        Swal.fire({
+          title: 'Xác nhận thay đổi?',
+          text: `Bạn có chắc chắn muốn chuyển trạng thái đơn hàng này?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Đồng ý',
+          cancelButtonText: 'Hủy'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(`/${pathAdmin}/order/change-status`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                orderCode: orderCode,
+                status: newStatus
+              })
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.code === "success") {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Thành công!',
+                  text: data.message,
+                  timer: 1500,
+                  showConfirmButton: false
+                }).then(() => {
+                  window.location.reload(); 
+                });
+              } else {
+                Swal.fire('Thất bại!', data.message, 'error');
+                window.location.reload();
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              Swal.fire('Lỗi hệ thống!', 'Không thể kết nối đến server.', 'error');
+            });
+          } else {
+            window.location.reload(); 
+          }
+        });
+      });
+    });
+  }
+});
 
 // event Create Form
 const eventCreateForm = document.querySelector("#event-create-form");
@@ -3053,88 +3112,96 @@ if(buttonDeleteComment){
 }
 // End Comment delete
 
-// Biểu đồ doanh thu
+//Doanh thu
 const revenueChart = document.querySelector("#revenue-chart");
 let revenueChartInstance = null;
-const drawChart = (now)=>{
-  const currentMonth = now.getMonth()+1
-  const currentYear = now.getFullYear()
-
-  const previousMonthDate = new Date(currentYear, now.getMonth()-1,1)
-  const previousMonth = previousMonthDate.getMonth()+1
-  const previousYear = previousMonthDate.getFullYear()
-
-  const daysInMonthCurrent = new Date(currentYear,currentMonth,0).getDate()
-  const daysInMonthPrevious = new Date(previousYear,previousMonth,0).getDate()
-  const days = daysInMonthCurrent>daysInMonthPrevious? daysInMonthCurrent :daysInMonthPrevious
-  const arrayDay =[]
-  for(let i=1;i<=days;i++){
-    arrayDay.push(i)
+const getDatesInRange = (startDate, endDate) => {
+  const dateArray = [];
+  let currentDate = new Date(startDate);
+  const stopDate = new Date(endDate);
+  
+  while (currentDate <= stopDate) {
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    dateArray.push(`${day}/${month}`);
+    currentDate.setDate(currentDate.getDate() + 1);
   }
-  const dataFinal ={
-    currentMonth,
-    currentYear,
-    previousMonth,
-    previousYear,
-    arrayDay
-  }
-  fetch(`/${pathAdmin}/dashboard/revenueChart`,{
-    method:"POST",
-    headers:{
-      "Content-type":"application/json"
+  return dateArray;
+};
+const drawChart = (dateFrom, dateTo) => {
+  const arrayDayLabels = getDatesInRange(dateFrom, dateTo);
+  const dataFinal = {
+    dateFrom,
+    dateTo,
+    arrayDay: arrayDayLabels
+  };
+  fetch(`/${pathAdmin}/dashboard/revenueChart`, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json"
     },
-    body:JSON.stringify(dataFinal)
+    body: JSON.stringify(dataFinal)
   })
-  .then(res=>res.json())
-  .then(data=>{
-    if(data.code=="error"){
-      alert(data.message)
-    }
-    else{
+  .then(res => res.json())
+  .then(data => {
+    if (data.code == "error") {
+      alert(data.message);
+    } else {
       if (revenueChartInstance) {
         revenueChartInstance.destroy();
       }
-      revenueChartInstance =new Chart(revenueChart, {
-        type: 'line',
+      const chartType = arrayDayLabels.length === 1 ? 'bar' : 'line';
+      const barThicknessSetting = chartType === 'bar' ? 50 : undefined;
+      revenueChartInstance = new Chart(revenueChart, {
+        type: chartType,
         data: {
-          labels: arrayDay,
-          datasets: [
-            {
-              label: `Tháng ${currentMonth}/${currentYear}`, 
-              data: data.dataMonthCurrent, 
-              borderColor: '#4379EE', 
-              borderWidth: 1.5, 
-            },
-            {
-              label: `Tháng ${previousMonth}/${previousYear}`, 
-              data: data.dataMonthPrevious , 
-              borderColor: '#EF3826', 
-              borderWidth: 1.5, 
-            }
-          ]
+          labels: arrayDayLabels, 
+          datasets: [{
+            label: `Doanh thu thực tế`, 
+            data: data.dataMonthCurrent, 
+            borderColor: '#4379EE', 
+            backgroundColor: chartType === 'bar' ? '#4379EE' : 'rgba(67, 121, 238, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.15,
+            barThickness: barThicknessSetting
+          }]
         },
         options: {
           plugins: {
-            legend: {
-              position: 'bottom'
+            legend: { position: 'bottom' },
+            datalabels: {
+              align: 'top',
+              anchor: 'end',
+              backgroundColor: null, 
+              color: '#e00e0e', 
+              font: {
+                weight: 'bold',
+                size: 10
+              },
+              offset: 4,
+              formatter: function(value, context) {
+                if (value === 0) return ''; 
+                return value.toLocaleString('vi-VN') + ' VND'; 
+              }
             }
           },
           scales: {
             x: {
-              title: {
-                display: true,
-                text: 'Ngày'
-              },
-              ticks: {
-                maxRotation: 0,
+              ticks: { 
+                maxRotation: 0, 
                 minRotation: 0,
+                maxTicksLimit: window.innerWidth < 576 ? 5 : 12, 
+                font: {
+                  size: window.innerWidth < 576 ? 10 : 11
+                },
+                color: '#666'
               }
             },
             y: {
-              title: {
-                display: true,
-                text: 'Doanh thu (VND)'
-              }
+              title: { display: true, text: 'Doanh thu (VND)' },
+              beginAtZero: true,
+              grace: '10%' 
             }
           },
           maintainAspectRatio: false, 
@@ -3142,20 +3209,41 @@ const drawChart = (now)=>{
       });
     }
   })
-}
-if(revenueChart) {
-  const chartInput = document.querySelector("[chart]")
-  if(chartInput){
-    chartInput.addEventListener("change",()=>{
-      console.log(chartInput.value)
-      let now = new Date(chartInput.value)
-      drawChart(now)
-    })
+  .catch(err => console.error("Lỗi fetch chart:", err));
+};
+if (revenueChart) {
+  const urlParams = new URLSearchParams(window.location.search);
+  let dateFrom = urlParams.get("dateFrom");
+  let dateTo = urlParams.get("dateTo");
+  if (!dateFrom || !dateTo) {
+    dateTo = moment().format("YYYY-MM-DD");
+    dateFrom = moment().subtract(30, 'days').format("YYYY-MM-DD");
   }
-
-  let now = new Date()
-  drawChart(now)
+  drawChart(dateFrom, dateTo);
 }
+document.addEventListener("DOMContentLoaded", () => {
+    const btnFilter = document.querySelector("#btn-filter");
+    const inputFrom = document.querySelector("#date-from");
+    const inputTo = document.querySelector("#date-to");
+    if (btnFilter && inputFrom && inputTo) {
+        btnFilter.addEventListener("click", () => {
+            const dateFrom = inputFrom.value;
+            const dateTo = inputTo.value;
+            if (!dateFrom || !dateTo) {
+                alert("Vui lòng chọn đầy đủ cả ngày bắt đầu và ngày kết thúc!");
+                return;
+            }
+            if (new Date(dateFrom) > new Date(dateTo)) {
+                alert("Ngày bắt đầu không được lớn hơn ngày kết thúc!");
+                return;
+            }
+            const url = new URL(window.location.href);
+            url.searchParams.set("dateFrom", dateFrom);
+            url.searchParams.set("dateTo", dateTo);
+            window.location.href = url.href;
+        });
+    }
+});
 // Hết Biểu đồ doanh thu
 
 //inventory

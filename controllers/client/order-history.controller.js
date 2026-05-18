@@ -2,49 +2,55 @@ const Order = require("../../models/order.model")
 const variable = require("../../config/variable")
 const Book = require("../../models/book.model")
 const moment = require("moment")
-module.exports.list = async (req,res)=>{
+module.exports.list = async (req, res) => {
     let keyword = "";
-    if(req.query.keyword){
-        keyword = req.query.keyword
+    if (req.query.keyword) {
+        keyword = req.query.keyword;
     }
-    const dataFind ={
-        deleted:false,
-        id_user:req.account.id,
-    }
+    const dataFind = {
+        deleted: false,
+        id_user: req.account.id, 
+    };
     if (keyword) {
         dataFind.$or = [
             { orderCode: { $regex: keyword, $options: "i" } }, 
             { "cart.name": { $regex: keyword, $options: "i" } }, 
         ];
+    }  
+    if (req.query.status) {
+        dataFind.status = req.query.status;
     }
-
-    const totalOrder = await Order.countDocuments(dataFind)
-    const limit =4
-    const totalPage = Math.ceil(totalOrder/limit)
-    let page =1
-    if(req.query.page>0){
-        page = req.query.page
+    const totalOrder = await Order.countDocuments(dataFind);
+    const limit = 4;
+    const totalPage = Math.ceil(totalOrder / limit) || 1; 
+    let page = parseInt(req.query.page) || 1;
+    if (page < 1) {
+        page = 1;
     }
-    if(req.query.page>totalPage){
-        page=totalPage
+    if (page > totalPage) {
+        page = totalPage;
     }
-    const skip = (page-1)*limit
+    const skip = (page - 1) * limit;
     const listOrder = await Order.find(dataFind) 
-    .skip(skip)
-    .limit(limit)
-    .sort({
-        createdAt:"desc"
-    })
+        .skip(skip)
+        .limit(limit)
+        .sort({
+            createdAt: "desc"
+        });
     for (const item of listOrder) {
         item.cartLength = item.cart.length;
+        const status = variable.status.find(it => it.value == item.status);
+        item.statusName = status ? (status.label || status.lable) : ""; 
     }
-    res.render("client/pages/order-history",{
-        pageTitle:"Lịch sử đơn hàng",
-        listOrder:listOrder,
-        totalOrder:totalOrder,
-        totalPage:totalPage
-    })
-}
+    res.render("client/pages/order-history", {
+        pageTitle: "Lịch sử đơn hàng",
+        listOrder: listOrder,
+        totalOrder: totalOrder,
+        totalPage: totalPage,
+        currentPage: page, 
+        currentStatus: req.query.status || "" 
+    });
+};
 module.exports.detail = async (req,res)=>{
     try {
         const orderId = req.query.orderId
@@ -105,11 +111,9 @@ module.exports.cancel = async (req,res)=>{
             await Order.updateOne({
                 _id:orderId,
                 deleted:false,
-                payStatus:"unpaid"
+                status:"initial"
             },{
-                    deleted:true,
-                    deletedAt:Date.now(),
-                    deletedBy:req.account.id
+                status:"cancel"
             })
         }
         else{

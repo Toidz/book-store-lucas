@@ -4096,3 +4096,39 @@ input[type="number"]::-webkit-inner-spin-button {
   background-color: var(--color-second);
   cursor: pointer;
 }
+
+
+//filter-status-order
+/* Thanh bộ lọc trạng thái */
+.inner-status-filter {
+  margin-bottom: 20px;
+  border-bottom: 2px solid #edf2f7;
+  padding-bottom: 10px;
+}
+.btn-filter {
+  background: #e6edf1;
+  color: #4a5568;
+  border: 1px solid #fbfbfb;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-filter:hover {
+  background: #edf2f7;
+  color: #1a202c;
+}
+.btn-filter.active {
+  background: #4379EE;
+  color: #ffffff;
+  border-color: #4379EE;
+  box-shadow: 0 4px 6px rgba(67, 121, 238, 0.2);
+}
+.badge-status.status-initial { background-color: #f8f8f8; color: #E53E3E; }
+.badge-status.status-package { background-color: #EBF8FF; color: #2B6CB0; }
+.badge-status.status-sent,
+.badge-status.status-ship { background-color: #FFFAF0; color: #DD6B20; }
+.badge-status.status-done { background-color: #F0FFF4; color: #38A169; }
+.badge-status.status-cancel { background-color: #EDF2F7; color: #4A5568; }
