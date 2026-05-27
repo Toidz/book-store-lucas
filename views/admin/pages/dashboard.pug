@@ -4,6 +4,34 @@ block main
   - if(permissions.includes("dashboard-view"))
     //- Section 1
     - if(permissions.includes("statistics-view"))
+      .section-head
+        .inner-head
+          .inner-filter(style="display: flex; gap: 15px; align-items: center; padding: 10px; border-radius: 8px; flex-wrap: wrap;")
+            //- Quick filter buttons
+            .filter-buttons(style="display: flex; gap: 8px; align-items: center;")
+              button.filter-btn(data-period="day" style="padding: 6px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;") Ngày
+              button.filter-btn(data-period="week" style="padding: 6px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;") Tuần
+              button.filter-btn(data-period="month" style="padding: 6px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;") Tháng
+              button.filter-btn(data-period="year" style="padding: 6px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;") Năm
+            
+            //- Date range inputs
+            .filter-group(style="display: flex; align-items: center; gap: 8px;")
+              label(for="date-from" style="font-weight: 600; margin: 0; font-size: 14px;") Từ ngày:
+              input(
+                type="date"
+                id="date-from"
+                value=dateFromSelected
+                style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px;"
+              )
+            .filter-group(style="display: flex; align-items: center; gap: 8px;")
+              label(for="date-to" style="font-weight: 600; margin: 0; font-size: 14px;") Đến ngày:
+              input(
+                type="date"
+                id="date-to"
+                value=dateToSelected
+                style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px;"
+              )
+            button#btn-filter(style="padding: 6px 15px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;") Áp dụng
       .section-1
         .inner-item
           .inner-icon
@@ -27,25 +55,7 @@ block main
     - if(permissions.includes("statistics-view"))
       .section-2
         .inner-head
-          h2.inner-title Bộ lọc theo ngày
-          .inner-filter(style="display: flex; gap: 15px; align-items: center; background: #f4f6f9; padding: 10px; border-radius: 8px;")
-            .filter-group(style="display: flex; align-items: center; gap: 8px;")
-              label(for="date-from" style="font-weight: 600; margin: 0; font-size: 14px;") Từ ngày:
-              input(
-                type="date"
-                id="date-from"
-                value=dateFromSelected
-                style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px;"
-              )
-            .filter-group(style="display: flex; align-items: center; gap: 8px;")
-              label(for="date-to" style="font-weight: 600; margin: 0; font-size: 14px;") Đến ngày:
-              input(
-                type="date"
-                id="date-to"
-                value=dateToSelected
-                style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px;"
-              )
-            button#btn-filter(style="padding: 6px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;") Áp dụng
+          h2.inner-title Biểu đồ doanh thu
         .inner-chart(style="overflow-x:auto; margin-top: 20px;")
           canvas(id="revenue-chart" style="height:250px; width: 100%;")
     //- End Section 2

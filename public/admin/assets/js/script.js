@@ -3225,22 +3225,95 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnFilter = document.querySelector("#btn-filter");
     const inputFrom = document.querySelector("#date-from");
     const inputTo = document.querySelector("#date-to");
+    const filterBtns = document.querySelectorAll(".filter-btn");
+    
+    // Get URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const savedPeriod = urlParams.get("period");
+    
+    // Function to update date range based on period
+    const updateDateRange = (period) => {
+        const today = moment();
+        let dateFrom, dateTo;
+        
+        switch(period) {
+            case 'day':
+                dateFrom = today.clone().format("YYYY-MM-DD");
+                dateTo = today.clone().format("YYYY-MM-DD");
+                break;
+            case 'week':
+                dateFrom = today.clone().startOf('week').format("YYYY-MM-DD");
+                dateTo = today.clone().endOf('week').format("YYYY-MM-DD");
+                break;
+            case 'month':
+                dateFrom = today.clone().startOf('month').format("YYYY-MM-DD");
+                dateTo = today.clone().endOf('month').format("YYYY-MM-DD");
+                break;
+            case 'year':
+                dateFrom = today.clone().startOf('year').format("YYYY-MM-DD");
+                dateTo = today.clone().endOf('year').format("YYYY-MM-DD");
+                break;
+        }
+        
+        inputFrom.value = dateFrom;
+        inputTo.value = dateTo;
+        applyFilter(dateFrom, dateTo, period);
+    };
+    
+    // Apply filter function
+    const applyFilter = (dateFrom, dateTo, period = null) => {
+        if (!dateFrom || !dateTo) {
+            alert("Vui lòng chọn đầy đủ cả ngày bắt đầu và ngày kết thúc!");
+            return;
+        }
+        if (new Date(dateFrom) > new Date(dateTo)) {
+            alert("Ngày bắt đầu không được lớn hơn ngày kết thúc!");
+            return;
+        }
+        const url = new URL(window.location.href);
+        url.searchParams.set("dateFrom", dateFrom);
+        url.searchParams.set("dateTo", dateTo);
+        if (period) {
+            url.searchParams.set("period", period);
+        } else {
+            url.searchParams.delete("period");
+        }
+        window.location.href = url.href;
+    };
+    
+    // Function to highlight button based on period
+    const highlightButton = (period) => {
+        filterBtns.forEach(btn => {
+            if (btn.getAttribute("data-period") === period) {
+                btn.style.background = "#007bff";
+            } else {
+                btn.style.background = "#6c757d";
+            }
+        });
+    };
+    
+    // Add event listeners to quick filter buttons
+    filterBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const period = btn.getAttribute("data-period");
+            highlightButton(period);
+            updateDateRange(period);
+        });
+    });
+    
+    // Restore saved period or default to 'day'
+    if (savedPeriod) {
+        highlightButton(savedPeriod);
+    } else {
+        highlightButton('day');
+    }
+    
+    // Handle manual apply button
     if (btnFilter && inputFrom && inputTo) {
         btnFilter.addEventListener("click", () => {
             const dateFrom = inputFrom.value;
             const dateTo = inputTo.value;
-            if (!dateFrom || !dateTo) {
-                alert("Vui lòng chọn đầy đủ cả ngày bắt đầu và ngày kết thúc!");
-                return;
-            }
-            if (new Date(dateFrom) > new Date(dateTo)) {
-                alert("Ngày bắt đầu không được lớn hơn ngày kết thúc!");
-                return;
-            }
-            const url = new URL(window.location.href);
-            url.searchParams.set("dateFrom", dateFrom);
-            url.searchParams.set("dateTo", dateTo);
-            window.location.href = url.href;
+            applyFilter(dateFrom, dateTo);
         });
     }
 });

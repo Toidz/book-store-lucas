@@ -39,7 +39,7 @@ block main
         .inner-tour-list
           // Tour Item
           each item in order.cart
-            .inner-tour-item
+            .inner-tour-item(style="position: relative;")
               .inner-product
                 .inner-image
                   a(href=`/book/detail/${item.slug}`)
@@ -58,6 +58,7 @@ block main
                       span #{item.quantity}
                       span  x
                       span.inner-highlight  #{(item.priceLast).toLocaleString("vi-VN")}đ
+              a(href=`/book/detail/${item.slug}` style="position: absolute; bottom: 10px; right: 0; background-color: #007bff; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px;") Bình luận ngay!
             // End Tour Item
         .inner-list-price
           .inner-item

@@ -1781,3 +1781,14 @@ select.status-select:disabled {
   background-color: #a3e0a3;
 }
 /* End Alert */
+
+  /* section-head */
+.section-head {
+  margin-top: 10px;
+  background-color: #fff;
+  border-radius: 14px;
+  box-shadow: 6px 6px 54px 0px #0000000D;
+  padding: 16px 16px;
+  margin-bottom: 30px;
+}
+/* end section-head */
