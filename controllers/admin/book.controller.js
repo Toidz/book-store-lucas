@@ -135,7 +135,7 @@ module.exports.list = async (req,res) =>{
             { slugAuthor: regex }
         ];
     }
-    const limit =6
+    const limit =10
     const totalBook = await Book.countDocuments(find)
     const totalPage = Math.ceil(totalBook/limit)
     let page =1

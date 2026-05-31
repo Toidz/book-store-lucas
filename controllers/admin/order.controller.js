@@ -130,7 +130,7 @@ module.exports.editPatch = async (req,res)=>{
 module.exports.list = async (req,res)=>{
     const find = buildOrderFilter(req.query)
     const totalOrder = await Order.countDocuments(find)
-    const limit = 4
+    const limit = 10
     const totalPage= Math.ceil(totalOrder/limit)
     let page =1
     if(req.query.page>0){
