@@ -190,11 +190,7 @@ module.exports.exportExcel = async (req, res) => {
         };
 
         const account = await AccountAdmin.countDocuments({ status: "active" });
-        
-        const order = await Order.find({
-            deleted: false,
-            createdAt: dateQueryCondition
-        });
+        const order = await Order.find({ deleted: false, createdAt: dateQueryCondition });
         const totalOrders = order ? order.length : 0;
 
         const orderPay = await Order.find({
@@ -204,7 +200,6 @@ module.exports.exportExcel = async (req, res) => {
         });
         const totalPrice = orderPay.reduce((sum, item) => sum + item.priceTotal, 0);
 
-
         const bookList = await Book.find({ deleted: false });
         let almostOver = 0, many = 0, soldOut = 0, totalBook = 0;
         for (let item of bookList) {
@@ -212,6 +207,30 @@ module.exports.exportExcel = async (req, res) => {
             if (item.numberBook > 15) many++;
             if (item.numberBook == 0) soldOut++;
             totalBook += item.numberBook;
+        }
+
+        const dataRevenueByDay = [];
+        let start = moment(dateFrom);
+        const end = moment(dateTo);
+        
+        while (start.isSameOrBefore(end, 'day')) {
+            const currentDayLabel = start.format("DD/MM");
+            const currentDayFull = start.format("YYYY-MM-DD");
+            
+            let totalDayPrice = 0;
+            for (const item of orderPay) {
+                const orderDateLabel = moment(item.createdAt).format("DD/MM");
+                if (currentDayLabel === orderDateLabel) {
+                    totalDayPrice += item.priceTotal;
+                }
+            }
+            
+            dataRevenueByDay.push({
+                dateDisplay: start.format("DD/MM/YYYY"),
+                total: totalDayPrice
+            });
+            
+            start.add(1, 'days'); 
         }
 
         for (let b of bookList) {
@@ -249,22 +268,24 @@ module.exports.exportExcel = async (req, res) => {
         const worksheet = workbook.addWorksheet("Tổng quan báo cáo");
 
         worksheet.columns = [
-            { width: 8 }, 
-            { width: 35 },
-            { width: 35 }, 
-            { width: 25 },
-            { width: 20 },
-            { width: 18 }
+            { width: 20 }, 
+            { width: 45 }, 
+            { width: 45 }, 
+            { width: 25 }, 
+            { width: 20 }, 
+            { width: 20 } 
         ];
+
 
         worksheet.mergeCells("A1:F1");
         const titleRow = worksheet.getCell("A1");
-        titleRow.value = "BÁO CÁO TỔNG QUAN";
+        titleRow.value = "BÁO CÁO TỔNG QUAN HỆ THỐNG SÁCH";
         titleRow.font = { name: "Arial", size: 16, bold: true, color: { argb: "FFFFFFFF" } };
         titleRow.alignment = { vertical: "middle", horizontal: "center" };
-        titleRow.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF007BFF" } }; 
+        titleRow.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF007BFF" } };
         worksheet.getRow(1).height = 40;
 
+    
         worksheet.mergeCells("A2:F2");
         const subTitleRow = worksheet.getCell("A2");
         subTitleRow.value = `Khoảng thời gian báo cáo: từ ngày ${moment(dateFrom).format("DD/MM/YYYY")} đến ngày ${moment(dateTo).format("DD/MM/YYYY")}`;
@@ -272,28 +293,41 @@ module.exports.exportExcel = async (req, res) => {
         subTitleRow.alignment = { vertical: "middle", horizontal: "center" };
         worksheet.getRow(2).height = 20;
 
-        worksheet.addRow([]);
+        worksheet.addRow([]); 
+
 
         worksheet.addRow(["I. SỐ LIỆU TỔNG HỢP NHANH"]).font = { size: 12, bold: true, color: { argb: "FF28A745" } };
-        
-        const summaryHeaders = ["Chỉ số", "Giá trị thực tế", "", "Chỉ số kho", "Giá trị tồn kho", ""];
-        const rHeaderSummary = worksheet.addRow(summaryHeaders);
+        const rHeaderSummary = worksheet.addRow(["Chỉ số doanh thu", "Giá trị thực tế", "", "Chỉ số kho hàng", "Giá trị tồn kho", ""]);
         rHeaderSummary.font = { bold: true };
         
-
         worksheet.addRow(["Tổng số đơn hàng", totalOrders, "", "Tổng số lượng sách trong kho", totalBook, ""]);
         worksheet.addRow(["Tổng doanh thu (Đã thanh toán)", totalPrice, "", "Sách sắp hết hàng (<=15)", almostOver, ""]);
         worksheet.addRow(["Tài khoản Admin (Active)", account, "", "Sách đã hết hàng (0)", soldOut, ""]);
-
+        
         worksheet.getCell("B6").numberFormat = "#,##0";
         worksheet.getCell("B7").numberFormat = "#,##0\"đ\"";
         worksheet.getCell("E5").numberFormat = "#,##0";
         worksheet.getCell("E6").numberFormat = "#,##0";
         worksheet.getCell("E7").numberFormat = "#,##0";
 
+        worksheet.addRow([]);
+
+
+        worksheet.addRow(["II. CHI TIẾT DOANH THU THEO NGÀY"]).font = { size: 12, bold: true, color: { argb: "FF28A745" } };
+        const chartHeader = worksheet.addRow(["Ngày", "Doanh thu", "", "", "", ""]);
+        chartHeader.font = { bold: true, color: { argb: "FFFFFFFF" } };
+        chartHeader.getCell(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF6F42C1" } }; // Màu tím biểu đồ đặc trưng
+        chartHeader.getCell(2).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF6F42C1" } };
+
+        dataRevenueByDay.forEach(item => {
+            const row = worksheet.addRow([item.dateDisplay, item.total, "", "", "", ""]);
+            row.getCell(2).numberFormat = "#,##0\"đ\"";
+            row.getCell(1).alignment = { horizontal: "center" };
+        });
+
         worksheet.addRow([]); 
 
-        worksheet.addRow(["II. TOP SÁCH BÁN CHẠY NHẤT"]).font = { size: 12, bold: true, color: { argb: "FF28A745" } };
+        worksheet.addRow(["III. TOP SÁCH BÁN CHẠY NHẤT"]).font = { size: 12, bold: true, color: { argb: "FF28A745" } };
         const topBookHeader = worksheet.addRow(["STT", "Tên sách", "Số lượng đã bán", "Doanh thu mang lại", "", ""]);
         topBookHeader.font = { bold: true, color: { argb: "FFFFFFFF" } };
         topBookHeader.eachCell(cell => {
@@ -301,21 +335,15 @@ module.exports.exportExcel = async (req, res) => {
         });
 
         topBook.forEach((item, index) => {
-            const row = worksheet.addRow([
-                index + 1,
-                item.name,
-                item.sold,
-                item.profit,
-                "",
-                ""
-            ]);
+            const row = worksheet.addRow([index + 1, item.name, item.sold, item.profit, "", ""]);
             row.getCell(3).numberFormat = "#,##0";
             row.getCell(4).numberFormat = "#,##0\"đ\"";
         });
 
-        worksheet.addRow([]); 
+        worksheet.addRow([]); // Dòng trống
 
-        worksheet.addRow(["III. DANH SÁCH ĐƠN HÀNG MỚI"]).font = { size: 12, bold: true, color: { argb: "FF28A745" } };
+
+        worksheet.addRow(["IV. DANH SÁCH ĐƠN HÀNG MỚI"]).font = { size: 12, bold: true, color: { argb: "FF28A745" } };
         const orderHeader = worksheet.addRow(["Mã đơn", "Thông tin khách hàng", "Danh sách sản phẩm", "Thông tin thanh toán", "Trạng thái đơn", "Ngày đặt đơn"]);
         orderHeader.font = { bold: true, color: { argb: "FFFFFFFF" } };
         orderHeader.eachCell(cell => {
@@ -323,13 +351,9 @@ module.exports.exportExcel = async (req, res) => {
         });
 
         orderNew.forEach(item => {
+            const customerInfo = `Họ tên: ${item.fullName}\nSĐT: ${item.phone}${item.note ? '\nLời nhắn: ' + item.note : ''}`;
+            let cartInfo = item.cart && item.cart.length > 0 ? item.cart.map(it => `- ${it.name} (SL: ${it.quantity} x ${it.priceLast.toLocaleString("vi-VN")}đ)`).join("\n") : "";
 
-            const customerInfo = `Họ tên: ${item.fullName}\nSĐT: ${item.phone}${item.note ? '\nĐịa chỉ nhận hàng: ' + item.note : ''}`;
-            
-            let cartInfo = "";
-            if (item.cart && item.cart.length > 0) {
-                cartInfo = item.cart.map(it => `- ${it.name} (SL: ${it.quantity} x ${it.priceLast.toLocaleString("vi-VN")}đ)`).join("\n");
-            }
             let statusText = "Khởi tạo";
             if (item.status === "package") statusText = "Đóng gói đơn hàng";
             if (item.status === "sent") statusText = "Đã gửi ĐVVC";
@@ -340,15 +364,7 @@ module.exports.exportExcel = async (req, res) => {
             const paymentInfo = `Tổng: ${item.priceTotal.toLocaleString("vi-VN")}đ\nPTTT: ${item.nameMethod}\nTTTT: ${item.nameStatusPay}`;
             const orderDateStr = `${item.formatTime} ${item.formatDay}`;
 
-            const row = worksheet.addRow([
-                item.orderCode,
-                customerInfo,
-                cartInfo,
-                paymentInfo,
-                statusText,
-                orderDateStr
-            ]);
-
+            const row = worksheet.addRow([item.orderCode, customerInfo, cartInfo, paymentInfo, statusText, orderDateStr]);
             row.getCell(2).alignment = { wrapText: true, vertical: "top" };
             row.getCell(3).alignment = { wrapText: true, vertical: "top" };
             row.getCell(4).alignment = { wrapText: true, vertical: "top" };
@@ -356,6 +372,7 @@ module.exports.exportExcel = async (req, res) => {
             row.getCell(6).alignment = { vertical: "top", horizontal: "center" };
         });
 
+        // BORDER TOÀN FILE
         worksheet.eachRow((row, rowNumber) => {
             if (rowNumber > 2) {
                 row.eachCell(cell => {
@@ -370,14 +387,8 @@ module.exports.exportExcel = async (req, res) => {
                 });
             }
         });
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename=BaoCaoTongQuan_${moment().format("DD-MM-YYYY_HHmm")}.xlsx`
-        );
+        res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        res.setHeader("Content-Disposition", `attachment; filename=BaoCaoTongQuan_${moment().format("DD-MM-YYYY_HHmm")}.xlsx`);
 
         await workbook.xlsx.write(res);
         res.end();
