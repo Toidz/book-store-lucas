@@ -3507,3 +3507,13 @@ if(positionInput){
     e.preventDefault();
 });
 }
+
+const btnExportExcel = document.querySelector("#btn-export-excel");
+if (btnExportExcel) {
+    btnExportExcel.addEventListener("click", () => {
+        const dateFrom = document.querySelector("#date-from").value;
+        const dateTo = document.querySelector("#date-to").value;
+        const url = `/adminhere/dashboard/export-excel?dateFrom=${dateFrom}&dateTo=${dateTo}`;
+        window.location.href = url;
+    });
+}
