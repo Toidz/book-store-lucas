@@ -131,8 +131,8 @@ block main
                     - if (permissions.includes("order-edit"))
                       a(href=`/${pathAdmin}/order/edit/${item.orderCode}` class="inner-edit")
                         <i class="fa-regular fa-pen-to-square"></i>
-                    - if (permissions.includes("order-delete"))
-                      button(class="inner-delete" order-delete=`/${pathAdmin}/order/delete/${item.orderCode}`) <i class="fa-regular fa-trash-can"></i>
+                    //- - if (permissions.includes("order-delete"))
+                    //-   button(class="inner-delete" order-delete=`/${pathAdmin}/order/delete/${item.orderCode}`) <i class="fa-regular fa-trash-can"></i>
             - if (orderList.length==0)
               tr
                 td(colspan="12" class="inner-center" style="padding:20px") Không tìm thấy đơn hàng!
